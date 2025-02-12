@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "181618864484",
+    "project_id": "alamoody-837cd",
+    "storage_bucket": "alamoody-837cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181618864484:android:e5d3820edcd0460ce60a71",
+        "android_client_info": {
+          "package_name": "com.alamoody.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181618864484-chcjd8g5rtet3rk1nl9m7obnptvoe97q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alamoody.app",
+            "certificate_hash": "f58f8e92f2adf6120735833625c67a93b0a0a4a2"
+          }
+        },
+        {
+          "client_id": "181618864484-ll4lndqg3j9f37peue8pmjevb7qm8teh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alamoody.app",
+            "certificate_hash": "90a3e737f13cff076fd012ad7fd4d47ca2787f65"
+          }
+        },
+        {
+          "client_id": "181618864484-dfohk9gi742c0nv1ni09kc03erf2f694.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtJQoeXjbV3syre9uJ02gvNW1zv_o93CY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181618864484-dfohk9gi742c0nv1ni09kc03erf2f694.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

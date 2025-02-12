@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">alamoody</string>
+    <string name="facebook_app_id">560498232658195</string>
+    <string name="fb_login_protocol_scheme">fb560498232658195</string>
+    <string name="facebook_client_token">41eb8e75dab6060300ef69e26e1d0d2f</string>
+</resources>
