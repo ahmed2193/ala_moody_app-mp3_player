@@ -7,7 +7,6 @@ import 'package:alamoody/features/home/presentation/cubits/set_ringtones/set_rin
 import 'package:alamoody/features/main_layout/cubit/tab_cubit.dart';
 import 'package:alamoody/features/membership/presentation/cubit/plan_cubit.dart';
 import 'package:alamoody/features/occasions/presentation/cubits/occasions_cubit.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,6 @@ import 'config/locale/app_localizations_setup.dart';
 import 'config/routes/app_routes.dart';
 import 'config/themes/dark.dart';
 import 'config/themes/light.dart';
-import 'core/utils/notification_service.dart';
 import 'features/Playlists/presentation/cubits/add_song_to_playlists/add_song_to_playlists_cubit.dart';
 import 'features/Playlists/presentation/cubits/create_playlists/create_playlists_cubit.dart';
 import 'features/Playlists/presentation/cubits/my_playlists/my_playlists_cubit.dart';
@@ -65,57 +63,12 @@ class AlaMoodyApp extends StatefulWidget {
 class _AlaMoodyAppState extends State<AlaMoodyApp> {
   @override
   void initState() {
-    // FlutterNativeSplash.remove();
-
-    NotificationService.initialize(context);
-    //  for background and terminated
-
-    // _firebaseMessaging.configure(
-    //   onMessage: (message) async {
-    //     setState(() {
-    //       messageTitle = message["notification"]["title"];
-    //       notificationAlert = "New Notification Alert";
-    //     });
-    //   },
-    //   onResume: (message) async {
-    //     setState(() {
-    //       messageTitle = message["data"]["title"];
-    //       notificationAlert = "Application opened from Notification";
-    //     });
-    //   },
-    // );
-
-    setState(() {
-      FirebaseMessaging.instance.getInitialMessage().then((message) {
-        if (message != null) {
-          final routeFromNotification = message.data['type'];
-          Navigator.of(context).pushNamed(routeFromNotification);
-        }
-      });
-    });
-
-    setState(() {
-      // it's working forgrounde
-      FirebaseMessaging.onMessage.listen((message) {
-        if (message.notification != null) {}
-        NotificationService.display(message);
-      });
-    });
-
-    setState(() {
-      // it's working when app is background but opened and user taps
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        final routeFromNotifiction = message.data["type"];
-        // print(routeFromNotification);
-        Navigator.of(context).pushNamed(routeFromNotifiction);
-      });
-    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<MainController>(
       create: (context) {
         return MainController();
       },
@@ -247,7 +200,7 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
             create: (context) => di.sl<CouponCubit>(),
           ),
           BlocProvider(
-            create: (context) =>    SearchSongCubit(),
+            create: (context) => SearchSongCubit(),
           ),
           BlocProvider(
             create: (context) => di.sl<CreateUserIsLiveCubit>()
@@ -257,10 +210,7 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                 isLive: '0',
               ),
           ),
-          BlocProvider(
-            create: (context) => TabCubit()
-         
-          ),
+          BlocProvider(create: (context) => TabCubit()),
         ],
         child: BlocBuilder<MainCubit, MainState>(
           builder: (context, state) {
@@ -269,8 +219,7 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                   previousState != currentState,
               builder: (_, localeState) {
                 return MaterialApp(
-                  useInheritedMediaQuery:true,
-                  
+
                   title: 'Ala Moody',
                   debugShowCheckedModeBanner: false,
                   supportedLocales: AppLocalizationsSetup.supportedLocales,
@@ -310,9 +259,9 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                   //         ? ImagesPath.darkBG
                   //         : ImagesPath.lightBG,
                   //   ),
-                
+
                   //   // navigator:  LiveTest(),
-                
+
                   //   //PlayerScreen(),
                   //   //Test() //PlayerScreen(), //WelcomeScreen(),//FavoritesScreen//DownloadsScreen
                   // ),
@@ -327,7 +276,6 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
 }
 
 class NoGlowBehavior extends ScrollBehavior {
-  @override
   Widget buildViewportChrome(
     BuildContext context,
     Widget child,

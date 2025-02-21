@@ -39,7 +39,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.alamoody.app"
+        applicationId "com.Ala_Moody.app"
         minSdkVersion 23
         targetSdkVersion 34
         versionCode flutterVersionCode

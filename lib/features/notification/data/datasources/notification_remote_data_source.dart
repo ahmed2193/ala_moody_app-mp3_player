@@ -1,4 +1,5 @@
 import 'package:alamoody/core/api/status_code.dart';
+import 'package:alamoody/core/helper/print.dart';
 import 'package:alamoody/features/notification/domain/usecases/change_notification_status_usecase.dart';
 
 import '../../../../core/api/api_consumer.dart';
@@ -39,6 +40,9 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);
     final responseJson = Constants.decodeJson(response);
+    // printColored(responseJson[AppStrings.data], colorCode:35 );
+    // printColored(responseJson[AppStrings.data][AppStrings.data]);
+
     final Iterable iterable = responseJson[AppStrings.data][AppStrings.data];
     baseResponse.data =
         iterable.map((model) => NotificationModel.fromJson(model)).toList();

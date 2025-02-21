@@ -11,7 +11,6 @@ import 'package:share_plus/share_plus.dart';
 import '../../config/locale/app_localizations.dart';
 import '../../features/auth/presentation/widgets/gradient_auth_button.dart';
 import '../../features/main_layout/cubit/tab_cubit.dart';
-import '../../features/main_layout/presentation/pages/main_layout_screen.dart';
 import '../../features/profile/presentation/cubits/profile/profile_cubit.dart';
 import '../components/reused_background.dart';
 import '../helper/font_style.dart';

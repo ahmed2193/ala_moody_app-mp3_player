@@ -192,7 +192,12 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                                       ),
                                       child: Row(
                                         children: [
-                                          ClipRRect(
+                                           BlocProvider.of<
+                                                      GetNotificationCubit>(
+                                                context,
+                                              )
+                                                  .notification[index]
+                                                  .details==null? SizedBox()  :  ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             child: CachedNetworkImage(

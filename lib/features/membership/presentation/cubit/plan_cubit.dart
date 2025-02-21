@@ -18,7 +18,9 @@ class PlanCubit extends Cubit<PlanState> {
     required this.getPlanUseCase,
     required this.subscribeToPlanUseCase,
     required this.directsubscribeToPlanUseCase,
-  }) : super(PlanInitial(),);
+  }) : super(
+          PlanInitial(),
+        );
   final GetPlanUseCase getPlanUseCase;
   final SubscribeToPlanUseCase subscribeToPlanUseCase;
   final DirectSubscribeToPlanUseCase directsubscribeToPlanUseCase;
@@ -48,7 +50,7 @@ class PlanCubit extends Cubit<PlanState> {
   Future<void> subscribeToPlans({
     required String accessToken,
     required String planId,
-     String? couponCode,
+    String? couponCode,
   }) async {
     final Either<Failure, BaseResponse> response = await subscribeToPlanUseCase(
       SubscribeToPlanParams(
@@ -85,6 +87,8 @@ class PlanCubit extends Cubit<PlanState> {
         (failure) =>
             PlanDataError(message: Constants().mapFailureToMsg(failure)),
         (data) {
+          getPlans(accessToken: accessToken);
+
           return const SubPlanSelected(message: 'Subscribed Success To Plan');
         },
       ),

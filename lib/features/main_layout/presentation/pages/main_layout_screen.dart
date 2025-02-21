@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:alamoody/core/helper/print.dart';
 import 'package:alamoody/core/models/artists_model.dart';
+import 'package:alamoody/notification_service.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/artist_details.dart';
+import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/ad_helper.dart';
 import '../../../../core/helper/images.dart';
 import '../../../../core/models/song_share_model.dart';
@@ -55,6 +57,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   late bool isSub;
 
   MainController? con;
+  late final NotificationService _notificationService;
+
   Future<void> initDynamicLinks() async {
     // log('initDynamicLinks');
 
@@ -94,7 +98,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             songs!.add(songsShareData);
             // log('start playing' * 1000);
             con!.playSong(
-              con!.convertShareDataToAudio(songs!),
+              con!.convertToAudio(songs!),
               0,
             );
           }
@@ -108,10 +112,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
     final PendingDynamicLinkData? data = await dynamicLinks.getInitialLink();
     deepLink = data?.link;
-final String? screenName = 
-    (deepLink != null && deepLink!.pathSegments.isNotEmpty) 
-        ? deepLink!.pathSegments[0] 
-        : null;
+    final String? screenName =
+        (deepLink != null && deepLink!.pathSegments.isNotEmpty)
+            ? deepLink!.pathSegments[0]
+            : null;
 
     // printColored(screenName! * 1000);
     if (deepLink != null) {
@@ -144,7 +148,7 @@ final String? screenName =
             songs!.add(songsShareData);
             // log('start playing' * 1000);
             con!.playSong(
-              con!.convertShareDataToAudio(songs!),
+              con!.convertToAudio(songs!),
               0,
             );
           }
@@ -166,7 +170,14 @@ final String? screenName =
   void initState() {
     con = Provider.of<MainController>(context, listen: false);
     initDynamicLinks();
-    context.read<TabCubit>().controller.index == 4 ? isSub = true : isSub = false;
+    _notificationService = NotificationService();
+    _notificationService.initializeLocalNotifications(context);
+    // _notificationService.handleIncomingMessages(
+    //   context,
+    // );
+    context.read<TabCubit>().controller.index == 4
+        ? isSub = true
+        : isSub = false;
     _getDownloadsData();
     context.read<ProfileCubit>().userProfileData != null &&
             context
@@ -239,17 +250,17 @@ final String? screenName =
     if (_interstitialAd != null) {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (InterstitialAd ad) {
-          controller.player!.play();
+          controller.player.play();
           ad.dispose();
           _createInterstitialAd();
         },
         onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-          controller.player!.play();
+          controller.player.play();
           ad.dispose();
           _createInterstitialAd();
         },
       );
-      controller.player!.pause();
+      controller.player.pause();
       _interstitialAd!.show();
     }
   }
@@ -460,112 +471,104 @@ final String? screenName =
 
   @override
   Widget build(BuildContext context) {
-    return
+    return Scaffold(
+      body: Stack(
+        children: [
+          /// Background image without SafeArea so it covers the whole screen
+          const ReusedBackground(
+            lightBG: ImagesPath.homeBGLightBG,
+          ),
 
-        // ChangeNotifierProvider(
-        //   create: (context) {
-        //     if (widget.index == 0) {
-        //       if (deepLink != null) {
-        //         return MainController()
-        //           ..playSong(
-        //             MainController().convertShareDataToAudio(songs!),
-        //             0,
-        //           );
-        //       }
-        //       return MainController()..init();
-        //     } else {
-        //       return MainController();
-        //     }
-        //   },
-        //   child:
+          SafeArea(
+            child: PersistentTabView(
+              context,
+              controller: context.read<TabCubit>().controller,
+              onItemSelected: (value) {
+                context.read<TabCubit>().changeTab(value);
+                log(value.toString());
+                if (value == 3) {
+                  BlocProvider.of<LiveUsersCubit>(context).getLiveUsers(
+                    context: context,
+                    accessToken: context
+                        .read<LoginCubit>()
+                        .authenticatedUser!
+                        .accessToken!,
+                  );
+                }
+                setState(() {
+                  if (value != 4) {
+                    isSub = false;
+                  } else {
+                    isSub = true;
+                  }
+                });
+              },
+              playWidget: isSub
+                  ? const SizedBox()
+                  : Material(
+                      child: con!.player == null
+                          ? const SizedBox()
+                          : StreamBuilder<SequenceState?>(
+                              stream: con!.player.sequenceStateStream,
+                              builder: (context, snapshot) {
+                                final state = snapshot.data;
+                                if (state?.sequence.isEmpty ?? true) {
+                                  return const SizedBox();
+                                }
 
-        Scaffold(
-      body: SafeArea(
-          child:
-           PersistentTabView(
-        context,
-        controller: context.read<TabCubit>().controller,
-        
-        onItemSelected: (value) {
-          context.read<TabCubit>().changeTab(value);
-          log(value.toString());
-          if (value == 3) {
-            BlocProvider.of<LiveUsersCubit>(context).getLiveUsers(
-              context: context,
-              accessToken:
-                  context.read<LoginCubit>().authenticatedUser!.accessToken!,
-            );
-          }
-          setState(() {
-            if (value != 4) {
-              isSub = false;
-            } else {
-              isSub = true;
-            }
-          });
-        },
-        playWidget: isSub
-            ? const SizedBox()
-            : Material(
-                child: con!.player == null
-                    ? const SizedBox()
-                    : StreamBuilder<SequenceState?>(
-                        stream: con!.player!.sequenceStateStream,
-                        builder: (context, snapshot) {
-                          final state = snapshot.data;
-                          if (state?.sequence.isEmpty ?? true) {
-                            return const SizedBox();
-                          }
+                                final currentSource = state!.currentSource;
 
-                          final currentSource = state!.currentSource;
-
-                          final isRadioStream = currentSource
-                                  is UriAudioSource &&
-                              currentSource.uri.toString().contains('stream');
-                          return PlayWidget(
-                            con: con!,
-                            onTap: () {
-                              isRadioStream
-                                  ? null
-                                  : {
-                                      if (context
-                                              .read<ProfileCubit>()
-                                              .userProfileData!
-                                              .user!
-                                              .subscription!
-                                              .serviceId ==
-                                          '1')
-                                        _showInterstitialAd(con!)
-                                      else
-                                        null,
-                                      Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) => Material(
-                                            child: PlayerScreen(
-                                              con: con!,
+                                final isRadioStream =
+                                    currentSource is UriAudioSource &&
+                                        currentSource.uri
+                                            .toString()
+                                            .contains('stream');
+                                return PlayWidget(
+                                  con: con!,
+                                  onTap: () {
+                                    isRadioStream
+                                        ? null
+                                        : {
+                                            if (context
+                                                    .read<ProfileCubit>()
+                                                    .userProfileData!
+                                                    .user!
+                                                    .subscription!
+                                                    .serviceId ==
+                                                '1')
+                                              _showInterstitialAd(con!)
+                                            else
+                                              null,
+                                            Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                builder: (context) => Material(
+                                                  child: PlayerScreen(
+                                                    con: con!,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    };
-                            },
-                          );
-                        },
-                      ),
-              ),
-        screens: _buildScreens(con),
-        items: _navBarsItems(),
-        backgroundColor: HexColor('#1B0E3E'),
-        hideNavigationBarWhenKeyboardShows: false,
-        navBarHeight: 200,
-        bottomScreenMargin: 8.0,
-        padding: const NavBarPadding.all(20),
-        confineInSafeArea: false,
-        stateManagement: false,
-      ),),
-     
-     
+                                          };
+                                  },
+                                );
+                              },
+                            ),
+                    ),
+              screens: _buildScreens(con),
+              items: _navBarsItems(),
+              backgroundColor: HexColor('#1B0E3E'),
+              hideNavigationBarWhenKeyboardShows: false,
+              navBarHeight: 200,
+              bottomScreenMargin: 8.0,
+              padding: const NavBarPadding.all(20),
+              confineInSafeArea: false,
+              stateManagement: false,
+            ),
+          ),
+        ],
+      ),
+
       // ),
     );
   }

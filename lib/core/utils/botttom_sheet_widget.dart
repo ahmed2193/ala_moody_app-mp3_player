@@ -20,7 +20,6 @@ import '../../config/locale/app_localizations.dart';
 import '../../features/Playlists/presentation/screen/add_to_playlist.dart';
 import '../../features/audio_playlists/presentation/screen/loading.dart';
 import '../../features/main_layout/cubit/tab_cubit.dart';
-import '../../features/main_layout/presentation/pages/main_layout_screen.dart';
 import '../../features/profile/presentation/cubits/profile/profile_cubit.dart';
 import '../components/reused_background.dart';
 import '../entities/songs.dart';
@@ -270,7 +269,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                     String ensureHttps(String url) {
                                       if (url.startsWith('http://')) {
                                         return url.replaceFirst(
-                                            'http://', 'https://');
+                                            'http://', 'https://',);
                                       }
                                       return url; // Return the original URL if it's already HTTPS or doesn't contain HTTP
                                     }
@@ -288,7 +287,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                               name: widget.song.artists!.isEmpty
                                                   ? 'unkown'
                                                   : widget
-                                                      .song.artists![0].name),
+                                                      .song.artists![0].name,),
                                         ],
                                         artworkUrl: ensureHttps(
                                           widget.song.artworkUrl.toString(),
@@ -305,8 +304,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           builder: (context, state) {
                             if (state is Downloading ||
                                 state is DownloadingProgress) {
-                              double progress = state is DownloadingProgress
-                                  ? (state as DownloadingProgress).progress
+                              final double progress = state is DownloadingProgress
+                                  ? state.progress
                                   : 0.0;
 
                               return DownloadProgressWidget(

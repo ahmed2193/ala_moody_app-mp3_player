@@ -154,7 +154,7 @@ class AudioWave extends StatelessWidget {
 
     // Using StreamBuilder to listen to the current audio playing stream
     return StreamBuilder<SequenceState?>(
-      stream: controller.player!.sequenceStateStream,
+      stream: controller.player.sequenceStateStream,
       builder: (context, snapshot) {
         final state = snapshot.data;
         if (state?.sequence.isEmpty ?? true) {
@@ -165,8 +165,8 @@ class AudioWave extends StatelessWidget {
 
         final isRadioStream = currentSource is UriAudioSource &&
             currentSource.uri.toString().contains('stream');
-        return isRadioStream?SizedBox.shrink():  StreamBuilder<PlayerState>(
-          stream: controller.player!.playerStateStream,
+        return isRadioStream?const SizedBox.shrink():  StreamBuilder<PlayerState>(
+          stream: controller.player.playerStateStream,
           builder: (context, snapshot) {
             final playerState = snapshot.data;
             final isPlaying = playerState?.playing ?? false;

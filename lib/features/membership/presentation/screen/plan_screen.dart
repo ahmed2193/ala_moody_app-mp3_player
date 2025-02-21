@@ -21,7 +21,6 @@ import '../../../../core/utils/hex_color.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../../../auth/presentation/widgets/gradient_auth_button.dart';
 import '../../../main_layout/cubit/tab_cubit.dart';
-import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../profile/presentation/cubits/profile/profile_cubit.dart';
 import '../cubit/coupon_cubit/coupon_cubit.dart';
 import '../widget/tab_member_view.dart';

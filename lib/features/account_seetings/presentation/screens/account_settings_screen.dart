@@ -381,10 +381,10 @@ class TermAndcondition extends StatelessWidget {
         centerTitle: true,
         leading: const BackArrow(),
       ),
-      body: SafeArea(
+      body: const SafeArea(
           child: CustomWebView(
         url: 'https://alamoody.webtekdemo.com/page/term-and-condition',
-      )),
+      ),),
     );
   }
 }
@@ -400,10 +400,10 @@ class ParivacyPolicy extends StatelessWidget {
         centerTitle: true,
         leading: const BackArrow(),
       ),
-      body: SafeArea(
+      body: const SafeArea(
           child: CustomWebView(
         url: 'https://alamoody.webtekdemo.com/page/privacy-policy',
-      )),
+      ),),
     );
   }
 }

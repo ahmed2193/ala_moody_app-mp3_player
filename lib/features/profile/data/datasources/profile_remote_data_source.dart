@@ -51,7 +51,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       baseResponse.message =  'error';
     }
     return baseResponse; 
-;
   }
 
   @override

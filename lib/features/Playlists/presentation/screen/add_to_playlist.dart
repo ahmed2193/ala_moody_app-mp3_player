@@ -350,9 +350,9 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
                             },
                           ),
                         )
-                      : Padding(
-                        padding: const EdgeInsets.only(top: 139),
-                        child: const Center(
+                      : const Padding(
+                        padding: EdgeInsets.only(top: 139),
+                        child: Center(
                             child: NoData(),
                           ),
                       );

@@ -149,7 +149,7 @@
 //       link: Uri.parse(DynamicLink)
 //           .replace(queryParameters: {'parameters': SongsShareDataEncoded}),
 //       androidParameters: const AndroidParameters(
-//         packageName: 'com.alamoody.app',
+//         packageName: 'com.Ala_Moody.app',
 //         minimumVersion: 0,
 //       ),
 //     );
@@ -368,11 +368,11 @@
 // //       uriPrefix: 'https://alamoody.page.link',
 // //       link: dynamicLinkUri,
 // //       androidParameters: const AndroidParameters(
-// //         packageName: 'com.alamoody.app',
+// //         packageName: 'com.Ala_Moody.app',
 // //         minimumVersion: 0,
 // //       ),
 // //       iosParameters: const IOSParameters(
-// //         bundleId: 'com.alamoody.app',
+// //         bundleId: 'com.Ala_Moody.app',
 // //         minimumVersion: '0',
 // //       ),
 // //     );
@@ -497,4 +497,3 @@
 // //     );
 // //   }
 // // }
-

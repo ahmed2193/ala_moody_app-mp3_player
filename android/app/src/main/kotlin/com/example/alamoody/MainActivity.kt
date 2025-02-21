@@ -1,4 +1,4 @@
-package com.alamoody.app
+package com.Ala_Moody.app
 
 
 import android.os.Bundle

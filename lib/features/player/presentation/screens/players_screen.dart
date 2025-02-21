@@ -20,7 +20,6 @@ import '../../../../core/utils/play_list.dart';
 import '../../../auth/presentation/widgets/gradient_auth_button.dart';
 import '../../../drawer/presentation/screens/drawer_screen.dart';
 import '../../../main_layout/cubit/tab_cubit.dart';
-import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../profile/presentation/cubits/profile/profile_cubit.dart';
 import 'items/control_player_section.dart';
 import 'items/favourite_in_player_section.dart';
@@ -61,7 +60,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     return Container(
       child: StreamBuilder<SequenceState?>(
-        stream: widget.con.player!.sequenceStateStream,
+        stream: widget.con.player.sequenceStateStream,
         builder: (context, snapshot) {
           final state = snapshot.data;
           if (state?.sequence.isEmpty ?? true) {
@@ -103,7 +102,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
           String getCurrentStreamUrl() {
             // Check if the current audio source is available
-            if (widget.con.player!.audioSource != null) {
+            if (widget.con.player.audioSource != null) {
               // Get the current source
 
               if (currentSource is UriAudioSource) {
@@ -290,19 +289,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 padding:
                                     EdgeInsets.only(top: context.height * 0.03),
                                 child: StreamBuilder<Duration?>(
-                                  stream: widget.con.player!.positionStream,
+                                  stream: widget.con.player.positionStream,
                                   builder: (context, snapshot) {
                                     final currentPosition =
                                         snapshot.data ?? Duration.zero;
                                     final duration =
-                                        widget.con.player!.duration ??
+                                        widget.con.player.duration ??
                                             Duration.zero;
 
                                     return SliderPlayerReuse(
                                       currentPosition: currentPosition,
                                       duration: duration,
                                       seekTo: (to) {
-                                        widget.con.player!.seek(to);
+                                        widget.con.player.seek(to);
                                       },
                                     );
                                   },
@@ -312,10 +311,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 padding:
                                     EdgeInsets.only(top: context.height * 0.21),
                                 child: StreamBuilder<LoopMode>(
-                                  stream: widget.con.player!.loopModeStream,
+                                  stream: widget.con.player.loopModeStream,
                                   builder: (context, loopModeSnapshot) {
                                     return StreamBuilder<bool>(
-                                      stream: widget.con.player!.playingStream,
+                                      stream: widget.con.player.playingStream,
                                       builder: (context, playingSnapshot) {
                                         final isPlaying =
                                             playingSnapshot.data ?? false;
@@ -345,7 +344,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                           //             .seekToPrevious();
                                           //       }
                                           //     : null,
-                                          audioPlayer: widget.con.player!,
+                                          audioPlayer: widget.con.player,
                                           // Disable previous if loading
                                         );
                                       },

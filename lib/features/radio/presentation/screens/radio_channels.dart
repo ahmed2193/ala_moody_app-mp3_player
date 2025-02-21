@@ -1,13 +1,11 @@
 import 'dart:developer';
 
-import 'package:alamoody/core/entities/songs.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:alamoody/core/utils/loading_indicator.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/core/utils/no_data.dart';
-import 'package:alamoody/core/utils/song_item.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +132,7 @@ class _RadioChannelBodyState extends State<RadioChannelBody> {
                     return GestureDetector(
                       onTap: () {
                         controller.playRadio(
-                          controller.convertToAudioForRadio(radioCategory),
+                          controller.convertToAudio(radioCategory),
                           radioCategory.indexOf(radioCategory[index]),
                         );
                       },
@@ -204,7 +202,7 @@ class RadioWave extends StatelessWidget {
 
     // Using StreamBuilder to listen to the current audio playing stream
     return StreamBuilder<PlayerState>(
-      stream: controller.player!.playerStateStream,
+      stream: controller.player.playerStateStream,
       builder: (context, snapshot) {
         final playerState = snapshot.data;
         final isPlaying = playerState?.playing ?? false;

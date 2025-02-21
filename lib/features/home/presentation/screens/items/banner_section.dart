@@ -8,7 +8,6 @@ import '../../../../../config/themes/colors.dart';
 import '../../../../../core/helper/app_size.dart';
 import '../../../../../core/helper/font_style.dart';
 import '../../../../../core/helper/images.dart';
-import '../../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../../profile/presentation/cubits/profile/profile_cubit.dart';
 import '../../widgets/banner_button.dart';
 

@@ -7,7 +7,6 @@ import '../../../../../../core/helper/app_size.dart';
 import '../../../../../../core/helper/font_style.dart';
 import '../../../../../../core/helper/images.dart';
 import '../../../../../home/presentation/widgets/rounded_container_recently_section.dart';
-import '../../../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../../../profile/presentation/cubits/profile/profile_cubit.dart';
 
 class SearchSectionOfLibrary extends StatelessWidget {
@@ -64,14 +63,14 @@ class SearchSectionOfLibrary extends StatelessWidget {
           // library text and user image and search icon
           Row(
             children: [
-            context.read<ProfileCubit>().userProfileData != null &&
+            if (context.read<ProfileCubit>().userProfileData != null &&
             context
                     .read<ProfileCubit>()
                     .userProfileData!
                     .user!
                     .subscription!
                     .serviceId ==
-                '1'?    CircleContainerWithGradientBorder(
+                '1') CircleContainerWithGradientBorder(
                 isMusic: false,
                 width: 50,
                 image: context
@@ -79,7 +78,7 @@ class SearchSectionOfLibrary extends StatelessWidget {
                     .userProfileData!
                     .user!
                     .artworkUrl,
-              ):SizedBox(),
+              ) else const SizedBox(),
               const SizedBox(
                 width: AppPadding.p10,
               ),

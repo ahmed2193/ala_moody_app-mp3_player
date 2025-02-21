@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/usecases/usecase.dart';
-import '../../data/model/user_profile.dart';
 import '../../data/repositories/profile_repository.dart';
 
 class GetUserProfile implements UseCase<BaseResponse, GetUserProfileParams> {

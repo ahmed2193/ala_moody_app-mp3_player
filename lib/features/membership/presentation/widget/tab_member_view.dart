@@ -32,7 +32,7 @@ class _TabBarMembershipReuseState extends State<TabBarMembershipReuse> {
         ),
 
       colorScheme: theme.colorScheme.copyWith(
-          surfaceVariant: Colors.transparent,
+          surfaceContainerHighest: Colors.transparent,
         ),
       ),
       child: ContainedTabBarView(

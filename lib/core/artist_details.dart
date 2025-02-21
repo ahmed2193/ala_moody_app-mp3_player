@@ -314,7 +314,7 @@ class FollowButton extends StatelessWidget {
   final Artists artist;
   @override
   Widget build(BuildContext context) {
-    printColored("${artist.favorite.toString()*100}");
+    printColored(artist.favorite.toString()*100);
     bool isfollow = artist.favorite ?? false;
     log(artist.favorite.toString());
     return StatefulBuilder(

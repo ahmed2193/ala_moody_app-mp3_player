@@ -41,7 +41,7 @@ class _ReusedCarouselWithIndicatorState
               enlargeCenterPage: true,
               autoPlay: true,
               viewportFraction: 1,
-              aspectRatio: 2.5,
+              aspectRatio:16/6,
               onPageChanged: (index, reason) {
                 this.index = index;
                 setState(() {});

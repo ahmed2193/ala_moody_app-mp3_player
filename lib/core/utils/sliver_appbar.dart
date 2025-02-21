@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:alamoody/core/helper/font_style.dart';
-import 'package:alamoody/core/helper/print.dart';
 import 'package:alamoody/core/models/artists_model.dart';
 import 'package:alamoody/core/utils/artist_botttom_sheet_widget.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
@@ -192,25 +191,24 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
                             ),
                             IconButton(
                               onPressed: () {
-                              showModalBottomSheet(
-  useSafeArea: true,
-  useRootNavigator: true,
-  // isScrollControlled: true, // Allow the sheet to adjust height based on content
-  elevation: 3,
-  backgroundColor: Colors.black,
-  context: context,
-  builder: (context) {
-    return SingleChildScrollView(
-      child: FractionallySizedBox(
-        alignment: Alignment.topCenter,
-        child: ArtistBottomSheetWidget(
-          artist: user,
-          songs: songs,
-        ),
-      ),
-    );
-  },
-
+                                showModalBottomSheet(
+                                  useSafeArea: true,
+                                  useRootNavigator: true,
+                                  // isScrollControlled: true, // Allow the sheet to adjust height based on content
+                                  elevation: 3,
+                                  backgroundColor: Colors.black,
+                                  context: context,
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: FractionallySizedBox(
+                                        alignment: Alignment.topCenter,
+                                        child: ArtistBottomSheetWidget(
+                                          artist: user,
+                                          songs: songs,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                               icon: const Icon(
@@ -395,7 +393,7 @@ class _ShareSongWidgetState extends State<ShareSongWidget> {
           queryParameters: {'parameters': songsShareDataEncoded},
         ),
         androidParameters: const AndroidParameters(
-          packageName: 'com.alamoody.app',
+          packageName: 'com.Ala_Moody.app',
           minimumVersion: 0,
         ),
       );

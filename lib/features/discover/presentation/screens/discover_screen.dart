@@ -70,170 +70,130 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Widget _buildBodyContent() {
-    return SafeArea(
-      child: Scaffold(
-        body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: context.height * 0.017,
-              ),
-              Row(
-                children: [
-                  const BackArrow(),
-                  SizedBox(
-                    width: context.height * 0.017,
+    return Scaffold(
+      
+      body: ReusedBackground(
+        lightBG: ImagesPath.homeBGLightBG,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: context.height * 0.017,
+            ),
+            Row(
+              children: [
+                const BackArrow(),
+                SizedBox(
+                  width: context.height * 0.017,
+                ),
+                Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.translate('discover')!,
+                    style:
+                        styleW600(context)!.copyWith(fontSize: FontSize.f18),
                   ),
-                  Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.translate('discover')!,
-                      style:
-                          styleW600(context)!.copyWith(fontSize: FontSize.f18),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: BlocBuilder<DiscoverCubit, DiscoverState>(
-                  builder: (context, state) {
-                    if (state is DiscoverIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
-                    }
-                    if (state is DiscoverIsLoading) {
-                      BlocProvider.of<DiscoverCubit>(context).loadMore = true;
-                    } else if (state is DiscoverError) {
-                      return error_widget.ErrorWidget(
-                        onRetryPressed: () => getGetDiscover(),
-                        msg: state.message!,
-                      );
-                    }
-
-                    return BlocProvider.of<DiscoverCubit>(context)
-                            .discoverData
-                            .isNotEmpty
-                        ? ListView.separated(
-                            controller: scrollController,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                              width: AppPadding.p20,
-                            ),
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 110),
-                            itemCount: BlocProvider.of<DiscoverCubit>(context)
+                ),
+              ],
+            ),
+            Expanded(
+              child: BlocBuilder<DiscoverCubit, DiscoverState>(
+                builder: (context, state) {
+                  if (state is DiscoverIsLoading && state.isFirstFetch) {
+                    return const Expanded(child: LoadingScreen());
+                  }
+                  if (state is DiscoverIsLoading) {
+                    BlocProvider.of<DiscoverCubit>(context).loadMore = true;
+                  } else if (state is DiscoverError) {
+                    return error_widget.ErrorWidget(
+                      onRetryPressed: () => getGetDiscover(),
+                      msg: state.message!,
+                    );
+                  }
+    
+                  return BlocProvider.of<DiscoverCubit>(context)
+                          .discoverData
+                          .isNotEmpty
+                      ? ListView.separated(
+                          controller: scrollController,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(
+                            width: AppPadding.p20,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 110),
+                          itemCount: BlocProvider.of<DiscoverCubit>(context)
+                                  .discoverData
+                                  .length +
+                              (BlocProvider.of<DiscoverCubit>(context)
+                                      .loadMore
+                                  ? 1
+                                  : 0),
+                          itemBuilder: (context, index) {
+                            if (index <
+                                BlocProvider.of<DiscoverCubit>(context)
                                     .discoverData
-                                    .length +
-                                (BlocProvider.of<DiscoverCubit>(context)
-                                        .loadMore
-                                    ? 1
-                                    : 0),
-                            itemBuilder: (context, index) {
-                              if (index <
-                                  BlocProvider.of<DiscoverCubit>(context)
-                                      .discoverData
-                                      .length) {
-                                return
-                                    //  FeaturedListSlider(
-                                    //   con: con,
-                                    //   index: index,
-                                    //   Discover:
-                                    //       BlocProvider.of<DiscoverCubit>(context)
-                                    //           .Discover[index],
-                                    // );
-                                    Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
-                                      con.playSong(
-                                        con.convertToAudio(
-                                            BlocProvider.of<DiscoverCubit>(
-                                          context,
-                                        ).discoverData,),
-                                        BlocProvider.of<DiscoverCubit>(
-                                          context,
-                                        ).discoverData.indexOf(
-                                                BlocProvider.of<DiscoverCubit>(
-                                              context,
-                                            ).discoverData[index],),
-                                      );
-
-                                      // BlocProvider.of<
-                                      //             SaveSongOnTrackPlayCubit>(
-                                      //         context,)
-                                      //     .saveSongOnTrackPlay(
-                                      //   id: BlocProvider.of<
-                                      //           DiscoverCubit>(context)
-                                      //       .Discover[index]
-                                      //       .id
-                                      //       .toString(),
-                                      //   type: AppStrings.song,
-                                      //   accessToken: context
-                                      //       .read<LoginCubit>()
-                                      //       .authenticatedUser!
-                                      //       .accessToken!,
-                                      // );
-                                    },
-                                    child: SongItem(
-                                      menuItem: MenuItemButtonWidget(
-                                        song: BlocProvider.of<DiscoverCubit>(
-                                          context,
-                                        ).discoverData[index],
-                                      ),
-                                      songs: BlocProvider.of<DiscoverCubit>(
+                                    .length) {
+                              return
+                            
+                                  Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    final con = Provider.of<MainController>(
+                                        context,
+                                        listen: false,);
+                                    con.playSong(
+                                      con.convertToAudio(
+                                          BlocProvider.of<DiscoverCubit>(
+                                        context,
+                                      ).discoverData,),
+                                      BlocProvider.of<DiscoverCubit>(
+                                        context,
+                                      ).discoverData.indexOf(
+                                              BlocProvider.of<DiscoverCubit>(
+                                            context,
+                                          ).discoverData[index],),
+                                    );
+    
+                                  },
+                                  child: SongItem(
+                                    menuItem: MenuItemButtonWidget(
+                                      song: BlocProvider.of<DiscoverCubit>(
                                         context,
                                       ).discoverData[index],
                                     ),
+                                    songs: BlocProvider.of<DiscoverCubit>(
+                                      context,
+                                    ).discoverData[index],
                                   ),
+                                ),
+                              );
+                            } else if (BlocProvider.of<DiscoverCubit>(
+                                  context,
+                                ).pageNo <=
+                                BlocProvider.of<DiscoverCubit>(context)
+                                    .totalPages) {
+                              Timer(const Duration(milliseconds: 30), () {
+                                scrollController.jumpTo(
+                                  scrollController.position.maxScrollExtent,
                                 );
-                              } else if (BlocProvider.of<DiscoverCubit>(
-                                    context,
-                                  ).pageNo <=
-                                  BlocProvider.of<DiscoverCubit>(context)
-                                      .totalPages) {
-                                Timer(const Duration(milliseconds: 30), () {
-                                  scrollController.jumpTo(
-                                    scrollController.position.maxScrollExtent,
-                                  );
-                                });
-
-                                return const LoadingIndicator();
-                              }
-                              return const SizedBox();
-                            },
-                          )
-                        : const Center(
-                            child: NoData(),
-                          );
-                  },
-                ),
+                              });
+    
+                              return const LoadingIndicator();
+                            }
+                            return const SizedBox();
+                          },
+                        )
+                      : const Center(
+                          child: NoData(),
+                        );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-          // Expanded(
-          //         child: ListView.separated(
-          //           shrinkWrap: true,
-          //           padding: const EdgeInsetsDirectional.only(
-          //             top: AppPadding.p20,
-          //             bottom: AppPadding.p20 * 6,
-          //           ),
-          //           physics: const AlwaysScrollableScrollPhysics(),
-          //           controller: scrollController,
-          //           separatorBuilder: (context, index) => const SizedBox(
-          //             height: AppPadding.p20,
-          //           ),
-          //           itemCount: 10,
-          //           itemBuilder: (context, index) {
-          //             return
-          //           },
-          //         ),
-          //       ),
-           
+        

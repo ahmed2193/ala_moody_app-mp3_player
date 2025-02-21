@@ -7,11 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../config/locale/app_localizations.dart';
 import '../../../../../../core/helper/app_size.dart';
 import '../../../../../../core/helper/font_style.dart';
+import '../../../../../../core/utils/error_widget.dart' as error_widget;
 import '../../../../../../core/utils/loading_indicator.dart';
 import '../../../cubits/category/category_cubit.dart';
 import '../../../widgets/category_grid_item.dart';
-import '../../../widgets/gridview_list.dart';
-import '../../../../../../core/utils/error_widget.dart' as error_widget;
 
 class CategorySectionSearchScreen extends StatelessWidget {
    CategorySectionSearchScreen({
@@ -108,7 +107,7 @@ class CategorySectionSearchScreen extends StatelessWidget {
                 child: Text('no data'),
               );
       },
-         )
+         ),
  ),
       ],
     );

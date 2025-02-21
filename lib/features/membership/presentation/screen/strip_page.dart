@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:alamoody/features/membership/presentation/cubit/plan_cubit.dart';
@@ -48,7 +50,7 @@ class StripPage extends StatelessWidget {
           ),
         ),
         body: SafeArea(
-          child:CustomHtmlWebView(htmlContent: value!,)
+          child:CustomHtmlWebView(htmlContent: value!,),
           
           
      
@@ -76,6 +78,8 @@ class _CustomHtmlWebViewState extends State<CustomHtmlWebView> {
 
   @override
   void initState() {
+    log(widget.htmlContent);
+
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -91,6 +95,7 @@ class _CustomHtmlWebViewState extends State<CustomHtmlWebView> {
 
   @override
   Widget build(BuildContext context) {
+        log(widget.htmlContent);
     return WebViewWidget(controller: _controller);
     
   }

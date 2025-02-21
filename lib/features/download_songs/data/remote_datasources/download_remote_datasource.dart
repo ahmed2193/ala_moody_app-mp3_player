@@ -74,8 +74,8 @@ class DownloadDataSource extends BaseDownloadDataSource {
         onProgress: (received, total) {
           if (total != -1) {
             print(
-                "${(received / total * 100).toStringAsFixed(0)}% downloaded.");
-            double progress = (received / total) * 100;
+                "${(received / total * 100).toStringAsFixed(0)}% downloaded.",);
+            final double progress = (received / total) * 100;
             params.onProgress(progress);
           }
         },

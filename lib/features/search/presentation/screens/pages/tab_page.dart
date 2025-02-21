@@ -1,11 +1,9 @@
-import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/entities/songs.dart';
 import '../../../../../core/helper/font_style.dart';
 import '../../widgets/carousel_with_indicator.dart';
-import 'items/category_sections.dart';
 
 class TabPageOfCategory extends StatelessWidget {
   const TabPageOfCategory({

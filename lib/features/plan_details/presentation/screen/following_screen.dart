@@ -138,14 +138,13 @@ class _PlanDetailsScreenState extends State<PlanDetailsScreen> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         RichText(
                           text: TextSpan(
                             children: [
                               TextSpan(
                                 text: AppLocalizations.of(context)!
-                                    .translate('your_current_plan')!,
+                                    .translate('your_current_plan'),
                                 style: styleW600(context, fontSize: 18),
                               ),
                               TextSpan(
