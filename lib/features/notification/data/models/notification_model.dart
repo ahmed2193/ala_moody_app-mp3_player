@@ -29,8 +29,10 @@ class NotificationModel extends Notification {
         title: json['title'],
         updatedAt: json['updated_at'],
         read: json['read'],
-        details: json['details'] != null
-            ? NotificationDetailsModel.fromJson(json['details'])
-            : null,
+        details: 
+        
+        (json['details'] == null || (json['details'] is List && json['details'].isEmpty))?
+             null
+            : NotificationDetailsModel.fromJson(json['details']),
       );
 }

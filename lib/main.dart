@@ -59,7 +59,7 @@ Future<void> main() async {
   runApp(
     Phoenix(
       child: DevicePreview(
-          enabled: true, builder: (context) => const AlaMoodyApp()),
+          builder: (context) => const AlaMoodyApp(),),
     ),
   );
 }

@@ -33,7 +33,7 @@ class DownloadProgressWidget extends StatelessWidget {
             ),
             Positioned(
               child: Text(
-                '${(progress ).toStringAsFixed(0)}%',
+                '${progress .toStringAsFixed(0)}%',
                 style: const TextStyle(
                   fontSize: 8,
                   fontWeight: FontWeight.bold,
@@ -42,6 +42,6 @@ class DownloadProgressWidget extends StatelessWidget {
               ),
             ),
           ],
-        ));
+        ),);
   }
 }

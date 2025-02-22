@@ -20,7 +20,6 @@ import '../../../discover/presentation/screens/discover_screen.dart';
 import '../../../download_songs/presentation/pages/downloads_screen.dart';
 import '../../../favorites/presentation/screen/favorites_screen.dart';
 import '../../../main/presentation/cubit/main_cubit.dart';
-import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../widgets/reuse_listTile_of_drawer.dart';
 import 'items/user_section.dart';
 

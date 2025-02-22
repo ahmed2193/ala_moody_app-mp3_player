@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:alamoody/core/utils/media_query_values.dart';
+
 import '../../config/locale/app_localizations.dart';
 import '../../config/themes/colors.dart';
 import '../../features/auth/presentation/widgets/gradient_auth_button.dart';
@@ -17,13 +17,12 @@ class ErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double iconSize = constraints.maxWidth * 0.3; // Adaptive icon size
-        double textFontSize = constraints.maxWidth < 400 ? 16 : 18; // Adjust font size for smaller screens
+        final double iconSize = constraints.maxWidth * 0.3; // Adaptive icon size
+        final double textFontSize = constraints.maxWidth < 400 ? 16 : 18; // Adjust font size for smaller screens
 
         return SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Warning Icon
               Center(

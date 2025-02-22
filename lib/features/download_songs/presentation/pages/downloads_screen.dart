@@ -56,7 +56,6 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
               height: context.height * 0.017,
@@ -108,7 +107,6 @@ class DownloadsListWidget extends StatelessWidget {
                     .isNotEmpty
                 ? ListView.builder(
                   
-                  reverse: false,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 100),
@@ -140,7 +138,7 @@ class DownloadsListWidget extends StatelessWidget {
                           listen: false,
                         );
                         con.playSong(
-                          con.convertToAudioLocal(
+                          con.convertToAudio(
                             BlocProvider.of<DownloadCubit>(context)
                                 .downloadedMusicList,
                           ),

@@ -27,7 +27,7 @@ class AudioQueueWidget extends StatelessWidget {
         body: ReusedBackground(
           lightBG: ImagesPath.homeBGLightBG,
           body: StreamBuilder<PlayerState>(
-            stream: controller.player!.playerStateStream,
+            stream: controller.player.playerStateStream,
             builder: (context, snapshot) {
               final playerState = snapshot.data;
               final isPlaying = playerState?.playing ?? false;
@@ -96,9 +96,9 @@ class AudioQueueWidget extends StatelessWidget {
                         ),
                         onTap: () {
                           if (isPlaying) {
-                            controller.player!.pause();
+                            controller.player.pause();
                           } else {
-                            controller.player!.play();
+                            controller.player.play();
                           }
                         },
                       ),

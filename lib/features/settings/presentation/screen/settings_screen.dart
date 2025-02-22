@@ -14,7 +14,6 @@ import '../../../../core/utils/back_arrow.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../auth/presentation/widgets/gradient_auth_button.dart';
 import '../../../main_layout/cubit/tab_cubit.dart';
-import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../profile/presentation/cubits/profile/profile_cubit.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -65,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               TextSpan(
                                 text: AppLocalizations.of(context)!
-                                    .translate('your_current_plan')!,
+                                    .translate('your_current_plan'),
                                 style: styleW600(context, fontSize: 18),
                               ),
                               TextSpan(

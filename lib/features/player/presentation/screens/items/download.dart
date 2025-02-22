@@ -6,14 +6,12 @@ import 'package:alamoody/core/utils/custom_progrees_widget.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../../config/locale/app_localizations.dart';
 import '../../../../../core/models/song_model.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../download_songs/presentation/cubit/download_cubit.dart';
 import '../../../../main_layout/cubit/tab_cubit.dart';
-import '../../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../../profile/presentation/cubits/profile/profile_cubit.dart';
 
 class DownloadSection extends StatefulWidget {
@@ -124,7 +122,7 @@ class _DownloadSectionState extends State<DownloadSection> {
                                       title: widget.myAudio.title,
                                       artists: [
                                         ArtistsModel(
-                                            name: widget.myAudio.artist),
+                                            name: widget.myAudio.artist,),
                                       ],
                                       artworkUrl: ensureHttps(
                                         widget.myAudio.artUri.toString(),
@@ -146,8 +144,8 @@ class _DownloadSectionState extends State<DownloadSection> {
 
                           if (state is Downloading ||
                               state is DownloadingProgress ) {
-                            double progress = state is DownloadingProgress
-                                ? (state as DownloadingProgress).progress
+                            final double progress = state is DownloadingProgress
+                                ? state.progress
                                 : 0.0;
 
                             return DownloadProgressWidget(
@@ -161,7 +159,7 @@ class _DownloadSectionState extends State<DownloadSection> {
                             );
                           }
                         },
-                      )
+                      ),
                     );
       },
     );

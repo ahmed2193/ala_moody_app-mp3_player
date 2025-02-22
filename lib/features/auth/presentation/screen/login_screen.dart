@@ -1,14 +1,12 @@
 import 'dart:io' show Platform;
 
 import 'package:alamoody/core/helper/user_hive.dart';
-import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:alamoody/core/utils/navigator_reuse.dart';
 import 'package:alamoody/features/auth/presentation/screen/login_with_phone_number_scree.dart';
 import 'package:alamoody/features/main/presentation/screens/auth_screens/data/models/remember_me_model.dart';
 import 'package:alamoody/features/profile/presentation/cubits/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../core/helper/images.dart';
 import '../../../../config/locale/app_localizations.dart';
@@ -64,16 +62,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) async {
         if (state is Authenticated) {
-            Provider.of<MainController>(context, listen: false)
-                        .loginPlayer();
-          // Navigator.of(context).pushNamedAndRemoveUntil(
-          //     Routes.mainRoute, (Route<dynamic> route) => false);
-          // ChangeNotifierProvider.value(
-          //   value: MainController()..init(),
-          // );
-          // ChangeNotifierProvider(
-          //   create: (context) => MainController()..init(),
-          // );
+            // Provider.of<MainController>(context, listen: false)
+            //             .loginPlayer();
+   
           await BlocProvider.of<ProfileCubit>(context).getUserProfile(
             accessToken:
                 context.read<LoginCubit>().authenticatedUser!.accessToken!,

@@ -2,7 +2,6 @@ import 'package:alamoody/core/components/screen_state/loading_screen.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,11 +10,9 @@ import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/app_size.dart';
 import '../../../../core/helper/images.dart';
-import '../../../../core/utils/no_data.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../../../home/presentation/widgets/search_bar_text_form.dart';
 import '../../../main_layout/cubit/tab_cubit.dart';
-import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../profile/presentation/cubits/profile/profile_cubit.dart';
 import '../cubits/category/category_cubit.dart';
 import '../cubits/search/search_cubit.dart';
@@ -233,7 +230,7 @@ class _SearchScreenState extends State<SearchScreen>  with WidgetsBindingObserve
                         _getCategory();
                       },
                       scrollController: _scrollController,
-                    ))
+                    ),),
                   ],
                 );
                 // : const NoData();

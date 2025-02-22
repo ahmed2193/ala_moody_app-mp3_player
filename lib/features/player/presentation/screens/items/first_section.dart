@@ -15,7 +15,6 @@ import '../../../../../core/helper/images.dart';
 import '../../../../../core/models/song_share_model.dart';
 import '../../../../home/presentation/widgets/icon_button_reuse.dart';
 import '../../../../library/presentation/widgets/icon_button_of_play.dart';
-import '../../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../../profile/presentation/cubits/profile/profile_cubit.dart';
 
 class FirstSectionPlayerScreen extends StatefulWidget {
@@ -77,7 +76,7 @@ class _FirstSectionPlayerScreenState extends State<FirstSectionPlayerScreen> {
           queryParameters: {'parameters': songsShareDataEncoded},
         ),
         androidParameters: const AndroidParameters(
-          packageName: 'com.alamoody.app',
+          packageName: 'com.Ala_Moody.app',
           minimumVersion: 0,
         ),
       );
@@ -137,9 +136,7 @@ class _FirstSectionPlayerScreenState extends State<FirstSectionPlayerScreen> {
                         const SizedBox(),
                         GestureDetector(
                           onTap: () {
-                          context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                            context.read<TabCubit>().changeTab(4);
                           },
                           child: Image.asset(ImagesPath.premiumImage),
                         ),
@@ -185,7 +182,7 @@ Future<String> createDynamicLink(bool short, String path) async {
     uriPrefix: 'https://alamoody.page.link',
     link: Uri.parse('https://alamoody.page.link/$path'),
     androidParameters: const AndroidParameters(
-      packageName: 'com.alamoody.app',
+      packageName: 'com.Ala_Moody.app',
       minimumVersion: 0,
     ),
     // iosParameters: IosParameters(

@@ -254,7 +254,6 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       },
     );
     printColored(response.statusCode * 10);
-    ;
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);
     final responseJson = Constants.decodeJson(response);

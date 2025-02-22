@@ -17,7 +17,6 @@ import '../../../../../core/helper/images.dart';
 import '../../../../../core/utils/hex_color.dart';
 import '../../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../../../../favorites/presentation/cubits/add_and_remove_from_favorite/add_and_remove_from_favorite_cubit.dart';
-import '../../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../../../../profile/presentation/cubits/profile/profile_cubit.dart';
 
 class FavoriteInPlayerSection extends StatelessWidget {

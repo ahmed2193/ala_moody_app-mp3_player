@@ -28,7 +28,7 @@ class LivePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<MainController>(context, listen: false).player!.pause();
+    Provider.of<MainController>(context, listen: false).player.pause();
     final user = context.read<ProfileCubit>().userProfileData!.user;
     Future<void> createUserIsLive(isLive) {
       // log('message' + isLive * 100);
@@ -110,7 +110,7 @@ class LivePage extends StatelessWidget {
                   ..audioVideoViewConfig.showUserNameOnView = false
           
                 ),
-          )),
+          ),),
         );
       },
     );

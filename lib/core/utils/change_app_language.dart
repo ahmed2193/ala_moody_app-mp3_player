@@ -132,7 +132,7 @@ class _ChangeAppLanguageState extends State<ChangeAppLanguage> {
                   onTap: () {
                     Provider.of<MainController>(context, listen: false)
                         .player
-                        !.stop();
+                        .stop();
                     if (_radioSelected == 1 &&
                         AppLocalizations.of(context)!.isEnLocale) {
                       BlocProvider.of<LocaleCubit>(context).toArabic();

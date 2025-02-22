@@ -47,19 +47,19 @@ class _PlayWidgetState extends State<PlayWidget> {
   }
 
   void _onSwipeLeft() {
-    widget.con.player!.stop(); // Stop player on left swipe
+    widget.con.player.stop(); // Stop player on left swipe
     print("Swiped left, player stopped");
   }
 
   void _onSwipeRight() {
-    widget.con.player!.stop(); // Stop player on right swipe
+    widget.con.player.stop(); // Stop player on right swipe
     print("Swiped right, player stopped");
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<SequenceState?>(
-      stream: widget.con.player!.sequenceStateStream,
+      stream: widget.con.player.sequenceStateStream,
       builder: (context, snapshot) {
         final state = snapshot.data;
         if (state?.sequence.isEmpty ?? true) {
@@ -100,7 +100,7 @@ class _PlayWidgetState extends State<PlayWidget> {
             isFile ? artUri.replaceAll("file:///storage", "/storage") : artUri;
 
         return StreamBuilder<PlayerState>(
-          stream: widget.con.player!.playerStateStream,
+          stream: widget.con.player.playerStateStream,
           builder: (context, snapshot) {
             final state = snapshot.data;
             if (state?.processingState == ProcessingState.idle) {
@@ -162,12 +162,12 @@ class _PlayWidgetState extends State<PlayWidget> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: StreamBuilder<Duration>(
-                        stream: widget.con.player!.positionStream,
+                        stream: widget.con.player.positionStream,
                         builder: (context, positionSnapshot) {
                           final currentPosition =
                               positionSnapshot.data ?? Duration.zero;
                           final totalDuration =
-                              widget.con.player!.duration ?? Duration.zero;
+                              widget.con.player.duration ?? Duration.zero;
 
                           final formattedCurrentPosition =
                               durationToString(currentPosition);
@@ -225,7 +225,7 @@ class _PlayWidgetState extends State<PlayWidget> {
                       ),
                     ),
                     StreamBuilder<PlayerState>(
-                      stream: widget.con.player!.playerStateStream,
+                      stream: widget.con.player.playerStateStream,
                       builder: (context, snapshot) {
                         final playerState = snapshot.data;
                         final processingState = playerState?.processingState;
@@ -240,22 +240,22 @@ class _PlayWidgetState extends State<PlayWidget> {
                           return IconButton(
                             icon: const Icon(Icons.play_arrow),
                             color: Colors.white,
-                            onPressed: widget.con.player!.play,
+                            onPressed: widget.con.player.play,
                           );
                         } else if (processingState !=
                             ProcessingState.completed) {
                           return IconButton(
                             icon: const Icon(Icons.pause),
                             color: Colors.white,
-                            onPressed: widget.con.player!.pause,
+                            onPressed: widget.con.player.pause,
                           );
                         } else {
                           return IconButton(
                             icon: const Icon(Icons.replay),
                             color: Colors.white,
-                            onPressed: () => widget.con.player!.seek(
+                            onPressed: () => widget.con.player.seek(
                               Duration.zero,
-                              index: widget.con.player!.effectiveIndices!.first,
+                              index: widget.con.player.effectiveIndices!.first,
                             ),
                           );
                         }

@@ -37,13 +37,9 @@ class DioConsumer extends ApiConsumer {
     client.interceptors.add(di.sl<AppIntercepters>());
     if (kDebugMode) {
       client.interceptors.add(LogInterceptor(
-        request: true,
-        requestHeader: true,
         requestBody: true,
-        responseHeader: true,
         responseBody: true,
-        error: true,
-      ));
+      ),);
     }
   }
 
@@ -148,7 +144,7 @@ class DioConsumer extends ApiConsumer {
 
         if (statusCode == null) {
           debugPrint('HTTP error occurred, but status code is null.');
-          throw FetchDataException();
+          throw const FetchDataException();
         }
 
         // Handle specific status codes
@@ -163,7 +159,7 @@ class DioConsumer extends ApiConsumer {
             debugPrint(
                 'Error 404: Resource not found at ${error.requestOptions.uri}. '
                 'Details: $errorMessage');
-            throw NotFoundException();
+            throw const NotFoundException();
           case StatusCode.conflict:
             throw const ConflictException();
           case StatusCode.internalServerError:
@@ -174,7 +170,7 @@ class DioConsumer extends ApiConsumer {
             debugPrint(
                 'Unhandled HTTP error: $statusCode at ${error.requestOptions.uri}. '
                 'Details: $errorMessage');
-            throw FetchDataException();
+            throw const FetchDataException();
         }
 
       case DioExceptionType.cancel:

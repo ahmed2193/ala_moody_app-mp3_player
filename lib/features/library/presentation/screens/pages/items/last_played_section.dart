@@ -72,10 +72,9 @@ class LastPlayedSection extends StatelessWidget {
                         // ),
                       ],
                     ),
-                BlocProvider.of<RecentListenCubit>(context)
+                if (BlocProvider.of<RecentListenCubit>(context)
                 .recentListen
-                .isNotEmpty
-            ?    ListView.separated(
+                .isNotEmpty) ListView.separated(
                       shrinkWrap: true,
                       padding: const EdgeInsetsDirectional.only(
                         top: AppPadding.p20,
@@ -143,7 +142,7 @@ class LastPlayedSection extends StatelessWidget {
                         }
                         return const SizedBox();
                       },
-                    ) : Padding(
+                    ) else Padding(
                       padding: const EdgeInsets.only(top: 60),
                       child: Center(
                         child: NoData(

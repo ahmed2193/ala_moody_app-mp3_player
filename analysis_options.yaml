@@ -52,7 +52,7 @@ linter:
 
     # recommended
     always_require_non_null_named_parameters: true
-    annotate_overrides: true
+    # annotate_overrides: true
     avoid_function_literals_in_foreach_calls: true
     avoid_init_to_null: true
     avoid_null_checks_in_equality_operators: true
@@ -144,7 +144,7 @@ linter:
     # Protect against unintentionally overriding superclass members
     # pedantic: enabled
     # http://dart-lang.github.io/linter/lints/annotate_overrides.html
-    annotate_overrides already: true
+    annotate_overrides: true
 
     # All methods should define a return type. dynamic is no exception.
     # Violates Effective Dart "PREFER annotating with dynamic instead of letting inference fail"
