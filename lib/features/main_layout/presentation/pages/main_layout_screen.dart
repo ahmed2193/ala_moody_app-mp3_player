@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:alamoody/core/helper/print.dart';
-import 'package:alamoody/core/models/artists_model.dart';
+import 'package:alamoody/dynamic_link_handler.dart';
 import 'package:alamoody/notification_service.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,18 +11,14 @@ import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../core/artist_details.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/ad_helper.dart';
 import '../../../../core/helper/images.dart';
-import '../../../../core/models/song_share_model.dart';
 import '../../../../core/utils/bottom_nav_bar/persistent-tab-view.dart';
 import '../../../../core/utils/controllers/main_controller.dart';
 import '../../../../core/utils/hex_color.dart';
-import '../../../../core/utils/navigator_reuse.dart';
 import '../../../../core/utils/player/bottom_play_widget.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
-import '../../../download_songs/presentation/cubit/download_cubit.dart';
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../../library/presentation/screens/library_screen.dart';
 import '../../../live_stream/presentation/cubits/live_users/live_users_cubit.dart';
@@ -39,171 +32,54 @@ import '../widgets/active_color_widget.dart';
 
 const int maxFailedLoadAttempts = 3;
 
-class App extends StatefulWidget {
-  const App({
+class MainLayoutScreen extends StatefulWidget {
+  const MainLayoutScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<App> createState() => _AppState();
+  State<MainLayoutScreen> createState() => _AppState();
 }
 
-class _AppState extends State<App> with WidgetsBindingObserver {
-  // PersistentTabController controller = PersistentTabController();
+class _AppState extends State<MainLayoutScreen> with WidgetsBindingObserver {
   InterstitialAd? _interstitialAd;
-  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-  List<SongsShareData>? songs = [];
-  Uri? deepLink;
+
   late bool isSub;
 
   MainController? con;
   late final NotificationService _notificationService;
 
-  Future<void> initDynamicLinks() async {
-    // log('initDynamicLinks');
-
-    final FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-
-    dynamicLinks.onLink.listen((dynamicLinkData) {
-      songs!.clear();
-      final Uri deepLink = dynamicLinkData.link;
-      final String? screenName =
-          deepLink.pathSegments.isNotEmpty ? deepLink.pathSegments[0] : null;
-
-      printColored(screenName! * 1000);
-      final shareDataEncoded = deepLink.queryParameters['parameters'];
-      log('Initial link encoded parameters: $shareDataEncoded');
-      if (shareDataEncoded != null) {
-        try {
-          final String decodedString = Uri.decodeComponent(shareDataEncoded);
-          final Map<String, dynamic> songsShareDataMap =
-              json.decode(decodedString);
-          if (screenName.contains('artistDetails')) {
-            final ArtistsModel songsShareData =
-                ArtistsModel.fromJson(songsShareDataMap);
-            pushNavigate(
-              context,
-              ArtistDetails(
-                artist: songsShareData,
-              ),
-            );
-          } else
-
-          // log('Initial link decoded parameters: $decodedString');
-
-          {
-            final SongsShareData songsShareData =
-                SongsShareData.fromJson(songsShareDataMap);
-
-            songs!.add(songsShareData);
-            // log('start playing' * 1000);
-            con!.playSong(
-              con!.convertToAudio(songs!),
-              0,
-            );
-          }
-        } catch (e) {
-          log('Error decoding JSON: $e');
-        }
-      }
-    }).onError((error) {
-      log('onLink error: ${error.message}');
-    });
-
-    final PendingDynamicLinkData? data = await dynamicLinks.getInitialLink();
-    deepLink = data?.link;
-    final String? screenName =
-        (deepLink != null && deepLink!.pathSegments.isNotEmpty)
-            ? deepLink!.pathSegments[0]
-            : null;
-
-    // printColored(screenName! * 1000);
-    if (deepLink != null) {
-      songs!.clear();
-      final shareDataEncoded = deepLink!.queryParameters['parameters'];
-      log('Initial link encoded parameters: $shareDataEncoded');
-
-      if (shareDataEncoded != null) {
-        try {
-          final String decodedString = Uri.decodeComponent(shareDataEncoded);
-          final Map<String, dynamic> songsShareDataMap =
-              json.decode(decodedString);
-          if (screenName!.contains('artistDetails')) {
-            final ArtistsModel songsShareData =
-                ArtistsModel.fromJson(songsShareDataMap);
-            pushNavigate(
-              context,
-              ArtistDetails(
-                artist: songsShareData,
-              ),
-            );
-          } else
-
-          // log('Initial link decoded parameters: $decodedString');
-
-          {
-            final SongsShareData songsShareData =
-                SongsShareData.fromJson(songsShareDataMap);
-
-            songs!.add(songsShareData);
-            // log('start playing' * 1000);
-            con!.playSong(
-              con!.convertToAudio(songs!),
-              0,
-            );
-          }
-
-          // setState(() {
-
-          //   isFirsOpenDynamic = true;
-          // });
-        } catch (e) {
-          log('Error decoding initial link JSON: $e');
-        }
-      }
-    } else {
-      con!.init();
-    }
-  }
-
   @override
   void initState() {
-    con = Provider.of<MainController>(context, listen: false);
-    initDynamicLinks();
-    _notificationService = NotificationService();
-    _notificationService.initializeLocalNotifications(context);
-    // _notificationService.handleIncomingMessages(
-    //   context,
-    // );
+    super.initState();
     context.read<TabCubit>().controller.index == 4
         ? isSub = true
         : isSub = false;
-    _getDownloadsData();
-    context.read<ProfileCubit>().userProfileData != null &&
-            context
-                    .read<ProfileCubit>()
-                    .userProfileData!
-                    .user!
-                    .subscription!
-                    .serviceId ==
-                '1'
-        ? _createInterstitialAd()
-        : null;
-    // controller.jumpToTab(widget.index!);
-    super.initState();
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   final MainController con = context.read<MainController>();
-    //   if (sharedata != null && songs!.isNotEmpty) {
-    //     con.playSong(
-    //       con.convertShareDataToAudio(songs!),
-    //       0,
-    //     );
-    //   } else {
-    //     if (widget.index == 0) {
-    //       return con.init();
-    //     }
-    //   }
+    con = Provider.of<MainController>(context, listen: false);
+    con!.preventDispose = false;
+
+    //          WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Provider.of<TabNavigatorProvider>(context, listen: false)
+    //     .setNavigatorKeys(tabNavigatorKeys);
     // });
+    DynamicLinkHandler(con, context).initDynamicLinks();
+    _notificationService = NotificationService();
+    _notificationService.initializeLocalNotifications(context);
+    // Provider.of<TabNavigatorProvider>(context, listen: false)
+    //     .setNavigatorKeys(tabNavigatorKeys);
+
+    Future.microtask(() async {
+      if (context
+              .read<ProfileCubit>()
+              .userProfileData
+              ?.user
+              ?.subscription
+              ?.serviceId ==
+          '1') {}
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _createInterstitialAd();
+      });
+    });
   }
 
   @override
@@ -223,15 +99,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _getDownloadsData() async {
-    await BlocProvider.of<DownloadCubit>(context)
-        .getSavedDownloads()
-        .then((value) {});
-  }
-
   void _createInterstitialAd() {
+    final adHelper = AdHelper();
     InterstitialAd.load(
-      adUnitId: AdHelper.interstitialAdUnitId,
+      adUnitId: adHelper.interstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
@@ -459,134 +330,154 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     ];
   }
 
-  List<Widget> _buildScreens(con) {
+  List<Widget> _buildScreens() {
+    final tabCubit = context.read<TabCubit>();
     return [
-      const HomeScreen(),
-      SearchScreen(con: con),
-      const LibraryScreen(),
-      const LiveStreamScreen(),
-      const PlanScreen(),
+      Navigator(
+        key: tabCubit.navigatorKeys[0],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      ),
+      Navigator(
+        key: tabCubit.navigatorKeys[1],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          builder: (context) => const SearchScreen(),
+        ),
+      ),
+      Navigator(
+        key: tabCubit.navigatorKeys[2],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          builder: (context) => const LibraryScreen(),
+        ),
+      ),
+      Navigator(
+        key: tabCubit.navigatorKeys[3],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          builder: (context) => const LiveStreamScreen(),
+        ),
+      ),
+      Navigator(
+        key: tabCubit.navigatorKeys[4],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          builder: (context) => const PlanScreen(),
+        ),
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          /// Background image without SafeArea so it covers the whole screen
-          const ReusedBackground(
-            lightBG: ImagesPath.homeBGLightBG,
-          ),
+    return WillPopScope(
+      onWillPop: () async {
+        final tabCubit = context.read<TabCubit>();
+        final currentIndex = tabCubit.controller.index;
+        final currentKey = tabCubit.navigatorKeys[currentIndex];
 
-          SafeArea(
-            child: PersistentTabView(
-              context,
-              controller: context.read<TabCubit>().controller,
-              onItemSelected: (value) {
-                context.read<TabCubit>().changeTab(value);
-                log(value.toString());
-                if (value == 3) {
-                  BlocProvider.of<LiveUsersCubit>(context).getLiveUsers(
-                    context: context,
-                    accessToken: context
-                        .read<LoginCubit>()
-                        .authenticatedUser!
-                        .accessToken!,
-                  );
-                }
-                setState(() {
-                  if (value != 4) {
-                    isSub = false;
-                  } else {
-                    isSub = true;
+        if (currentKey.currentState?.canPop() ?? false) {
+          currentKey.currentState!.pop();
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            /// Background image without SafeArea so it covers the whole screen
+            const ReusedBackground(),
+
+            SafeArea(
+              child: PersistentTabView(
+                context,
+                controller: context.read<TabCubit>().controller,
+                onItemSelected: (value) {
+                  context.read<TabCubit>().changeTab(value);
+                  log(value.toString());
+                  if (value == 3) {
+                    BlocProvider.of<LiveUsersCubit>(context).getLiveUsers(
+                      context: context,
+                      accessToken: context
+                          .read<LoginCubit>()
+                          .authenticatedUser!
+                          .accessToken!,
+                    );
                   }
-                });
-              },
-              playWidget: isSub
-                  ? const SizedBox()
-                  : Material(
-                      child: con!.player == null
-                          ? const SizedBox()
-                          : StreamBuilder<SequenceState?>(
-                              stream: con!.player.sequenceStateStream,
-                              builder: (context, snapshot) {
-                                final state = snapshot.data;
-                                if (state?.sequence.isEmpty ?? true) {
-                                  return const SizedBox();
-                                }
+                  setState(() {
+                    if (value != 4) {
+                      isSub = false;
+                    } else {
+                      isSub = true;
+                    }
+                  });
+                },
+                playWidget: isSub
+                    ? const SizedBox()
+                    : Material(
+                        child: con!.player == null
+                            ? const SizedBox()
+                            : StreamBuilder<SequenceState?>(
+                                stream: con!.player.sequenceStateStream,
+                                builder: (context, snapshot) {
+                                  final state = snapshot.data;
+                                  if (state?.sequence.isEmpty ?? true) {
+                                    return const SizedBox();
+                                  }
 
-                                final currentSource = state!.currentSource;
+                                  final currentSource = state!.currentSource;
 
-                                final isRadioStream =
-                                    currentSource is UriAudioSource &&
-                                        currentSource.uri
-                                            .toString()
-                                            .contains('stream');
-                                return PlayWidget(
-                                  con: con!,
-                                  onTap: () {
-                                    isRadioStream
-                                        ? null
-                                        : {
-                                            if (context
-                                                    .read<ProfileCubit>()
-                                                    .userProfileData!
-                                                    .user!
-                                                    .subscription!
-                                                    .serviceId ==
-                                                '1')
-                                              _showInterstitialAd(con!)
-                                            else
-                                              null,
-                                            Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                builder: (context) => Material(
-                                                  child: PlayerScreen(
-                                                    con: con!,
+                                  final isRadioStream =
+                                      currentSource is UriAudioSource &&
+                                          currentSource.uri
+                                              .toString()
+                                              .contains('stream');
+                                  return PlayWidget(
+                                    con: con!,
+                                    onTap: () {
+                                      isRadioStream
+                                          ? null
+                                          : {
+                                              if (context
+                                                      .read<ProfileCubit>()
+                                                      .userProfileData!
+                                                      .user!
+                                                      .subscription!
+                                                      .serviceId ==
+                                                  '1')
+                                                _showInterstitialAd(con!)
+                                              else
+                                                null,
+                                              Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      Material(
+                                                    child: PlayerScreen(
+                                                      con: con!,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          };
-                                  },
-                                );
-                              },
-                            ),
-                    ),
-              screens: _buildScreens(con),
-              items: _navBarsItems(),
-              backgroundColor: HexColor('#1B0E3E'),
-              hideNavigationBarWhenKeyboardShows: false,
-              navBarHeight: 200,
-              bottomScreenMargin: 8.0,
-              padding: const NavBarPadding.all(20),
-              confineInSafeArea: false,
-              stateManagement: false,
+                                            };
+                                    },
+                                  );
+                                },
+                              ),
+                      ),
+                screens: _buildScreens(),
+                items: _navBarsItems(),
+                backgroundColor: HexColor('#1B0E3E'),
+                hideNavigationBarWhenKeyboardShows: false,
+                navBarHeight: 200,
+                bottomScreenMargin: 8.0,
+                padding: const NavBarPadding.all(20),
+                confineInSafeArea: false,
+                stateManagement: false,
+              ),
             ),
-          ),
-        ],
-      ),
-
-      // ),
-    );
-  }
-}
-
-class DynamicLinkScreen extends StatelessWidget {
-  const DynamicLinkScreen(this.song, {super.key});
-  final SongsShareData song;
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Hello World DeepLink'),
+          ],
         ),
-        body: Center(
-          child: Text('Custom Data: ${song.title} (ID: ${song.id})'),
-        ),
+
+        // ),
       ),
     );
   }

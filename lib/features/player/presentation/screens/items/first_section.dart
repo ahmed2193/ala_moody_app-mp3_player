@@ -71,7 +71,7 @@ class _FirstSectionPlayerScreenState extends State<FirstSectionPlayerScreen> {
       log('Encoded custom data: $songsShareDataEncoded');
 
       final DynamicLinkParameters parameters = DynamicLinkParameters(
-        uriPrefix: 'https://alamoody.page.link',
+        uriPrefix: 'https://alamoodyMusic.page.link',
         link: Uri.parse(DynamicLink).replace(
           queryParameters: {'parameters': songsShareDataEncoded},
         ),
@@ -137,6 +137,10 @@ class _FirstSectionPlayerScreenState extends State<FirstSectionPlayerScreen> {
                         GestureDetector(
                           onTap: () {
                             context.read<TabCubit>().changeTab(4);
+                               context
+                                                  .read<TabCubit>()
+                                                  .changeTab(4);
+                                                  Navigator.pop(context);
                           },
                           child: Image.asset(ImagesPath.premiumImage),
                         ),
@@ -179,8 +183,8 @@ class _FirstSectionPlayerScreenState extends State<FirstSectionPlayerScreen> {
 
 Future<String> createDynamicLink(bool short, String path) async {
   final DynamicLinkParameters parameters = DynamicLinkParameters(
-    uriPrefix: 'https://alamoody.page.link',
-    link: Uri.parse('https://alamoody.page.link/$path'),
+    uriPrefix: 'https://alamoodyMusic.page.link',
+    link: Uri.parse('https://alamoodyMusic.page.link/$path'),
     androidParameters: const AndroidParameters(
       packageName: 'com.Ala_Moody.app',
       minimumVersion: 0,

@@ -19,16 +19,26 @@ class Downloading extends DownloadState {
 class IsDownloadedLoading extends DownloadState {}
 
 class IsDownloadedLoaded extends DownloadState {}
-class DownloadingProgress extends DownloadState {  // ✅ New state for progress
+class DownloadingProgress extends DownloadState {
   final int id;
   final double progress;
-  const DownloadingProgress({required this.id, required this.progress});
+
+  const DownloadingProgress({
+    required this.id,
+    required this.progress,
+  });
 
   @override
-  List<Object> get props => [id, progress];
+  List<Object> get props => [id, progress, ];
 }
-class Downloaded extends DownloadState {}
 
+class Downloaded extends DownloadState {
+  final int id;
+  const Downloaded({required this.id});
+
+  @override
+  List<Object> get props => [id];
+}
 class DownloadListLoaded extends DownloadState {
   const DownloadListLoaded();
 
@@ -48,4 +58,12 @@ class DownloadListError extends DownloadState {
   const DownloadListError({this.message});
   @override
   List<Object?> get props => [message];
+}
+class DownloadingListUpdated extends DownloadState {
+  final List<Songs> songs;
+
+  const DownloadingListUpdated({required this.songs});
+
+  @override
+  List<Object?> get props => [songs];
 }

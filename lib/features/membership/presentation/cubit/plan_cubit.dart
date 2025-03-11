@@ -41,6 +41,8 @@ class PlanCubit extends Cubit<PlanState> {
         (failure) =>
             PlanDataError(message: Constants().mapFailureToMsg(failure)),
         (data) {
+   
+          
           return PlanDataSuccess(planData: data.data);
         },
       ),

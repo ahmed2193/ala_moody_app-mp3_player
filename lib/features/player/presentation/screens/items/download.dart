@@ -1,7 +1,5 @@
-import 'package:alamoody/core/helper/print.dart';
 import 'package:alamoody/core/models/artists_model.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
-import 'package:alamoody/core/utils/custom_progrees_widget.dart';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../config/locale/app_localizations.dart';
 import '../../../../../core/models/song_model.dart';
 import '../../../../../core/utils/constants.dart';
+import '../../../../../core/utils/custom_progrees_widget.dart';
 import '../../../../download_songs/presentation/cubit/download_cubit.dart';
 import '../../../../main_layout/cubit/tab_cubit.dart';
 import '../../../../profile/presentation/cubits/profile/profile_cubit.dart';
@@ -31,137 +30,116 @@ class DownloadSection extends StatefulWidget {
 
 class _DownloadSectionState extends State<DownloadSection> {
   bool isDownLoad = false;
-  Future<void> _getDownloadsData() async {
-    await BlocProvider.of<DownloadCubit>(context)
-        .getSavedDownloads()
-        .then((value) {});
-  }
+
 
   @override
   void initState() {
-    // print(widget.id!.toString);
-    // _getDownloadsData();
+
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (BlocProvider.of<DownloadCubit>(context).downloadId !=
-        int.parse(widget.myAudio.id)) {
-      BlocProvider.of<DownloadCubit>(context)
-          .isDownload(int.parse(widget.myAudio.id));
-    }
-
-    return BlocConsumer<DownloadCubit, DownloadState>(
-      buildWhen: (previousState, state) {
-        if (state is Downloading ||
-            state is Downloaded ||
-            state is DownloadListError ||
-            state is IsDownloadedLoaded) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        if (state is Downloaded) {
-          _getDownloadsData();
-        }
-      },
+    return BlocBuilder<DownloadCubit, DownloadState>(
       builder: (context, state) {
-        return BlocProvider.of<DownloadCubit>(context).isDownloaded
-            ? IconButton(
-                onPressed: () {
-                  Constants.showToast(
-                    message:
-                        AppLocalizations.of(context)!.translate("downloaded")!,
-                  );
-                },
-                icon: Icon(
-                  size: 25,
-                  Icons.download_done,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-              )
-            : IconButton(
-                onPressed: context
-                            .read<ProfileCubit>()
-                            .userProfileData!
-                            .user!
-                            .subscription!
-                            .serviceId ==
-                        '1'
-                    ? () {
-                     context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+        final cubit = context.read<DownloadCubit>();
+
+       
+          if (cubit.isDownloading(int.parse(widget.myAudio.id))) {
+      final double progress = cubit.getProgress(int.parse(widget.myAudio.id));
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          DownloadProgressWidget(progress: progress), // ✅ Show progress
+        
+        ],
+      );
+    }
+        else if (cubit.isDownloaded(int.parse(widget.myAudio.id))) {
+          // ✅ Show check icon when download is complete
+          return IconButton(
+            icon: const Icon(
+              Icons.download_done,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Constants.showToast(
+                message: AppLocalizations.of(context)!.translate("downloaded")!,
+              );
+            },
+          );
+        } else {
+          // ✅ Show Download Button (Clickable only if not downloaded)
+          return IconButton(
+            icon: const Icon(Icons.download, color: Colors.white),
+            onPressed: context
+                        .read<ProfileCubit>()
+                        .userProfileData!
+                        .user!
+                        .subscription!
+                        .serviceId ==
+                    '1'
+                ? () {
+                    context.read<TabCubit>().changeTab(4);
+                                                                      Navigator.pop(context);
+
+                  }
+                : () {
+                    if (widget.streamUrl.isEmpty) {
+                      // ✅ Show message if audio is not ready
+                      Constants.showToast(
+                        message: "The audio is not ready to download",
+                      );
+
+                      // ✅ Debug print full audio details
+                      debugPrint("🔴 AUDIO NOT READY TO DOWNLOAD");
+                      debugPrint("myAudio: ${widget.myAudio}");
+                      debugPrint("streamUrl: ${widget.streamUrl}");
+
+                      return;
+                    }
+
+                    // ✅ Print all audio details for debugging
+                    debugPrint("streamUrl: ${widget.streamUrl}");
+
+                    debugPrint("🎵 AUDIO DETAILS:");
+                    debugPrint("ID: ${widget.myAudio.id}");
+                    debugPrint("Title: ${widget.myAudio.title}");
+                    debugPrint("Artist: ${widget.myAudio.artist}");
+                    debugPrint("Artwork URL: ${widget.myAudio.artUri}");
+                    debugPrint("Extras: ${widget.myAudio.extras}");
+
+                    // ✅ Ensure the URL uses HTTPS
+                    String ensureHttps(String url) {
+                      if (url.startsWith('http://')) {
+                        return url.replaceFirst('http://', 'https://');
                       }
-                    : state is Downloading
-                        ? () => Constants.showToast(
-                              message: AppLocalizations.of(context)!
-                                  .translate("downloadInProgress")!,
-                            )
-                        : () {
-                            // Ensure the URL uses HTTPS
-                            String ensureHttps(String url) {
-                              if (url.startsWith('http://')) {
-                                return url.replaceFirst('http://', 'https://');
-                              }
-                              return url; // Return the original URL if it's already HTTPS or doesn't contain HTTP
-                            }
+                      return url;
+                    }
 
-                            state is Downloading
-                                ? null
-                                : BlocProvider.of<DownloadCubit>(context)
-                                    .download(
-                                    song: SongModel(
-                                      audio: ensureHttps(
-                                        widget.streamUrl,
-                                      ), // Ensure HTTPS for streamUrl
-                                      id: int.parse(widget.myAudio.id),
-                                      title: widget.myAudio.title,
-                                      artists: [
-                                        ArtistsModel(
-                                            name: widget.myAudio.artist,),
-                                      ],
-                                      artworkUrl: ensureHttps(
-                                        widget.myAudio.artUri.toString(),
-                                      ), // Ensure HTTPS for artworkUrl
-                                      favorite:
-                                          widget.myAudio.extras!['favorite'],
-                                      listened:
-                                          widget.myAudio.extras!['listened'],
-                                      lyrics: widget.myAudio.extras!['lyrics'],
-                                    ),
-                                    context: context,
-                                  );
-                            // launch(song.trackid!);
-                          },
-                icon: BlocBuilder<DownloadCubit, DownloadState>(
-                        builder: (context, state) {
-                          printColored(widget.myAudio.id);
-                          printColored(BlocProvider.of<DownloadCubit>(context).downloadId);
-
-                          if (state is Downloading ||
-                              state is DownloadingProgress ) {
-                            final double progress = state is DownloadingProgress
-                                ? state.progress
-                                : 0.0;
-
-                            return DownloadProgressWidget(
-                              progress: progress,
-                            );
-                          } else {
-                            return const Icon(
-                              size: 25,
-                              Icons.download,
-                              color: Colors.white,
-                            );
-                          }
-                        },
+                    // ✅ Proceed with download
+                    cubit.download(
+                      song: SongModel(
+                        audio: ensureHttps(widget.streamUrl),
+                        id: int.parse(widget.myAudio.id),
+                        title: widget.myAudio.title,
+                        artists: [
+                          ArtistsModel(name: widget.myAudio.artist),
+                        ],
+                        artworkUrl:
+                            ensureHttps(widget.myAudio.artUri.toString()),
+                        favorite: widget.myAudio.extras?['favorite'],
+                        listened: widget.myAudio.extras?['listened'],
+                        lyrics: widget.myAudio.extras?['lyrics'],
                       ),
+                      context: context,
                     );
+                  },
+          );
+        }
       },
     );
   }
 }
+

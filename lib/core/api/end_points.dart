@@ -49,4 +49,6 @@ class EndPoints {
   static const String followed = "user/follow/followed";
   static const String activeCoupon = "active-coupon";
   static const String categories = "categories";
+  static const String removePlaylist = "auth/user/playlist/delete";
+  static const String editPlaylist = "auth/user/playlist/edit";
 }

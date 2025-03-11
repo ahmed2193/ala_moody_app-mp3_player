@@ -1,3 +1,8 @@
+import 'package:alamoody/features/Playlists/domain/usecases/create_playlist.dart';
+import 'package:alamoody/features/Playlists/domain/usecases/edit_playlist.dart';
+import 'package:alamoody/features/Playlists/domain/usecases/remove_playlist.dart';
+import 'package:dio/dio.dart';
+
 import '../../../../core/api/api_consumer.dart';
 import '../../../../core/api/base_response.dart';
 import '../../../../core/api/end_points.dart';
@@ -12,9 +17,14 @@ abstract class PlayListsRemoteDataSource {
     required int pageNo,
   });
 
-  Future<BaseResponse> createPlaylists({
-    required String accessToken,
-    required String playlistName,
+  Future<BaseResponse> createPlaylist({
+    required CreatePlaylistParams params,
+  });
+  Future<BaseResponse> editPlaylists({
+    required EditPlaylistParams params,
+  });
+  Future<BaseResponse> removePlaylist({
+    required RemovePlaylistParams params,
   });
   Future<BaseResponse> addSongToPlayLists({
     required String accessToken,
@@ -59,16 +69,23 @@ class PlayListsRemoteDataSourceImpl implements PlayListsRemoteDataSource {
   }
 
   @override
-  Future<BaseResponse> createPlaylists({
-    required String playlistName,
-    required String accessToken,
+  Future<BaseResponse> createPlaylist({
+    required CreatePlaylistParams params,
   }) async {
     final response = await apiConsumer.post(
       EndPoints.createPlaylist,
+            formDataIsEnabled: true,
+
       body: {
-        AppStrings.playlistName: playlistName,
+        AppStrings.playlistName: params.playlistName,
+        AppStrings.playlistDes: params.playlistDes,
+        AppStrings.playlistImage: params.playlistImage,
+        if (params.playlistImage != null) ...{
+          AppStrings.playlistImage:
+              await MultipartFile.fromFile(params.playlistImage!.absolute.path),
+        },
       },
-      headers: {AppStrings.authorization: accessToken},
+      headers: {AppStrings.authorization: params.accessToken},
     );
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);
@@ -121,6 +138,60 @@ class PlayListsRemoteDataSourceImpl implements PlayListsRemoteDataSource {
         AppStrings.playlistId: playListsId,
       },
       headers: {AppStrings.authorization: accessToken},
+    );
+    final BaseResponse baseResponse =
+        BaseResponse(statusCode: response.statusCode);
+    final responseJson = Constants.decodeJson(response);
+    if (response.statusCode == StatusCode.ok) {
+      baseResponse.message = AppStrings.success;
+    } else {
+      baseResponse.message = responseJson[AppStrings.message];
+    }
+    return baseResponse;
+  }
+
+  @override
+  Future<BaseResponse> editPlaylists(
+      {required EditPlaylistParams params,}) async {
+    final response = await apiConsumer.post(
+      EndPoints.editPlaylist,
+            formDataIsEnabled: true,
+
+      body: {
+        AppStrings.title: params.playlistName,
+        AppStrings.playlistDes: params.playlistDes,
+        AppStrings.playlistImage: params.playlistImage,
+        AppStrings.id: params.playlistId,
+
+        if (params.playlistImage != null) ...{
+          AppStrings.playlistImage:
+              await MultipartFile.fromFile(params.playlistImage!.absolute.path),
+        },
+      },
+      headers: {AppStrings.authorization: params.accessToken},
+    );
+    final BaseResponse baseResponse =
+        BaseResponse(statusCode: response.statusCode);
+    final responseJson = Constants.decodeJson(response);
+    if (response.statusCode == StatusCode.ok) {
+      baseResponse.message = AppStrings.success;
+       baseResponse.data =
+        SongsPlayListsModel.fromJson(responseJson);
+    } else {
+      baseResponse.message = responseJson[AppStrings.message];
+    }
+    return baseResponse;
+  }
+
+  @override
+  Future<BaseResponse> removePlaylist(
+      {required RemovePlaylistParams params,}) async {
+    final response = await apiConsumer.post(
+      EndPoints.removePlaylist,
+      body: {
+        AppStrings.playlistId: params.playlistId,
+      },
+      headers: {AppStrings.authorization: params.accessToken},
     );
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);

@@ -2,7 +2,6 @@ import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/components/reused_background.dart';
 import 'package:alamoody/core/components/screen_state/loading_screen.dart';
 import 'package:alamoody/core/helper/font_style.dart';
-import 'package:alamoody/core/helper/images.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/constants.dart';
 import 'package:alamoody/core/utils/hex_color.dart';
@@ -89,7 +88,7 @@ class _PlanDetailsScreenState extends State<PlanDetailsScreen> {
           );
           Navigator.of(context, rootNavigator: true).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => const App(),
+              builder: (context) => const MainLayoutScreen(),
             ),
           );
 
@@ -108,7 +107,6 @@ class _PlanDetailsScreenState extends State<PlanDetailsScreen> {
             // key: scaffoldKey,
             // drawer: const DrawerScreen(),
             body: ReusedBackground(
-              lightBG: ImagesPath.homeBGLightBG,
               body: Column(
                 children: [
                   SizedBox(
@@ -291,7 +289,6 @@ class _PlanDetailsScreenState extends State<PlanDetailsScreen> {
                                             context
                                                 .read<TabCubit>()
                                                 .changeTab(4);
-                                         
                                           },
                                         ),
                                       ],

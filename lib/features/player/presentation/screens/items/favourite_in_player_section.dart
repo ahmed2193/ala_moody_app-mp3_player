@@ -4,14 +4,11 @@ import 'package:alamoody/core/utils/loading_indicator.dart';
 import 'package:alamoody/features/home/presentation/cubits/set_ringtones/set_ringtones_cubit.dart';
 import 'package:alamoody/features/main_layout/cubit/tab_cubit.dart';
 import 'package:alamoody/features/player/presentation/screens/items/download.dart';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../../../../../config/locale/app_localizations.dart';
-import '../../../../../core/helper/app_size.dart';
 import '../../../../../core/helper/font_style.dart';
 import '../../../../../core/helper/images.dart';
 import '../../../../../core/utils/hex_color.dart';
@@ -23,15 +20,26 @@ class FavoriteInPlayerSection extends StatelessWidget {
   const FavoriteInPlayerSection({
     Key? key,
     required this.myAudio,
-    required this.con,required this.streamUrl,
-
+    required this.con,
+    required this.streamUrl,
   }) : super(key: key);
+
   final MediaItem myAudio;
   final String streamUrl;
   final MainController con;
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // ✅ Reduce sizes by 10%
+    final double textSize = screenWidth * 0.04;
+    final double iconSize = screenWidth * 0.06;
+    final double buttonSpacing = screenWidth * 0.02;
+
     bool isFav = myAudio.extras!['favorite'] ?? false;
+
     return StatefulBuilder(
       builder: (BuildContext context, setState) {
         return BlocListener<SetRingtonesCubit, SetRingtonesState>(
@@ -46,19 +54,8 @@ class FavoriteInPlayerSection extends StatelessWidget {
           child: BlocConsumer<AddAndRemoveFromFavoritesCubit,
               AddAndRemoveFromFavoritesState>(
             listener: (context, state) {
-              if (state is AddAndRemoveFromFavoritesLoading) {
-                setState(() {
-                  isFav = !isFav;
-                  myAudio.extras!['favorite'] = isFav;
-                });
-              }
-              // else {
-              //   setState(() {
-              //     isFav = false;
-              //   });
-              // }
-
-              if (state is AddAndRemoveFromFavoritesFailed) {
+              if (state is AddAndRemoveFromFavoritesLoading ||
+                  state is AddAndRemoveFromFavoritesFailed) {
                 setState(() {
                   isFav = !isFav;
                   myAudio.extras!['favorite'] = isFav;
@@ -67,12 +64,11 @@ class FavoriteInPlayerSection extends StatelessWidget {
             },
             builder: (context, state) {
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppRadius.pDefault,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // ✅ Song Title and Artist
                     Expanded(
                       flex: 8,
                       child: Column(
@@ -81,17 +77,22 @@ class FavoriteInPlayerSection extends StatelessWidget {
                         children: [
                           Text(
                             myAudio.title,
-                            style: styleW700(
+                            maxLines: 2,
+                            overflow:TextOverflow.clip ,
+                            style: styleW600(
                               context,
-                              fontSize: 20,
+                              fontSize: textSize,
                               color: Colors.white,
                             ),
                           ),
                           Text(
+                                                        overflow:TextOverflow.clip ,
+                            maxLines: 1,
+
                             myAudio.artist!,
                             style: styleW400(
                               context,
-                              fontSize: 20,
+                              fontSize: textSize * 0.9, // Slightly smaller
                               color: Colors.white,
                             ),
                           ),
@@ -99,17 +100,13 @@ class FavoriteInPlayerSection extends StatelessWidget {
                       ),
                     ),
 
-                    // set as ringtone and add to fav
+                    // ✅ Buttons: Favorite & Download
                     Column(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            
-                            // set as ringtone
-
-                            // add to fav
-
+                            // ✅ Favorite Button
                             IconButton(
                               onPressed: () {
                                 BlocProvider.of<AddAndRemoveFromFavoritesCubit>(
@@ -132,13 +129,15 @@ class FavoriteInPlayerSection extends StatelessWidget {
                                 );
                               },
                               icon: Icon(
-                                size: 25,
+                                size: iconSize,
                                 Icons.favorite_rounded,
                                 color:
                                     isFav ? HexColor('#F915DE') : Colors.white,
                               ),
                             ),
+                            SizedBox(width: buttonSpacing),
 
+                            // ✅ Download Button
                             DownloadSection(
                               streamUrl: streamUrl,
                               con: con,
@@ -146,6 +145,8 @@ class FavoriteInPlayerSection extends StatelessWidget {
                             ),
                           ],
                         ),
+
+                        // ✅ Set as Ringtone Button
                         BlocBuilder<SetRingtonesCubit, SetRingtonesState>(
                           builder: (context, state) {
                             return TextButton(
@@ -158,15 +159,14 @@ class FavoriteInPlayerSection extends StatelessWidget {
                                               .translate("set_as_ringTone")!,
                                           style: styleW500(
                                             context,
-                                            fontSize: FontSize.f12,
+                                            fontSize: textSize * 0.6, // Reduced font size
                                             color: Colors.white,
                                           ),
                                         ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
+                                        SizedBox(width: buttonSpacing),
                                         SvgPicture.asset(
                                           ImagesPath.musicIconSvg,
+                                          width: iconSize * 0.8, // Reduced icon size
                                         ),
                                       ],
                                     ),
@@ -178,9 +178,9 @@ class FavoriteInPlayerSection extends StatelessWidget {
                                             .subscription!
                                             .serviceId ==
                                         '1'
-                                    ?  context
-                                                .read<TabCubit>()
-                                                .changeTab(4)
+                                    ? (context.read<TabCubit>().changeTab(4)
+                                    
+                                    )
                                     : BlocProvider.of<SetRingtonesCubit>(
                                         context,
                                       ).setRingtones(

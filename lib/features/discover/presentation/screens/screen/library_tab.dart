@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../config/locale/app_localizations.dart';
 import '../../../../../core/helper/app_size.dart';
 import '../../../../../core/utils/controllers/main_controller.dart';
 import '../../../../../core/utils/loading_indicator.dart';
@@ -88,8 +89,9 @@ class TabPageOfLibrary extends StatelessWidget {
                   return const SizedBox();
                 },
               )
-            : const Center(
-                child: Text('no data'),
+            :  Center(
+                child: Text(AppLocalizations.of(context)!
+                                  .translate("no_data")!,),
               );
       },
     );

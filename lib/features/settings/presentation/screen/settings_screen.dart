@@ -45,7 +45,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         : false;
     return SafeArea(
       child: ReusedBackground(
-        lightBG: ImagesPath.homeBGLightBG,
         body: StatefulBuilder(
           builder: (BuildContext context, setState) {
             return SingleChildScrollView(
@@ -88,9 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           //   isPremium = !isPremium;
                           // });
 
-                    context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                          context.read<TabCubit>().changeTab(4);
                         },
                         width: MediaQuery.of(context).size.width / 1.3,
                         buttonText: AppLocalizations.of(context)!
@@ -449,9 +446,7 @@ class PremiumAccountItem extends StatelessWidget {
                   child: Switch(
                     value: isSwitched,
                     onChanged: (value) {
-                context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                      context.read<TabCubit>().changeTab(4);
                     },
                     activeTrackColor: HexColor('#D9D9D9'),
                     activeColor: HexColor('#4FDE43'),

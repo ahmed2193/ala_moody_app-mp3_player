@@ -34,7 +34,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       userProfileData = userProfile.data;
       // await saveProfileUseCase.call(SaveProfileParams(user: userProfile));
 
-      // print(userProfileData);
+      // debugPrint(userProfileData);
 
       return emit(ProfileLoaded(userProfile: userProfile.data));
     });

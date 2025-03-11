@@ -1,8 +1,9 @@
+import 'package:alamoody/features/home/data/models/songs_play_lists_model.dart';
+
 import '../../../../core/api/api_consumer.dart';
 import '../../../../core/api/base_response.dart';
 import '../../../../core/api/end_points.dart';
 import '../../../../core/models/song_model.dart';
-import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/constants.dart';
 
@@ -20,10 +21,11 @@ class AudioPlayListsRemoteDataSourceImpl
   AudioPlayListsRemoteDataSourceImpl({required this.apiConsumer});
 
   @override
-  Future<BaseResponse> getAudioPlayLists(
-      {required String accessToken,
-      required int id,
-      required int pageNo,}) async {
+  Future<BaseResponse> getAudioPlayLists({
+    required String accessToken,
+    required int id,
+    required int pageNo,
+  }) async {
     final response = await apiConsumer.get(
       EndPoints.playlistAudio + id.toString(),
       headers: {AppStrings.authorization: accessToken},
@@ -36,14 +38,17 @@ class AudioPlayListsRemoteDataSourceImpl
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);
     final responseJson = Constants.decodeJson(response);
-    final Iterable iterable = responseJson[AppStrings.data][AppStrings.songs][AppStrings.data];
+    final Iterable iterable =
+        responseJson[AppStrings.data][AppStrings.songs][AppStrings.data];
 
     baseResponse.data =
         iterable.map((model) => SongModel.fromJson(model)).toList();
     baseResponse.extraData =
-        UserModel.fromJson(responseJson[AppStrings.data][AppStrings.user]);
-    baseResponse.currentPage = responseJson[AppStrings.data][AppStrings.songs][AppStrings.from];
-    baseResponse.lastPage = responseJson[AppStrings.data][AppStrings.songs][AppStrings.lastPage];
+        SongsPlayListsModel.fromJson(responseJson[AppStrings.data]);
+    baseResponse.currentPage =
+        responseJson[AppStrings.data][AppStrings.songs][AppStrings.from];
+    baseResponse.lastPage =
+        responseJson[AppStrings.data][AppStrings.songs][AppStrings.lastPage];
     return baseResponse;
   }
 }

@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/features/Playlists/presentation/cubits/my_playlists/my_playlists_cubit.dart';
 import 'package:alamoody/features/audio_playlists/presentation/screen/audio_playlists_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 import '../../../../../../core/helper/app_size.dart';
@@ -70,7 +70,7 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
 
   Widget _buildBodyContent() {
     // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-   final devicePexelRatio = MediaQuery.of(context).devicePixelRatio;
+    final devicePexelRatio = MediaQuery.of(context).devicePixelRatio;
 
     final double logicalSize = 180 / devicePexelRatio;
     return SafeArea(
@@ -78,7 +78,6 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,7 +103,8 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
                 builder: (context, state) {
                   if (state is MyPlaylistsIsLoading && state.isFirstFetch) {
                     return const Expanded(
-                        child: Center(child: LoadingScreen()),);
+                      child: Center(child: LoadingScreen()),
+                    );
                   }
                   if (state is MyPlaylistsIsLoading) {
                     BlocProvider.of<MyPlaylistsCubit>(context).loadMore = true;
@@ -153,6 +153,7 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
                                     pushNavigate(
                                       context,
                                       AudioPlayListsScreen(
+                                        ispublic: true,
                                         songsPlayLists:
                                             BlocProvider.of<MyPlaylistsCubit>(
                                           context,
@@ -170,59 +171,64 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
                                       vertical: 8,
                                     ),
                                     decoration: BoxDecoration(
-                                            border: GradientBoxBorder(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  HexColor("#020024"),
-                                                  HexColor("#090979"),
-                                                  Colors.black26,
-                                                ],
-                                              ),
-                                              width: 2.4,
-                                            ),
-                                            gradient: const LinearGradient(
-                                              end: Alignment(1, 2),
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.transparent,
-                                                Colors.transparent,
-                                                // HexColor("#020024"),
-                                                // HexColor("#090979"),
-                                                // Colors.black26,
-                                              ],
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                          ),
+                                      border: GradientBoxBorder(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            HexColor("#020024"),
+                                            HexColor("#090979"),
+                                            Colors.black26,
+                                          ],
+                                        ),
+                                        width: 2.4,
+                                      ),
+                                      gradient: const LinearGradient(
+                                        end: Alignment(1, 2),
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          // HexColor("#020024"),
+                                          // HexColor("#090979"),
+                                          // Colors.black26,
+                                        ],
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
                                     child: Row(
                                       children: [
                                         Container(
                                           height: logicalSize,
                                           width: logicalSize,
                                           alignment: Alignment.center,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
-                                            image: DecorationImage(
+                                          ),
+                                          child: ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: BlocProvider.of<
+                                                          MyPlaylistsCubit>(
+                                                    context,
+                                                  )
+                                                      .songsMyPlaylists[index]
+                                                      .artworkUrl ??
+                                                  '',
                                               fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                BlocProvider.of<
-                                                        MyPlaylistsCubit>(
-                                                  context,
-                                                )
-                                                    .songsMyPlaylists[index]
-                                                    .artworkUrl!,
+                                              placeholder: (context, url) =>
+                                                  const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ), // Loading indicator
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Image.asset(
+                                                ImagesPath
+                                                    .playlistDefultImage, // Fallback image
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
                                           ),
-                                          // child:Image.asset(ImagesPath.singerImage ,fit: BoxFit.cover,)
-                                          //  const CircleAvatar(
-                                          //   // radius: 25,
-                                          //   backgroundImage: AssetImage(
-                                          //     ImagesPath.singerImage,
-                                          //   ),
-                                          // ),
                                         ),
                                         const SizedBox(
                                           width: 12,
@@ -235,9 +241,7 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
                                                   CrossAxisAlignment.start,
                                               mainAxisAlignment:
                                                   MainAxisAlignment
-                                                        
-
-.spaceBetween  ,
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   BlocProvider.of<
@@ -248,18 +252,14 @@ class _MyPlaylistsScreenState extends State<MyPlaylistsScreen> {
                                                       .title!,
                                                   style: styleW700(
                                                     context,
-                                                    fontSize: 20  
-
-,
+                                                    fontSize: 20,
                                                   ),
                                                 ),
                                                 Text(
                                                   "by ${BlocProvider.of<MyPlaylistsCubit>(context).songsMyPlaylists[index].user!.username!}",
                                                   style: styleW400(
                                                     context,
-                                                    fontSize: 16  
-
-,
+                                                    fontSize: 16,
                                                   ),
                                                 ),
                                               ],

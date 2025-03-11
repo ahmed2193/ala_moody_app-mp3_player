@@ -78,7 +78,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: BlocBuilder<GetFavoriteCubit, GetFavoriteState>(
             builder: (context, state) {
               if (state is GetFavoriteIsLoading && state.isFirstFetch) {
@@ -292,7 +291,7 @@ class FavoriteItem extends StatelessWidget {
                   con.convertToAudio(songList),
                   songList.indexOf(songs),
                 );
-                print('You Click on po up menu item$value');
+                debugPrint('You Click on po up menu item$value');
               }
               // if (value == 2) {
               //   // await Share.share(

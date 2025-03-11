@@ -6,6 +6,7 @@ abstract class SearchRepository {
   Future<Either<Failure, BaseResponse>> getCategory({
     required String accessToken,
     required int pageNo,
+    required String searchTxt,
   });
   Future<Either<Failure, BaseResponse>> search({
     required String accessToken,

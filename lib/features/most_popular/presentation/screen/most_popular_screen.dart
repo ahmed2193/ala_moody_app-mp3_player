@@ -15,7 +15,6 @@ import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/controllers/main_controller.dart';
 import '../../../../core/utils/loading_indicator.dart';
 import '../../../../core/utils/no_data.dart';
@@ -73,7 +72,6 @@ class _MostPopularScreenState extends State<MostPopularScreen> {
     return SafeArea(
       child: Scaffold(
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -99,7 +97,7 @@ class _MostPopularScreenState extends State<MostPopularScreen> {
                 child: BlocBuilder<PopularSongsCubit, PopularSongsState>(
                   builder: (context, state) {
                     if (state is PopularSongsIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
+                      return const Center(child: LoadingScreen());
                     }
                     if (state is PopularSongsIsLoading) {
                       BlocProvider.of<PopularSongsCubit>(context).loadMore =
@@ -121,7 +119,9 @@ class _MostPopularScreenState extends State<MostPopularScreen> {
                               width: AppPadding.p20,
                             ),
                             physics: const BouncingScrollPhysics(),
-                            padding:  EdgeInsets.only(bottom: context.height * 0.129,),
+                            padding: EdgeInsets.only(
+                              bottom: context.height * 0.129,
+                            ),
                             itemCount:
                                 BlocProvider.of<PopularSongsCubit>(context)
                                         .popularSongs
@@ -148,8 +148,9 @@ class _MostPopularScreenState extends State<MostPopularScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
+                                        context,
+                                        listen: false,
+                                      );
                                       final items =
                                           BlocProvider.of<PopularSongsCubit>(
                                         context,
@@ -194,7 +195,6 @@ class _MostPopularScreenState extends State<MostPopularScreen> {
                   },
                 ),
               ),
-            
             ],
           ),
         ),

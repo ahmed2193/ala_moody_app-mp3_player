@@ -78,7 +78,6 @@ class _FollowingScreenState extends State<FollowingScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,7 +103,7 @@ class _FollowingScreenState extends State<FollowingScreen> {
                 child: BlocBuilder<FollowingCubit, FollowingState>(
                   builder: (context, state) {
                     if (state is FollowingIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
+                      return const Center(child: LoadingScreen());
                     }
                     if (state is FollowingIsLoading) {
                       BlocProvider.of<FollowingCubit>(context).loadMore = true;
@@ -146,39 +145,38 @@ class _FollowingScreenState extends State<FollowingScreen> {
                                     //       BlocProvider.of<FollowingCubit>(context)
                                     //           .followingCubit[index],
                                     // );
-                                  Container(
-                               margin:const EdgeInsets.all(12) ,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
+                                    Container(
+                                  margin: const EdgeInsets.all(12),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border: GradientBoxBorder(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          HexColor("#020024"),
+                                          HexColor("#090979"),
+                                          Colors.black26,
+                                        ],
+                                      ),
+                                      width: 2.4,
                                     ),
-                                    decoration: BoxDecoration(
-                                            border: GradientBoxBorder(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  HexColor("#020024"),
-                                                  HexColor("#090979"),
-                                                  Colors.black26,
-                                                ],
-                                              ),
-                                              width: 2.4,
-                                            ),
-                                            gradient: const LinearGradient(
-                                              end: Alignment(1, 2),
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.transparent,
-                                                Colors.transparent,
-                                                // HexColor("#020024"),
-                                                // HexColor("#090979"),
-                                                // Colors.black26,
-                                              ],
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                          ),
+                                    gradient: const LinearGradient(
+                                      end: Alignment(1, 2),
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        // HexColor("#020024"),
+                                        // HexColor("#090979"),
+                                        // Colors.black26,
+                                      ],
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -190,7 +188,8 @@ class _FollowingScreenState extends State<FollowingScreen> {
                                           height: 60,
                                           width: 60,
                                           padding: const EdgeInsets.all(
-                                              AppPadding.p10,),
+                                            AppPadding.p10,
+                                          ),
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             border: GradientBoxBorder(
@@ -211,9 +210,8 @@ class _FollowingScreenState extends State<FollowingScreen> {
                                             image: DecorationImage(
                                               image: NetworkImage(
                                                 BlocProvider.of<FollowingCubit>(
-                                                        context,)
-                                                    .following[index]
-                                                    .artworkUrl!,
+                                                  context,
+                                                ).following[index].artworkUrl!,
                                               ),
                                               fit: BoxFit.cover,
                                             ),
@@ -235,9 +233,8 @@ class _FollowingScreenState extends State<FollowingScreen> {
                                           children: [
                                             Text(
                                               BlocProvider.of<FollowingCubit>(
-                                                      context,)
-                                                  .following[index]
-                                                  .name!,
+                                                context,
+                                              ).following[index].name!,
                                               style: styleW600(context),
                                             ),
                                             //TODO ADDED EMAIL
@@ -256,9 +253,9 @@ class _FollowingScreenState extends State<FollowingScreen> {
                                           pushNavigate(
                                             context,
                                             ArtistDetails(
-                                              artist: BlocProvider.of<
+                                              artistId: BlocProvider.of<
                                                       FollowingCubit>(context)
-                                                  .following[index],
+                                                  .following[index].id.toString(),
 
                                               // user:artists,
                                             ),

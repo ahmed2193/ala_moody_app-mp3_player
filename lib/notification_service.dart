@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:alamoody/core/helper/print.dart';
-import 'package:alamoody/core/utils/navigator_reuse.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 
+import 'features/main_layout/cubit/tab_cubit.dart';
 import 'features/notification/presentation/screen/notification_screen.dart';
 
 class NotificationService {
@@ -27,11 +28,21 @@ class NotificationService {
     importance: Importance.max,
     priority: Priority.high,
   );
+  late BuildContext _mainContext;
+  Future<String?> getFcmToken() async {
+    try {
+      return await FirebaseMessaging.instance.getToken();
+    } catch (e) {
+      debugPrint("Error getting FCM token: $e");
+      return null;
+    }
+  }
 
   Future<void> initializeLocalNotifications(BuildContext context) async {
-    // await Firebase.initializeApp();
+    _mainContext = context;
     messaging = FirebaseMessaging.instance;
     await notificationPermission();
+    await getFcmToken(); // Fetch FCM token when initializing
     await initMessaging(context);
   }
 
@@ -85,7 +96,7 @@ class NotificationService {
         if (response.payload != null) {
           final Map<String, dynamic> messageData =
               json.decode(response.payload!);
-          _handleNotificationTap(context, RemoteMessage(data: messageData));
+          _handleNotificationTap(RemoteMessage(data: messageData));
         }
       },
     );
@@ -108,14 +119,14 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       // Constants.customPrint(message.senderId.toString());
       // Constants.customPrint(message.notification.toString());
-      _handleNotificationTap(context, message);
+      _handleNotificationTap(message);
     });
 
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        _handleNotificationTap(context, message);
+        _handleNotificationTap(message);
       }
     });
   }
@@ -140,14 +151,28 @@ class NotificationService {
 
     await _notificationsPlugin.show(0, title, body, details);
   }
-   void _handleNotificationTap(
-      BuildContext context, RemoteMessage message,) async {
+
+  void _handleNotificationTap(
+    RemoteMessage message,
+  ) async {
     final String? type = message.data['type'];
     printColored(message.data.toString());
     printColored(message.data.toString());
     log(message.data['receiverId'].toString());
- pushNavigate(context, const NotificationScreen());
-   
+
+    final tabCubit = _mainContext.read<TabCubit>();
+
+    // Switch to Home tab (index 0)
+    tabCubit.controller.index = 0;
+
+    // Push screen onto Home tab's Navigator
+    tabCubit.navigatorKeys[0].currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => const NotificationScreen(),
+      ),
+    );
+    // pushNavigate(context, const NotificationScreen());
+
     await _notificationsPlugin.cancelAll();
 
     // await _flutterLocalNotificationsPlugin.cancel(message.hashCode);
@@ -166,12 +191,11 @@ class NotificationService {
   //     _handleNotificationTap(context, message);
   //   });
   // }
-
 }
- 
-  int generateNotificationId() {
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    // Reduce the range to fit within a 32-bit integer
-    return timestamp % 2147483647
-        ; // 2147483647 is the max value for a 32-bit signed integer
-  }
+
+int generateNotificationId() {
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
+  // Reduce the range to fit within a 32-bit integer
+  return timestamp %
+      2147483647; // 2147483647 is the max value for a 32-bit signed integer
+}

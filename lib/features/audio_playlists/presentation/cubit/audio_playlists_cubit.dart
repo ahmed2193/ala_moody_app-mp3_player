@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '../../../../../core/api/base_response.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../core/entities/songs.dart';
-import '../../../../core/entities/user.dart';
 import '../../../../core/utils/controllers/main_controller.dart';
+import '../../../home/domain/entities/Songs_PlayLists.dart';
 import '../../domain/usecases/get_audio_playlists.dart';
 
 part 'audio_playlists_state.dart';
@@ -21,7 +21,8 @@ class AudioPlayListsCubit extends Cubit<AudioPlayListsState> {
   int pageNo = 1;
   int totalPages = 1;
   List<Songs> audioPlayLists = [];
-  User? user;
+
+  SongsPlayLists? playListsDetails;
   Future<void> getAudioPlayLists({
     String? accessToken,
     int? id,
@@ -39,7 +40,8 @@ class AudioPlayListsCubit extends Cubit<AudioPlayListsState> {
     emit(
       response.fold((failure) => AudioPlayListsError(message: failure.message),
           (value) {
-        // user = value.extraData;
+        // debugPrint(value.extraData);
+        playListsDetails = value.extraData;
         // audioPlayLists = value.data;
         audioPlayLists.addAll(value.data);
         totalPages = value.lastPage!;
@@ -52,6 +54,11 @@ class AudioPlayListsCubit extends Cubit<AudioPlayListsState> {
   void playSongs(context, int initial, List<Songs> audios) {
     final controller = Provider.of<MainController>(context, listen: false);
     controller.playSong(controller.convertToAudio(audios), initial);
+  }
+
+  void updatePlaylistDetails(SongsPlayLists newDetails) {
+    playListsDetails = newDetails;
+    emit(AudioPlayListsLoaded()); // Emit a new state
   }
 
   clearData() {

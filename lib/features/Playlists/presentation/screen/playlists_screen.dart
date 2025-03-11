@@ -15,7 +15,6 @@ import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/back_arrow.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../../core/utils/loading_indicator.dart';
@@ -28,8 +27,8 @@ import '../../../home/presentation/cubits/play_lists/play_lists_cubit.dart';
 class PlayListsScreen extends StatefulWidget {
   const PlayListsScreen({
     Key? key,
-  }) : super(key: key);
 
+  }) : super(key: key);
   @override
   State<PlayListsScreen> createState() => _PlayListsScreenState();
 }
@@ -42,7 +41,6 @@ class _PlayListsScreenState extends State<PlayListsScreen> {
       accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken,
     );
   }
-
 
   @override
   void initState() {
@@ -68,7 +66,6 @@ class _PlayListsScreenState extends State<PlayListsScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,187 +87,199 @@ class _PlayListsScreenState extends State<PlayListsScreen> {
                   ),
                 ],
               ),
-              BlocBuilder<PlayListsCubit, PlayListsState>(
-                builder: (context, state) {
-                  if (state is PlayListsIsLoading && state.isFirstFetch) {
-                    return const Expanded(child: LoadingScreen());
-                  }
-                  if (state is PlayListsIsLoading) {
-                    BlocProvider.of<PlayListsCubit>(context).loadMore = true;
-                  } else if (state is PlayListsError) {
-                    return error_widget.ErrorWidget(
-                      // onRetryPressed: () => _getAllPlayLists(),
-                      msg: state.message!,
-                    );
-                  }
-
-                  return BlocProvider.of<PlayListsCubit>(context)
-                          .songsPlayLists
-                          .isNotEmpty
-                      ? Expanded(
-                          child: ListView.separated(
-                            controller: scrollController,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                              width: AppPadding.p20,
-                            ),
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 100),
-                            itemCount: BlocProvider.of<PlayListsCubit>(context)
+           Expanded(
+                child: BlocBuilder<PlayListsCubit, PlayListsState>(
+                  builder: (context, state) {
+                    if (state is PlayListsIsLoading && state.isFirstFetch) {
+                      return const Center(child: LoadingScreen());
+                    }
+                    if (state is PlayListsIsLoading) {
+                      BlocProvider.of<PlayListsCubit>(context).loadMore = true;
+                    } else if (state is PlayListsError) {
+                      return error_widget.ErrorWidget(
+                        // onRetryPressed: () => _getAllPlayLists(),
+                        msg: state.message!,
+                      );
+                    }
+                
+                    return BlocProvider.of<PlayListsCubit>(context)
+                            .songsPlayLists
+                            .isNotEmpty
+                        ? ListView.separated(
+                          controller: scrollController,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(
+                            width: AppPadding.p20,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 100),
+                          itemCount: BlocProvider.of<PlayListsCubit>(context)
+                                  .songsPlayLists
+                                  .length +
+                              (BlocProvider.of<PlayListsCubit>(context)
+                                      .loadMore
+                                  ? 1
+                                  : 0),
+                          itemBuilder: (context, index) {
+                            if (index <
+                                BlocProvider.of<PlayListsCubit>(context)
                                     .songsPlayLists
-                                    .length +
-                                (BlocProvider.of<PlayListsCubit>(context)
-                                        .loadMore
-                                    ? 1
-                                    : 0),
-                            itemBuilder: (context, index) {
-                              if (index <
-                                  BlocProvider.of<PlayListsCubit>(context)
-                                      .songsPlayLists
-                                      .length) {
-                                return
-                                    //  FeaturedListSlider(
-                                    //   con: con,
-                                    //   index: index,
-                                    //   songsPlayLists:
-                                    //       BlocProvider.of<PlayListsCubit>(context)
-                                    //           .songsPlayLists[index],
-                                    // );
-                                    GestureDetector(
-                                  onTap: () {
-                                    pushNavigate(
-                                      context,
-                                      AudioPlayListsScreen(
-                                        songsPlayLists:
-                                            BlocProvider.of<PlayListsCubit>(
-                                          context,
-                                        ).songsPlayLists[index],
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
+                                    .length) {
+                              return
+                              
+                                  GestureDetector(
+                                onTap: () {
+                                  pushNavigate(
+                                    context,
+                                    AudioPlayListsScreen(
+                                      songsPlayLists:
+                                          BlocProvider.of<PlayListsCubit>(
+                                        context,
+                                      ).songsPlayLists[index],
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: GradientBoxBorder(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            HexColor("#020024"),
-                                            HexColor("#090979"),
-                                            Colors.black26,
-                                          ],
-                                        ),
-                                        width: 2.4,
-                                      ),
-                                      gradient: const LinearGradient(
-                                        end: Alignment(1, 2),
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border: GradientBoxBorder(
+                                      gradient: LinearGradient(
                                         colors: [
-                                          Colors.transparent,
-                                          Colors.transparent,
-                                          Colors.transparent,
-                                          // HexColor("#020024"),
-                                          // HexColor("#090979"),
-                                          // Colors.black26,
+                                          HexColor("#020024"),
+                                          HexColor("#090979"),
+                                          Colors.black26,
                                         ],
                                       ),
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
+                                      width: 2.4,
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          height: context.height * 0.110,
-                                          width: 75,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                BlocProvider.of<PlayListsCubit>(
+                                    gradient: const LinearGradient(
+                                      end: Alignment(1, 2),
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        // HexColor("#020024"),
+                                        // HexColor("#090979"),
+                                        // Colors.black26,
+                                      ],
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: context.height * 0.110,
+                                        width: 75,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                              BlocProvider.of<PlayListsCubit>(
+                                                context,
+                                              )
+                                                  .songsPlayLists[index]
+                                                  .artworkUrl!,
+                                            ),
+                                          ),
+                                        ),
+                                        // child:Image.asset(ImagesPath.singerImage ,fit: BoxFit.cover,)
+                                        //  const CircleAvatar(
+                                        //   // radius: 25,
+                                        //   backgroundImage: AssetImage(
+                                        //     ImagesPath.singerImage,
+                                        //   ),
+                                        // ),
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                            children: [
+                                              Text(
+                                                BlocProvider.of<
+                                                        PlayListsCubit>(
                                                   context,
                                                 )
                                                     .songsPlayLists[index]
-                                                    .artworkUrl!,
+                                                    .title!,
+                                                style: styleW700(
+                                                  context,
+                                                  fontSize: 20,
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          // child:Image.asset(ImagesPath.singerImage ,fit: BoxFit.cover,)
-                                          //  const CircleAvatar(
-                                          //   // radius: 25,
-                                          //   backgroundImage: AssetImage(
-                                          //     ImagesPath.singerImage,
-                                          //   ),
-                                          // ),
-                                        ),
-                                        const SizedBox(
-                                          width: 12,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  BlocProvider.of<
-                                                          PlayListsCubit>(
-                                                    context,
-                                                  )
+                                              if (BlocProvider.of<PlayListsCubit>(
+                                                context,
+                                              )
                                                       .songsPlayLists[index]
-                                                      .title!,
-                                                  style: styleW700(
-                                                    context,
-                                                    fontSize: 20,
-                                                  ),
+                                                      .description!
+                                                      .isEmpty) const SizedBox() else Text(
+                                                      BlocProvider.of<
+                                                              PlayListsCubit>(
+                                                        context,
+                                                      )
+                                                          .songsPlayLists[
+                                                              index]
+                                                          .description!,
+                                                      style: styleW400(
+                                                        context,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                              Text(
+                                                "by ${BlocProvider.of<PlayListsCubit>(context).songsPlayLists[index].user!.username!}",
+                                                style: styleW400(
+                                                  context,
+                                                  fontSize: 12,
                                                 ),
-                                                Text(
-                                                  "by ${BlocProvider.of<PlayListsCubit>(context).songsPlayLists[index].user!.username!}",
-                                                  style: styleW400(
-                                                    context,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
+                                ),
+                              );
+                            } else if (BlocProvider.of<PlayListsCubit>(
+                                  context,
+                                ).pageNo <=
+                                BlocProvider.of<PlayListsCubit>(context)
+                                    .totalPages) {
+                              Timer(const Duration(milliseconds: 30), () {
+                                scrollController.jumpTo(
+                                  scrollController.position.maxScrollExtent,
                                 );
-                              } else if (BlocProvider.of<PlayListsCubit>(
-                                    context,
-                                  ).pageNo <=
-                                  BlocProvider.of<PlayListsCubit>(context)
-                                      .totalPages) {
-                                Timer(const Duration(milliseconds: 30), () {
-                                  scrollController.jumpTo(
-                                    scrollController.position.maxScrollExtent,
-                                  );
-                                });
-
-                                return const LoadingIndicator();
-                              }
-                              return const SizedBox();
-                            },
-                          ),
+                              });
+                        
+                              return const LoadingIndicator();
+                            }
+                            return const SizedBox();
+                          },
                         )
-                      : const Center(
-                          child: NoData(),
-                        );
-                },
+                        : const Center(
+                            child: NoData(),
+                          );
+                  },
+                ),
               ),
             ],
           ),
@@ -279,4 +288,3 @@ class _PlayListsScreenState extends State<PlayListsScreen> {
     );
   }
 }
-        

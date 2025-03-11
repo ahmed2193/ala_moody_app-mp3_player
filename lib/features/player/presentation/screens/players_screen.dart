@@ -43,10 +43,13 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
-    final devicePexelRatio = MediaQuery.of(context).devicePixelRatio;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-    final double logicalWidthSize = 880 / devicePexelRatio;
-    final double logicalHeightSize = 440 / devicePexelRatio;
+    // ✅ Set width and height as a percentage of screen size
+    final double logicalWidthSize = screenWidth * 0.9; // 90% of screen width
+    final double logicalHeightSize =
+        screenHeight * 0.15; // 50% of screen height
     bool isLyrics = false;
     final bool isPremium = context
                 .read<ProfileCubit>()
@@ -78,7 +81,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             streamUrl = currentSource.uri.toString();
             // printColored('Current audio URL: $streamUrl');
           } else {
-            print('No audio source or unsupported source type');
+            debugPrint('No audio source or unsupported source type');
           }
           printColored('Current audio URL: $streamUrl');
 
@@ -135,322 +138,322 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     ),
                     SafeArea(
                       bottom: false,
-                      child: Column(
-                        children: [
-                          FirstSectionPlayerScreen(
-                            isPremium: true,
-                            myAudio: currentMediaItem,
-                            streamUrl: getCurrentStreamUrl(),
-                          ),
-                          if (isLyrics && lyrics.isNotEmpty)
-                            Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 16, 12, 20),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(width: context.height * 0.01),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                          imageUrl: imageUrl,
-                                          width: context.width * 0.111,
-                                          height: context.height * 0.058,
-                                          fit: BoxFit.cover,
-                                        ),
+                      child: SingleChildScrollView(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            children: [
+                              FirstSectionPlayerScreen(
+                                isPremium: true,
+                                myAudio: currentMediaItem,
+                                streamUrl: getCurrentStreamUrl(),
+                              ),
+                              if (isLyrics && lyrics.isNotEmpty)
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        0,
+                                        16,
+                                        12,
+                                        10,
                                       ),
-                                      SizedBox(width: context.height * 0.012),
-                                      Expanded(
-                                        flex: 2,
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: CachedNetworkImage(
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                              imageUrl: imageUrl,
+                                              width: context.width * 0.111,
+                                              height: context.height * 0.058,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: context.height * 0.012,
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  title,
+                                                  style: styleW700(
+                                                    context,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      context.height * 0.0060,
+                                                ),
+                                                Text(
+                                                  artist,
+                                                  style: styleW400(
+                                                    context,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3.7,
+                                      child: SingleChildScrollView(
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              title,
+                                              lyrics!,
+                                              textAlign: TextAlign.center,
                                               style: styleW700(
                                                 context,
+                                                fontSize: 18,
+                                                height: 2,
                                                 color: Colors.white,
                                               ),
+                                              maxLines: isPremium ? null : 3,
+                                            ),
+                                            if (!isPremium)
+                                              Center(
+                                                child: GradientCenterTextButton(
+                                                  onTap: () {
+                                                    context
+                                                        .read<TabCubit>()
+                                                        .changeTab(4);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      1.3,
+                                                  buttonText:
+                                                      AppLocalizations.of(
+                                                    context,
+                                                  )!
+                                                          .translate(
+                                                    'unlock_full_lyrics',
+                                                  ),
+                                                  listOfGradient: [
+                                                    HexColor("#DA00FF"),
+                                                    HexColor("#FFB000"),
+                                                  ],
+                                                ),
+                                              )
+                                            else
+                                              const SizedBox(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              else
+                                Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // SizedBox(width: context.height * 0.01),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: isFile
+                                            ? Image.file(
+                                                File(imageUrl),
+                                                width: logicalWidthSize,
+                                                height: logicalHeightSize,
+                                                fit: BoxFit.fill,
+                                              )
+                                            : CachedNetworkImage(
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                imageUrl: imageUrl,
+                                                width: logicalWidthSize,
+                                                height: logicalHeightSize,
+                                                fit: BoxFit.fill,
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              // const Spacer(),
+                              if (isLyrics || isFile)
+                                const SizedBox()
+                              else
+                                FavoriteInPlayerSection(
+                                  streamUrl: streamUrl!,
+                                  myAudio: currentMediaItem!,
+                                  con: widget.con,
+                                ),
+                              Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: context.height * 0.03,
+                                    ),
+                                    child: StreamBuilder<Duration?>(
+                                      stream: widget.con.player.positionStream,
+                                      builder: (context, snapshot) {
+                                        final currentPosition =
+                                            snapshot.data ?? Duration.zero;
+                                        final duration =
+                                            widget.con.player.duration ??
+                                                Duration.zero;
+
+                                        return SliderPlayerReuse(
+                                          currentPosition: currentPosition,
+                                          duration: duration,
+                                          seekTo: (to) {
+                                            widget.con.player.seek(to);
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: context.height * 0.21,
+                                    ),
+                                    child: StreamBuilder<LoopMode>(
+                                      stream: widget.con.player.loopModeStream,
+                                      builder: (context, loopModeSnapshot) {
+                                        return StreamBuilder<bool>(
+                                          stream:
+                                              widget.con.player.playingStream,
+                                          builder: (context, playingSnapshot) {
+                                            final isPlaying =
+                                                playingSnapshot.data ?? false;
+
+                                            return ControlPlayerSection(
+                                              isPlaying: isPlaying,
+                                              con: widget.con,
+                                              audioPlayer: widget.con.player,
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 8,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        lyrics.isEmpty
+                                            ? null
+                                            : setState(() {
+                                                isLyrics = !isLyrics;
+                                              });
+                                        log(isLyrics.toString());
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: isLyrics && lyrics.isNotEmpty
+                                              ? AppColors.cPrimary
+                                              : Colors.transparent,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(15),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(
+                                              CupertinoIcons.layers_alt,
+                                              color: Colors.white,
+                                              size: 18,
                                             ),
                                             SizedBox(
-                                              height: context.height * 0.0060,
+                                              width: context.height * 0.0060,
                                             ),
                                             Text(
-                                              artist,
-                                              style: styleW400(
+                                              AppLocalizations.of(context)!
+                                                      .translate('lyrics') ??
+                                                  '',
+                                              style: styleW700(
                                                 context,
-                                                fontSize: 12,
+                                                fontSize: 18,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3.7,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          lyrics!,
-                                          textAlign: TextAlign.center,
-                                          style: styleW700(
-                                            context,
-                                            fontSize: 18,
-                                            height: 2,
-                                            color: Colors.white,
-                                          ),
-                                          maxLines: isPremium ? null : 3,
-                                        ),
-                                        if (!isPremium)
-                                          Center(
-                                            child: GradientCenterTextButton(
-                                              onTap: () {
-                                            context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
-                                              },
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.3,
-                                              buttonText:
-                                                  AppLocalizations.of(context)!
-                                                      .translate(
-                                                'unlock_full_lyrics',
+                                    ),
+                                    InkWell(
+                                      onTap: !isPremium
+                                          ? () {
+                                              context
+                                                  .read<TabCubit>()
+                                                  .changeTab(4);
+                                              Navigator.pop(context);
+                                            }
+                                          : () => Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      AudioQueueWidget(
+                                                    controller: widget.con,
+                                                  ),
+                                                ),
                                               ),
-                                              listOfGradient: [
-                                                HexColor("#DA00FF"),
-                                                HexColor("#FFB000"),
-                                              ],
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            CupertinoIcons.music_note_list,
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                          SizedBox(
+                                            width: context.height * 0.0060,
+                                          ),
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                    .translate('queue') ??
+                                                '',
+                                            style: styleW700(
+                                              context,
+                                              fontSize: 16,
+                                              color: Colors.white,
                                             ),
-                                          )
-                                        else
-                                          const SizedBox(),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          else
-                            Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: context.height * 0.01),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: isFile
-                                          ? Image.file(
-                                              File(imageUrl),
-                                              width: logicalWidthSize,
-                                              height: logicalHeightSize,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : CachedNetworkImage(
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                              imageUrl: imageUrl,
-                                              width: logicalWidthSize,
-                                              height: logicalHeightSize,
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const Spacer(),
-                          if (isLyrics || isFile)
-                            const SizedBox()
-                          else
-                            FavoriteInPlayerSection(
-                              streamUrl: streamUrl!,
-                              myAudio: currentMediaItem!,
-                              con: widget.con,
-                            ),
-                          Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: context.height * 0.03),
-                                child: StreamBuilder<Duration?>(
-                                  stream: widget.con.player.positionStream,
-                                  builder: (context, snapshot) {
-                                    final currentPosition =
-                                        snapshot.data ?? Duration.zero;
-                                    final duration =
-                                        widget.con.player.duration ??
-                                            Duration.zero;
-
-                                    return SliderPlayerReuse(
-                                      currentPosition: currentPosition,
-                                      duration: duration,
-                                      seekTo: (to) {
-                                        widget.con.player.seek(to);
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: context.height * 0.21),
-                                child: StreamBuilder<LoopMode>(
-                                  stream: widget.con.player.loopModeStream,
-                                  builder: (context, loopModeSnapshot) {
-                                    return StreamBuilder<bool>(
-                                      stream: widget.con.player.playingStream,
-                                      builder: (context, playingSnapshot) {
-                                        final isPlaying =
-                                            playingSnapshot.data ?? false;
-
-                                        return ControlPlayerSection(
-                                          isPlaying: isPlaying,
-                                          con: widget.con,
-                                          // loopMode:
-                                          //     loopModeSnapshot.data ??
-                                          //         LoopMode.off,
-                                          // isPremium: isPremium,
-                                          // onStop: () {
-                                          //   widget.con.player.stop();
-                                          // },
-                                          // toggleLoop: () {},
-                                          // onPlay: widget.con.player.play,
-                                          // onNext: isPremium ||
-                                          //         !isNextOrPreviousLoading
-                                          //     ? () {
-                                          //         widget.con.player.pause();
-                                          //       }
-                                          //     : null, // Disable next if loading
-                                          // onPrevious: isPremium ||
-                                          //         !isNextOrPreviousLoading
-                                          //     ? () {
-                                          //         widget.con.player
-                                          //             .seekToPrevious();
-                                          //       }
-                                          //     : null,
-                                          audioPlayer: widget.con.player,
-                                          // Disable previous if loading
-                                        );
-                                      },
-                                    );
-                                  },
+                                    const SizedBox(),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          // if (widget.con.player.current.value!.audio.audio
-                          //     .audioType.name
-                          //     .contains('file'))
-                          //   const SizedBox()
-                          // else
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 8,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    lyrics.isEmpty
-                                        ? null
-                                        : setState(() {
-                                            isLyrics = !isLyrics;
-                                          });
-                                    log(isLyrics.toString());
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: isLyrics && lyrics.isNotEmpty
-                                          ? AppColors.cPrimary
-                                          : Colors.transparent,
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(15),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          CupertinoIcons.layers_alt,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        SizedBox(
-                                          width: context.height * 0.0060,
-                                        ),
-                                        Text(
-                                       AppLocalizations.of(context)!.translate('lyrics') ??''  ,
-                                          style: styleW700(
-                                            context,
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: !isPremium
-                                      ? () {
-                                     context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
-                                        }
-                                      : () => Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  AudioQueueWidget(
-                                                controller: widget.con,
-                                              ),
-                                            ),
-                                          ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        CupertinoIcons.music_note_list,
-                                        color: Colors.white,
-                                        size: 18,
-                                      ),
-                                      SizedBox(width: context.height * 0.0060),
-                                      Text(
-                                       AppLocalizations.of(context)!.translate('queue') ??''  ,
-                                        style: styleW700(
-                                          context,
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ],

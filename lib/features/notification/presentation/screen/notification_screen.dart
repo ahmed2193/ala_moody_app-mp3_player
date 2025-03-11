@@ -3,6 +3,8 @@ import 'dart:developer';
 
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:alamoody/core/entities/songs.dart';
+import 'package:alamoody/core/utils/app_strings.dart';
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/core/utils/no_data.dart';
 import 'package:alamoody/features/profile/presentation/cubits/profile/profile_cubit.dart';
@@ -13,12 +15,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/helper/app_size.dart';
 import '../../../../../../core/utils/error_widget.dart' as error_widget;
 import '../../../../config/locale/app_localizations.dart';
+import '../../../../core/artist_details.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/back_arrow.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../../core/utils/loading_indicator.dart';
+import '../../../../core/utils/navigator_reuse.dart';
+import '../../../audio_playlists/presentation/cubit/audio_playlists_cubit.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../cubits/get_notification/get_notification_cubit.dart';
 
@@ -35,8 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   ScrollController scrollController = ScrollController();
 
   getGetNotification() {
-
-log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
+    log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
     BlocProvider.of<GetNotificationCubit>(context).getNotification(
       accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken,
     );
@@ -72,7 +75,6 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
 
   Widget _buildBodyContent() {
     // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
     return WillPopScope(
       onWillPop: () {
         return BlocProvider.of<ProfileCubit>(context).getUserProfile(
@@ -85,7 +87,6 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
           // key: scaffoldKey,
           // drawer: const DrawerScreen(),
           body: ReusedBackground(
-            lightBG: ImagesPath.homeBGLightBG,
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -130,7 +131,8 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                               .notification
                               .isNotEmpty
                           ? ListView.separated(
-                              shrinkWrap: true,
+                              // reverse: true,
+                              // shrinkWrap: true,
                               padding: const EdgeInsetsDirectional.only(
                                 top: AppPadding.p20,
                                 bottom: AppPadding.p20 * 6,
@@ -139,7 +141,7 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                               controller: scrollController,
                               separatorBuilder: (context, index) =>
                                   const SizedBox(
-                                height: AppPadding.p20,
+                                height: AppPadding.p8,
                               ),
                               itemCount:
                                   BlocProvider.of<GetNotificationCubit>(context)
@@ -151,28 +153,63 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                                           ? 1
                                           : 0),
                               itemBuilder: (context, index) {
+                                final notification =
+                                    BlocProvider.of<GetNotificationCubit>(
+                                  context,
+                                ).notification[index];
+                                log(notification
+                                    .details!.artistId
+                                    .toString(),);
+
                                 if (index <
                                     BlocProvider.of<GetNotificationCubit>(
                                       context,
                                     ).notification.length) {
                                   return GestureDetector(
                                     onTap: () {
-                                      BlocProvider.of<GetNotificationCubit>(
-                                        context,
-                                      ).changeStatus(
-                                        nId: BlocProvider.of<
-                                            GetNotificationCubit>(
+                                      if (notification.action!
+                                          .contains(AppStrings.shareSong)) {
+                                        final List<Songs> audios = [];
+                                        audios
+                                            .add(notification.details!.object!);
+                                        BlocProvider.of<AudioPlayListsCubit>(
                                           context,
-                                        ).notification[index].id!,
+                                        ).playSongs(
+                                          context,
+                                          0,
+                                          audios,
+                                        );
+                                      }else{
+
+                                         pushNavigate(context, ArtistDetails(artistId: notification.details!.artistId!));
+                                      }
+
+                                      print(
+                                        notification.details!.object,
                                       );
+                                      print(
+                                        notification.details,
+                                      );
+                                      notification.read == 0
+                                          ? BlocProvider.of<
+                                              GetNotificationCubit>(
+                                              context,
+                                            ).changeStatus(
+                                              nId: notification.id!,
+                                              accessToken: context
+                                                  .read<LoginCubit>()
+                                                  .authenticatedUser!
+                                                  .accessToken!,
+                                            )
+                                          : null;
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.symmetric(
-                                        horizontal: 10,
+                                        horizontal: 9,
                                       ),
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 8,
-                                        vertical: 16,
+                                        vertical: 8,
                                       ),
                                       decoration: BoxDecoration(
                                         border: Border.all(
@@ -180,10 +217,12 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                                                       GetNotificationCubit>(
                                                     context,
                                                   ).notification[index].read ==
-                                                  '0'
-                                              ? Colors.black12
+                                                  0
+                                              ? Theme.of(context)
+                                                  .primaryIconTheme
+                                                  .color!
                                               : Colors.transparent,
-                                          width: 2,
+                                          width: 1.5,
                                         ),
                                         color: HexColor('#042667'),
                                         borderRadius: const BorderRadius.all(
@@ -192,31 +231,33 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                                       ),
                                       child: Row(
                                         children: [
-                                           BlocProvider.of<
-                                                      GetNotificationCubit>(
+                                          if (BlocProvider.of<
+                                                  GetNotificationCubit>(
                                                 context,
-                                              )
-                                                  .notification[index]
-                                                  .details==null? SizedBox()  :  ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: CachedNetworkImage(
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                              imageUrl: BlocProvider.of<
-                                                      GetNotificationCubit>(
-                                                context,
-                                              )
-                                                  .notification[index]
-                                                  .details!
-                                                  .object!
-                                                  .artworkUrl!,
-                                              width: 100,
-                                              height: context.height * 0.145,
-                                              fit: BoxFit.cover,
+                                              ).notification[index].details ==
+                                              null)
+                                            const SizedBox()
+                                          else
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: CachedNetworkImage(
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                imageUrl: BlocProvider.of<
+                                                        GetNotificationCubit>(
+                                                  context,
+                                                )
+                                                    .notification[index]
+                                                    .details!
+                                                    .object!
+                                                    .artworkUrl!,
+                                                width: context.height * 0.105,
+                                                height: context.height * 0.105,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                          ),
                                           Expanded(
                                             child: Padding(
                                               padding:
@@ -226,9 +267,7 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
                                                     CrossAxisAlignment.start,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
-                                                          
-
-.spaceBetween  ,
+                                                        .spaceBetween,
                                                 children: [
                                                   Text(
                                                     '${BlocProvider.of<GetNotificationCubit>(context).notification[index].title}',
@@ -305,7 +344,7 @@ log(context.read<LoginCubit>().authenticatedUser!.user!.id.toString());
   //         // drawer: const DrawerScreen(),
   //         body: ReusedBackground(
   //       darKBG: ImagesPath.homeBGDarkBG,
-  //       lightBG: ImagesPath.homeBGLightBG,
+  //
   //       body:
   //     ),),
   //   );

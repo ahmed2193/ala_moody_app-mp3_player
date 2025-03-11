@@ -168,6 +168,32 @@ class Constants {
       ),
     );
   }
+ static BoxDecoration customBackgroundDecoration({required bool isDarkMode}) {
+  return BoxDecoration(
+    gradient: isDarkMode
+        ? const LinearGradient(
+            begin: Alignment(-0.4, -1.0), // Matches approx. 168.14° angle
+            end: Alignment(1.0, 1.0),
+            colors: [
+              Color.fromRGBO(249, 21, 222, 0.3), // Dark mode gradient
+              Color.fromRGBO(25, 67, 244, 0.5),
+              Color.fromRGBO(22, 204, 247, 0.35),
+              Color.fromRGBO(249, 21, 222, 0.27),
+              Color.fromRGBO(25, 67, 244, 0.5),
+              Color.fromRGBO(22, 204, 247, 0.4),
+            ],
+            stops: [0.0, 0.26, 0.45, 0.63, 0.79, 0.98], // Smooth transitions
+          )
+        : const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white, // Light mode: plain white background
+              Colors.white,
+            ],
+          ),
+  );
+}
 
   String mapFailureToMsg(Failure failure) {
     switch (failure.runtimeType) {

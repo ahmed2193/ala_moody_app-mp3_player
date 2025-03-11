@@ -13,7 +13,6 @@ import '../../../../../../core/utils/error_widget.dart' as error_widget;
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/back_arrow.dart';
 import '../../../../core/utils/controllers/main_controller.dart';
 import '../../../../core/utils/loading_indicator.dart';
@@ -36,7 +35,7 @@ class RecentlyPlayScreen extends StatefulWidget {
 class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
   ScrollController scrollController = ScrollController();
 
- void getGetRecentlyPlay() {
+  void getGetRecentlyPlay() {
     BlocProvider.of<RecentListenCubit>(context).getrecentListen(
       accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken,
     );
@@ -78,7 +77,6 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,7 +102,7 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
                 child: BlocBuilder<RecentListenCubit, RecentListenState>(
                   builder: (context, state) {
                     if (state is RecentListenIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
+                      return const Center(child: LoadingScreen());
                     }
                     if (state is RecentListenIsLoading) {
                       BlocProvider.of<RecentListenCubit>(context).loadMore =
@@ -126,7 +124,7 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
                               width: AppPadding.p20,
                             ),
                             physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 50),
+                            padding: const EdgeInsets.only(bottom: 120),
                             itemCount:
                                 BlocProvider.of<RecentListenCubit>(context)
                                         .recentListen
@@ -140,33 +138,29 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
                                   BlocProvider.of<RecentListenCubit>(context)
                                       .recentListen
                                       .length) {
-                                return
-                                    //  FeaturedListSlider(
-                                    //   con: con,
-                                    //   index: index,
-                                    //   RecentListenCubit:
-                                    //       BlocProvider.of<RecentListenCubit>(context)
-                                    //           .RecentListenCubit[index],
-                                    // );
-                                    Padding(
+                                return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () {
                                       final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
+                                        context,
+                                        listen: false,
+                                      );
 
                                       con.playSong(
                                         con.convertToAudio(
-                                            BlocProvider.of<RecentListenCubit>(
-                                          context,
-                                        ).recentListen,),
+                                          BlocProvider.of<RecentListenCubit>(
+                                            context,
+                                          ).recentListen,
+                                        ),
                                         BlocProvider.of<RecentListenCubit>(
                                           context,
-                                        ).recentListen.indexOf(BlocProvider.of<
-                                                RecentListenCubit>(
-                                              context,
-                                            ).recentListen[index],),
+                                        ).recentListen.indexOf(
+                                              BlocProvider.of<
+                                                  RecentListenCubit>(
+                                                context,
+                                              ).recentListen[index],
+                                            ),
                                       );
                                     },
                                     child: SongItem(
@@ -204,9 +198,6 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
                   },
                 ),
               ),
-              SizedBox(
-                height: context.height * 0.129,
-              ),
             ],
           ),
         ),
@@ -214,5 +205,3 @@ class _RecentlyPlayScreenState extends State<RecentlyPlayScreen> {
     );
   }
 }
- 
-           

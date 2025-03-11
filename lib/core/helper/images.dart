@@ -1,5 +1,7 @@
 class ImagesPath {
-  static const logoImage = "assets/images/alamoddy-logo.png";
+  static const logoImage = "assets/images/alamoody-logo.png";
+  static const small_logo = "assets/images/small_logo.png";
+  static const splashLogoImage = "assets/images/logo.png";
   static const coupleImage = "assets/images/icons_png/couple 1.png";
   static const singerImage = "assets/images/icons_png/singer.jpg";
 
@@ -7,24 +9,16 @@ class ImagesPath {
   static const samplesHipHopImage =
       "assets/images/icons_png/samples-hip-hop.png";
 
-  // static const popularUnselectedImage =
-  //     "assets/images/popular-unselected-border.png";
+
   static const searchSliderImage = "assets/images/icons_png/search-slider.png";
   static const popularUnselectedImage =
       "assets/images/popular-unselected-border.png";
   static const ellipseImageBg = "assets/images/icons_png/Ellipse.png";
   static const popularSelectedImage = "assets/images/popular-border.png";
   static const playerBG = "assets/images/player-BG.png";
-  static const darkBG = "assets/images/bg-dark.png";
-  static const lightBG = "assets/images/homeBG-light.png";
-  static const homeBGLightBG = "assets/images/homeBG-light.png";
-  static const homeBGDarkBG = "assets/images/homeBG-dark.png";
-  static const drawerLightBG = "assets/images/bg-light.png";
-  static const drawerDarkBG = "assets/images/drawerBG-dark.png";
-  static const bigContainerBG = "assets/images/big_container_mood.png";
-  static const smallContainerBG = "assets/images/small_container_mood.png";
 
-  static const playIconImage = "assets/images/play-icon.png";
+  static const lightBG = "assets/images/homeBG-light.png";
+
   static const premiumImage = "assets/images/premium-image.png";
   static const googleIcon = "assets/images/icons_png/google.png";
   static const signUpForFreeIcon =
@@ -84,18 +78,13 @@ class ImagesPath {
   static const playerIcon7 = "assets/images/icons_png/player_icon_7.svg";
   static const doneIcon = "assets/images/icons_png/done_icon.svg";
   static const stopIcon = "assets/images/icons_png/stop_icon.svg";
-  static const membershipTabsBorder =
-      "assets/images/membership_tabs_border.png";
+
   static const moodsBorder = "assets/images/mood_border.png";
-  static const errorBG = "assets/images/error_dialog.png";
-  static const loadingBG = "assets/images/loading_dialog.png";
-  static const successBG = "assets/images/success_dialog.png";
-  static const warningBorder = "assets/images/warning_dialog.png";
+
   static const microphoneIcon =
       "assets/images/icons_png/akar-icons_microphone.svg";
 
-  static const subscriptionBgItem1 =
-      "assets/images/icons_png/subscription_bg_item_1.png";
+
 
   static const noData = "assets/images/icons_png/no_data.svg";
   static const notificationIcon =
@@ -122,9 +111,12 @@ class ImagesPath {
   static const homeIconpng = "assets/images/icons_png/home_png.png";
   static const followersIconpng = "assets/images/icons_png/followers.png";
   static const subscriptionIconpng = "assets/images/icons_png/subscription.png";
-  static const bgIntroLight = "assets/images/intro-light.png";
 
   static const defaultUserIcon = "assets/images/default_user_icon.png";
   static const bannerLighBg = "assets/images/icons_png/banner_ligh_bg.png";
   static const phoneIconSvg = "assets/images/icons_png/phone_icon.svg";
+  static const playlistDefultImage = "assets/images/icons_png/playlist_defult_image.png";
+  
+  static const subscriptionBgItem1 =
+      "assets/images/icons_png/subscription_bg_item_1.png";
 }

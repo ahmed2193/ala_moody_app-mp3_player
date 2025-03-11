@@ -34,10 +34,11 @@ class HomeDataCubit extends Cubit<HomeDataState> {
         homeData = value.data;
         if (homeData!.playlists!.isEmpty) {
           log('homeData');
-          // print(homeData!.playlists);
+          // debugPrint(homeData!.playlists);
+          log('homeData');
+        } else {
           log('homeData');
         }
-       else {log('homeData');}
 
         return HomeDataLoaded();
       }),

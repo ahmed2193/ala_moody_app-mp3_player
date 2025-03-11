@@ -4,14 +4,15 @@ import 'dart:io' show Platform;
 import 'package:alamoody/core/utils/constants.dart';
 import 'package:alamoody/core/utils/navigator_reuse.dart';
 import 'package:alamoody/features/auth/presentation/cubit/login/login_cubit.dart';
+import 'package:alamoody/features/auth/presentation/screen/login_screen.dart';
 import 'package:alamoody/features/auth/presentation/screen/login_with_phone_number_scree.dart';
+import 'package:alamoody/features/main_layout/presentation/pages/main_layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../../config/locale/app_localizations.dart';
-import '../../../../../config/routes/app_routes.dart';
 import '../../../../../config/themes/colors.dart';
 import '../../../../../core/components/reused_background.dart';
 import '../../../../../core/helper/app_size.dart';
@@ -94,9 +95,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             accessToken:
                 context.read<LoginCubit>().authenticatedUser!.accessToken!,
           );
-          Navigator.of(context).pushReplacementNamed(
-            Routes.mainRoute,
-          );
+                       pushNavigateAndRemoveUntil(context, const MainLayoutScreen());
+
+     
         } else if (state is UnAuthenticated) {
           Constants.showToast(message: state.message);
         }
@@ -147,10 +148,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             AppColors.cYellow,
                           ],
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              Routes.loginRoute,
-                            );
+                                         pushNavigateAndRemoveUntil(context, const LoginScreen());
+
+                        
                           },
                         ),
                         // phone

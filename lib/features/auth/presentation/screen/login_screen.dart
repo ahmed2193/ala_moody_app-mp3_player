@@ -2,15 +2,18 @@ import 'dart:io' show Platform;
 
 import 'package:alamoody/core/helper/user_hive.dart';
 import 'package:alamoody/core/utils/navigator_reuse.dart';
+import 'package:alamoody/features/auth/presentation/cubit/forget_password/forget_password_cubit.dart';
+import 'package:alamoody/features/auth/presentation/screen/forget_password_screen.dart';
 import 'package:alamoody/features/auth/presentation/screen/login_with_phone_number_scree.dart';
+import 'package:alamoody/features/auth/presentation/screen/register_screen.dart';
 import 'package:alamoody/features/main/presentation/screens/auth_screens/data/models/remember_me_model.dart';
+import 'package:alamoody/features/main_layout/presentation/pages/main_layout_screen.dart';
 import 'package:alamoody/features/profile/presentation/cubits/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/helper/images.dart';
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/colors.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/app_size.dart';
@@ -21,8 +24,10 @@ import '../../../../core/utils/default_text_form_field/validation_mixin.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../../core/utils/loading_indicator.dart';
 import '../../../../core/utils/media_query_values.dart';
+import '../../../../injection_container.dart' as di;
 import '../../../main/presentation/screens/welcome_screen/welcome_widgets/welcom_gradient_button.dart';
 import '../cubit/login/login_cubit.dart';
+import '../cubit/register/register_cubit.dart';
 import '../widgets/gradient_auth_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -69,9 +74,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             accessToken:
                 context.read<LoginCubit>().authenticatedUser!.accessToken!,
           );
-          Navigator.of(context).pushReplacementNamed(
-            Routes.mainRoute,
-          );
+              pushNavigateAndRemoveUntil(context, const MainLayoutScreen());
+
+          // Navigator.of(context).pushReplacementNamed(
+          //   Routes.mainRoute,
+          // );
         } else if (state is UnAuthenticated) {
           Constants.showToast(message: state.message);
         }
@@ -191,8 +198,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                               ),
                             ),
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(Routes.forgetPasswordRoute);
+                                         pushNavigate(context, BlocProvider(
+           create: (_) => di.sl<ForgetPasswordCubit>(),
+            child: const ForgetPasswordScreen(),
+          ),);
+                      
                             },
                           ),
                         ],
@@ -327,8 +337,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(Routes.registerRoute);
+                                pushNavigate(context, BlocProvider(
+            create: (_) => di.sl<RegisterCubit>(),
+            child: const RegisterScreen(),
+          ),);
+
+                            // Navigator.of(context)
+                            //     .pushNamed(Routes.registerRoute);
                           },
                         ),
                       ],

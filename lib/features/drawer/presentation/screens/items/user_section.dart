@@ -34,10 +34,25 @@ class _UserSectionDrawerState extends State<UserSectionDrawer> {
         if (state is ProfileIsLoading) {
           return const LoadingIndicator();
         } else if (state is ProfileError) {
-          return Center(
-            child: Text(
-              state.message!,
-            ),
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  state.message!,
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    context.read<ProfileCubit>().getUserProfile(
+                          accessToken: context
+                              .read<LoginCubit>()
+                              .authenticatedUser!
+                              .accessToken!,
+                        );
+                  },
+                  icon: const Icon(Icons.replay),),
+            ],
           );
         } else if (state is ProfileLoaded) {
           return Row(
@@ -45,62 +60,8 @@ class _UserSectionDrawerState extends State<UserSectionDrawer> {
             children: [
               // user pic
               const SizedBox(width: AppPadding.p10),
-              GestureDetector(
-                onTap: () => pushNavigate(
-                  context,
-                  const AccountSettingsScreen(),
-                ),
-                child: ClipOval(
-                  child: Container(
-                    height: MediaQuery.of(context).size.width *
-                        0.15, // Adjust height as needed
-                    width: MediaQuery.of(context).size.width *
-                        0.15, // Adjust width as needed
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          HexColor("#1818B7"),
-                          HexColor("#AE39A0"),
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      border: GradientBoxBorder(
-                        gradient: LinearGradient(
-                          colors: [
-                            HexColor("#A866AE"),
-                            HexColor("#37C3EE"),
-                          ],
-                        ),
-                        width: 2,
-                      ),
-                    ),
-                    child: state.userProfile.user == null
-                        ? Image.asset(
-                            ImagesPath.defaultUserIcon,
-                            fit: BoxFit.cover,
-                            // height: 20,
-                            // width: 20,
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: state.userProfile.user!.image!,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Image.asset(
-                              ImagesPath.defaultUserIcon,
-                              fit: BoxFit.cover,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-
-                // const CircleContainerWithGradientBorder(
-                //   isMusic: false,
-                //   width: 60,
-                //   image: ImagesPath.singerImage,
-                // ),
-              ),
-
+              ProfilePicture(hasUser: state.userProfile.user==null?false :true,imageUrl:state.userProfile.user!.image ,),
+             
               const SizedBox(width: AppPadding.p10),
               // user name and mail'
               Expanded(
@@ -141,6 +102,76 @@ class _UserSectionDrawerState extends State<UserSectionDrawer> {
           return const LoadingIndicator();
         }
       },
+    );
+  }
+}
+
+
+class ProfilePicture extends StatelessWidget {
+  final String? imageUrl;
+  final bool hasUser;
+  const ProfilePicture({Key? key, required this.imageUrl, required this.hasUser}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final double size = MediaQuery.of(context).size.width * 0.15; // Adjusted size
+
+    return GestureDetector(
+      onTap: () => pushNavigate(
+        context,
+        const AccountSettingsScreen(),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // **🔹 Gradient Circle Background**
+          Container(
+            height: size,
+            width: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  HexColor("#1818B7"),
+                  HexColor("#AE39A0"),
+                ],
+              ),
+              border: GradientBoxBorder(
+                gradient: LinearGradient(
+                  colors: [
+                    HexColor("#A866AE"),
+                    HexColor("#37C3EE"),
+                  ],
+                ),
+                width: 2,
+              ),
+            ),
+          ),
+
+          // **🔹 Circular Profile Image**
+          ClipOval(
+            child: SizedBox(
+              height: size * 0.92, // Slightly smaller than the outer container
+              width: size * 0.92,
+              child: hasUser && imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl!,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Image.asset(
+                        ImagesPath.defaultUserIcon,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Image.asset(
+                      ImagesPath.defaultUserIcon,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

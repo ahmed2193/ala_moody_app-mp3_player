@@ -1,5 +1,4 @@
 import 'package:alamoody/core/api/status_code.dart';
-import 'package:alamoody/core/helper/print.dart';
 import 'package:alamoody/features/notification/domain/usecases/change_notification_status_usecase.dart';
 
 import '../../../../core/api/api_consumer.dart';
@@ -57,6 +56,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   ) async {
     final response = await apiConsumer.get(
       '${AppStrings.changeStatus}/${params.notificationId}',
+         headers: {AppStrings.authorization:params. accessToken},
     );
 
     final BaseResponse baseResponse =

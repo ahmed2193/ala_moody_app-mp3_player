@@ -13,6 +13,7 @@ abstract class AuthRemoteDataSource {
   Future<BaseResponse> login({
     required String email,
     required String password,
+    required String fcmToken,
   });
 
   Future<BaseResponse> register({
@@ -34,6 +35,7 @@ abstract class AuthRemoteDataSource {
     required String phone,
     required String mobileFlag,
     required String userName,
+    required String fcmToken,
   });
 
   Future<BaseResponse> registerWithMobileNumber({
@@ -47,6 +49,7 @@ abstract class AuthRemoteDataSource {
     required int isGoogle,
     required String displayName,
     required String socialId,
+    required String fcmToken,
   });
   Future<BaseResponse> updateDeviceToken({
     required UpdateTokenParams params,
@@ -60,12 +63,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<BaseResponse> login({
     required String email,
     required String password,
+    required String fcmToken,
   }) async {
     final response = await apiConsumer.post(
       EndPoints.login,
       body: {
         AppStrings.userName: email,
         AppStrings.password: password,
+        AppStrings.fcmToken: fcmToken,
       },
     );
 
@@ -177,6 +182,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String phone,
     required String mobileFlag,
     required String userName,
+    required String fcmToken,
   }) async {
     final response = await apiConsumer.post(
       EndPoints.login,
@@ -184,6 +190,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         AppStrings.phone: phone,
         AppStrings.mobileFlag: mobileFlag,
         AppStrings.userName: userName,
+        AppStrings.fcmToken: fcmToken,
       },
     );
     final BaseResponse baseResponse =
@@ -241,6 +248,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required int isGoogle,
     required String displayName,
     required String socialId,
+    required String fcmToken,
   }) async {
     final response = await apiConsumer.post(
       EndPoints.loginWithSoialMedia,
@@ -249,6 +257,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         AppStrings.displayName: displayName,
         AppStrings.isGoogle: isGoogle,
         AppStrings.socialId: socialId,
+        AppStrings.fcmToken: fcmToken,
       },
     );
     final BaseResponse baseResponse =

@@ -6,6 +6,7 @@ import 'package:alamoody/features/auth/domain/usecases/login_with_mobile_number.
 import 'package:alamoody/features/auth/domain/usecases/login_with_soial_media.dart';
 import 'package:alamoody/features/auth/domain/usecases/update_token.dart';
 import 'package:alamoody/features/main/presentation/screens/auth_screens/data/models/remember_me_model.dart';
+import 'package:alamoody/notification_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,17 +16,19 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../../config/locale/app_localizations.dart';
-import '../../../../../config/routes/app_routes.dart';
+// import '../../../../../config/routes/app_routes.dart';
 import '../../../../../core/api/base_response.dart';
 import '../../../../../core/api/status_code.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/utils/app_strings.dart';
+import '../../../../../core/utils/navigator_reuse.dart';
 import '../../../../../core/utils/usecases/usecase.dart';
 import '../../../data/models/user_model.dart';
 import '../../../domain/usecases/get_saved_login_credentials.dart';
 import '../../../domain/usecases/login.dart';
 import '../../../domain/usecases/logout.dart';
 import '../../../domain/usecases/save_login_credentials.dart';
+import '../../screen/login_screen.dart';
 
 part 'login_state.dart';
 
@@ -39,6 +42,7 @@ class LoginCubit extends Cubit<LoginState> {
   final LoginWithMobileNumber loginWithMobileNumberUseCase;
   final UpdateTokenUseCase updateTokenUseCase;
   Map<String, dynamic>? _userData;
+  final NotificationService _notificationService = NotificationService();
 
   LoginCubit({
     required this.loginUseCase,
@@ -71,11 +75,14 @@ class LoginCubit extends Cubit<LoginState> {
     required bool isRememberMe,
   }) async {
     if (formKey.currentState!.validate()) {
+      final fcmToken = (await _notificationService.getFcmToken())!;
+
       changeLoadingView();
       final Either<Failure, BaseResponse> response = await loginUseCase.call(
         LoginParams(
           email: email,
           password: password,
+          fcmToken: fcmToken,
         ),
       );
       changeLoadingView();
@@ -139,13 +146,14 @@ class LoginCubit extends Cubit<LoginState> {
   }) async {
     if (formKey.currentState!.validate()) {
       changeLoadingView();
+      final fcmToken = (await _notificationService.getFcmToken())!;
       final Either<Failure, BaseResponse> response =
           await loginWithMobileNumberUseCase.call(
         LoginWithMobileNumberParams(
-          phone: phone,
-          mobileFlag: mobileFlag,
-          userName: userName,
-        ),
+            phone: phone,
+            mobileFlag: mobileFlag,
+            userName: userName,
+            fcmToken: fcmToken,),
       );
       changeLoadingView();
       response
@@ -183,14 +191,16 @@ class LoginCubit extends Cubit<LoginState> {
     required bool credentialsIsSaved,
   }) async {
     emit(LoginLoading(isloading));
+
+    final fcmToken = (await _notificationService.getFcmToken())!;
     final Either<Failure, BaseResponse> response =
         await loginWithSoialMediaUseCase.call(
       LoginWithSoialMediaParams(
-        email: email,
-        displayName: displayName,
-        isGoogle: isGoogle,
-        socialId: socialId,
-      ),
+          email: email,
+          displayName: displayName,
+          isGoogle: isGoogle,
+          socialId: socialId,
+          fcmToken: fcmToken,),
     );
     response.fold((failure) => emit(UnAuthenticated(message: failure.message!)),
         (response) async {
@@ -222,10 +232,8 @@ class LoginCubit extends Cubit<LoginState> {
       );
       logoutUseCase.call(NoParams());
       authenticatedUser = null;
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        Routes.loginRoute,
-        (Route<dynamic> route) => false,
-      );
+           pushNavigateAndRemoveUntil(context, const LoginScreen());
+ 
     });
   }
 
@@ -243,10 +251,11 @@ class LoginCubit extends Cubit<LoginState> {
         (response) async {
       if (response.statusCode == StatusCode.ok) {
         authenticatedUser = null;
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          Routes.loginRoute,
-          (Route<dynamic> route) => false,
-        );
+         pushNavigateAndRemoveUntil(context, const LoginScreen());
+        // Navigator.of(context).pushNamedAndRemoveUntil(
+        //   Routes.loginRoute,
+        //   (Route<dynamic> route) => false,
+        // );
         emit(UnAuthenticated(message: response.message!));
       } else {
         emit(UnAuthenticated(message: response.message!));

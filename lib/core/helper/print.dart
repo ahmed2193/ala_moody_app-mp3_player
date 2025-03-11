@@ -14,7 +14,6 @@ void printColored(dynamic message, {int colorCode = 36}) {
     // Set the color code based on input, or fall back to cyan if not found
     final color = colorCodes[colorCode] ?? colorCodes[36];
 
-    print('$color$message$resetColor');
   }
 }
 

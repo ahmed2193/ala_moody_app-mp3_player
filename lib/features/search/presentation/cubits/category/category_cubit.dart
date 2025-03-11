@@ -20,6 +20,7 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   Future<void> getCategory({
     String? accessToken,
+    String? searchTxt,
   }) async {
     if (state is CategoryIsLoading) return;
     emit(CategoryIsLoading(isFirstFetch: pageNo == 1));
@@ -27,6 +28,7 @@ class CategoryCubit extends Cubit<CategoryState> {
       GetCategoryParams(
         accessToken: accessToken!,
         pageNo: pageNo,
+        searchTxt: searchTxt!,
       ),
     );
     emit(

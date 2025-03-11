@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
 import '../../../../core/helper/images.dart';
@@ -17,6 +16,8 @@ import '../../../../core/utils/default_text_form_field/auth_textformfield.dart';
 import '../../../../core/utils/default_text_form_field/validation_mixin.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../../core/utils/loading_indicator.dart';
+import '../../../../core/utils/navigator_reuse.dart';
+import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../cubit/login/login_cubit.dart';
 import '../cubit/reset_password/reset_password_cubit.dart';
 import '../widgets/gradient_auth_button.dart';
@@ -46,10 +47,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
       listener: (context, state) {
         if (state is ResetPasswordSuccess) {
           Constants.showToast(message: state.message);
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            Routes.mainRoute,
-            (Route<dynamic> route) => false,
-          );
+           pushNavigateAndRemoveUntil(context, const MainLayoutScreen());
+  
         } else if (state is ResetPasswordFailed) {
           Constants.showError(context, state.message);
         }
@@ -64,30 +63,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     BuildContext context,
     ResetPasswordState state,
   ) {
-    return SafeArea(
-      child: Scaffold(
-        body: ReusedBackground(
-                      lightBG: ImagesPath.homeBGLightBG,
-
-          body: SingleChildScrollView(
+    return Scaffold(
+      body: ReusedBackground(
+        body: SafeArea(
+          child: SingleChildScrollView(
             child: Form(
               autovalidateMode: autovalidateMode(state),
               key: _formKey,
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment  
-
-.spaceBetween  ,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const BackArrow(),
                       Center(
                         child: Text(
                           AppLocalizations.of(context)!
                               .translate("change_password")!,
-                          style: styleW700(context)!.copyWith(fontSize: 20,  
-
-),
+                          style: styleW700(context)!.copyWith(
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                       const SizedBox(),
@@ -108,7 +103,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                         style: styleW500(context, fontSize: 28),
                       ),
                       // name text form
-
+              
                       // passowrd text form
                       AuthTextFormField(
                         hintText: AppLocalizations.of(context)!
@@ -143,7 +138,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                             FocusScope.of(context).unfocus(),
                         isPassword: true,
                       ),
-
+              
                       const SizedBox(
                         height: 30,
                       ),

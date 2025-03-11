@@ -25,7 +25,6 @@ class MoodScreen extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   State<MoodScreen> createState() => _MoodScreenState();
 }
@@ -49,7 +48,7 @@ class _MoodScreenState extends State<MoodScreen> {
       drawer: const DrawerScreen(),
       body: ReusedBackground(
         // darKBG: ImagesPath.homeBGDarkBG,
-        // lightBG: ImagesPath.homeBGLightBG,
+        //
         body: BlocBuilder<YourMoodCubit, YourMoodState>(
           builder: (context, state) {
             if (state is YourMoodIsLoading) {

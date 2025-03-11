@@ -18,6 +18,7 @@ class LoginWithSoialMedia
           email: params.email,
           isGoogle: params.isGoogle,
           socialId: params.socialId,
+          fcmToken: params.fcmToken,
           );
 }
 
@@ -26,11 +27,13 @@ class LoginWithSoialMediaParams extends Equatable {
   final int isGoogle;
   final String displayName;
   final String socialId;
+  final String fcmToken;
   const LoginWithSoialMediaParams({
     required this.email,
     required this.isGoogle,
     required this.displayName,
     required this.socialId,
+    required this.fcmToken,
   });
 
   @override
@@ -39,5 +42,6 @@ class LoginWithSoialMediaParams extends Equatable {
         isGoogle,
         displayName,
         socialId,
+        fcmToken,
       ];
 }

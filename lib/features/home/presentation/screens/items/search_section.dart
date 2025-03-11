@@ -22,6 +22,7 @@ class SearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         // sort
         Padding(
@@ -34,39 +35,15 @@ class SearchSection extends StatelessWidget {
 
         Expanded(
           child: SearchTextFormReuse(
-            // textInputAction: TextInputAction.done,
 
             searchController: searchController,
             hintText: 'search_audio_here',
             onFieldSubmitted: onFieldSubmitted,
             onClosePressed: onClosePressed,
-//              () {
-//               onFieldSubmitted;
 
-// // FocusManager.instance.primaryFocus?.unfocus();              print('object');
-// //               if (searchController.text.isNotEmpty) {
-
-// //                 searchController.clear();
-// //               }
-//             },
-            // readOnly: true,
           ),
         ),
-        // equalizer
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //   child: Container(
-        //     decoration: BoxDecoration(
-        //       color: HexColor("#58585847"),
-        //       borderRadius: BorderRadius.circular(10),
-        //     ),
-        //     child:
-        //     // ),
-        //     // child: const ReusedIconButton(
-        //     //   image: ImagesPath.equalizerIconSvg,
-        //     // ),
-        //   ),
-        // ),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Stack(

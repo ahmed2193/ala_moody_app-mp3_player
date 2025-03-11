@@ -5,13 +5,13 @@ import 'dart:developer';
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/core/utils/navigator_reuse.dart';
 import 'package:alamoody/features/auth/presentation/screen/register_with_mobile_number.dart';
+import 'package:alamoody/features/main_layout/presentation/pages/main_layout_screen.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/helper/images.dart';
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/colors.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
@@ -58,9 +58,8 @@ class _LoginWithPhoneNumberScreenState extends State<LoginWithPhoneNumberScreen>
             accessToken:
                 context.read<LoginCubit>().authenticatedUser!.accessToken!,
           );
-          Navigator.of(context).pushReplacementNamed(
-            Routes.mainRoute,
-          );
+       
+           pushNavigateAndRemoveUntil(context, const MainLayoutScreen());
         } else if (state is UnAuthenticated) {
           Constants.showError(context, state.message);
         }
@@ -78,7 +77,7 @@ class _LoginWithPhoneNumberScreenState extends State<LoginWithPhoneNumberScreen>
     return Scaffold(
       body: ReusedBackground(
         // darKBG: ImagesPath.homeBGDarkBG,
-        // lightBG: ImagesPath.homeBGLightBG,
+        //
         body: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -111,11 +110,16 @@ class _LoginWithPhoneNumberScreenState extends State<LoginWithPhoneNumberScreen>
                           child: StatefulBuilder(
                             builder: (BuildContext context, setState) {
                               return CountryCodePicker(
+                         
+                                // color
+
+
+                                    // Theme.of(context).iconTheme.color,
                                 searchStyle: styleW400(context),
                                 flagWidth: 20,
-                                boxDecoration: const BoxDecoration(
-                                  color: AppColors.cAppBarDark,
-                                ),
+                                // boxDecoration: const BoxDecoration(
+                                //   color: Theme.of(context).,
+                                // ),
                                 searchDecoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!
                                       .translate('COUNTRY_CODE_LBL'),

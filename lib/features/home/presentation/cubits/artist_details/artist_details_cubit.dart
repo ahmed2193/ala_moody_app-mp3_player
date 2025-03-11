@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/api/base_response.dart';
+import '../../../../../core/entities/artists.dart';
 import '../../../../../core/entities/songs.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/usecases/get_artists_details.dart';
@@ -20,6 +21,7 @@ class ArtistDetailsCubit extends Cubit<ArtistDetailsState> {
 
   int pageNo = 1;
   int totalPages = 1;
+  Artists? artistData;
   Future<void> artistDetails({
     required int id,
     required String accessToken,
@@ -36,17 +38,13 @@ class ArtistDetailsCubit extends Cubit<ArtistDetailsState> {
     emit(
       response.fold((failure) => ArtistDetailsError(message: failure.message!),
           (value) {
-        // songs = value.data;
+        artistData = value.extraData;
         songs.addAll(value.data);
 
         totalPages = value.lastPage!;
-        // totalPages = 0;
 
         pageNo++;
-        // log('===============${songs[0]}===========');
-        // .addAll(value.data);
-        // totalPages = value.lastPage!;
-        // pageNo++;
+      
         return ArtistDetailsSuccess();
       }),
     );

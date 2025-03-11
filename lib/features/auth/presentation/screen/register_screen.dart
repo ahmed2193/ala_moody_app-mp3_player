@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/colors.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
@@ -43,12 +42,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       listener: (context, state) {
         if (state is RegisterSuccess) {
           Constants.showToast(
-              message: AppLocalizations.of(context)!
-                  .translate('register_successfully')!,);
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            Routes.loginRoute,
-            (Route<dynamic> route) => false,
+            message: AppLocalizations.of(context)!
+                .translate('register_successfully')!,
           );
+             pushNavigateAndRemoveUntil(context, const LoginScreen());
+          // Navigator.of(context).pushNamedAndRemoveUntil(
+          //   Routes.loginRoute,
+          //   (Route<dynamic> route) => false,
+          // );
         } else if (state is RegisterFailed) {
           Constants.showError(context, state.message);
         }
@@ -66,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     return Scaffold(
       body: ReusedBackground(
         // darKBG: ImagesPath.homeBGDarkBG,
-        // lightBG: ImagesPath.homeBGLightBG,
+        //
         body: Center(
           child: SingleChildScrollView(
             child: Form(

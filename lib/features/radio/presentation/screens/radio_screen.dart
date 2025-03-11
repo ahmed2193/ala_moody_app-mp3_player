@@ -1,6 +1,6 @@
-import 'package:alamoody/core/utils/back_arrow.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/core/utils/no_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,14 +13,79 @@ import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/app_size.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/navigator_reuse.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../cubits/radio/radio_cubit.dart';
 import 'radio_channels.dart';
 
+// class RadioScreen extends StatefulWidget {
+//   const RadioScreen({super.key});
+
+//   @override
+//   State<RadioScreen> createState() => _RadioScreenState();
+// }
+
+// class _RadioScreenState extends State<RadioScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: ReusedBackground(
+//         body: SafeArea(
+//           bottom: false,
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               SizedBox(
+//                 height: context.height * 0.017,
+//               ),
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   const BackArrow(),
+//                   Center(
+//                     child: Text(
+//                       AppLocalizations.of(context)!.translate("radio")!,
+//                       style:
+//                           styleW600(context)!.copyWith(fontSize: FontSize.f18),
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     width: context.height * 0.017,
+//                   ),
+//                 ],
+//               ),
+//               Center(
+//                 child: Text(
+//                   AppLocalizations.of(context)!
+//                       .translate('listen_to_live_radio_stations')!,
+//                   style: styleW500(context, fontSize: 16),
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ),
+//               Padding(
+//                 padding: const EdgeInsets.all(12.0),
+//                 child: Text(
+//                   AppLocalizations.of(context)!.translate('categories')!,
+
+//                   // 'Categories',
+//                   style: styleW600(context, fontSize: 22),
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ),
+//               const Expanded(
+//                 child: GridViewWidget(),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
 class RadioScreen extends StatefulWidget {
-  const RadioScreen({ super.key});
+  const RadioScreen({super.key});
 
   @override
   State<RadioScreen> createState() => _RadioScreenState();
@@ -31,53 +96,64 @@ class _RadioScreenState extends State<RadioScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ReusedBackground(
-       lightBG: ImagesPath.homeBGLightBG,
         body: SafeArea(
           bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: context.height * 0.017,
-              ),
+              const SizedBox(height: 20),
+
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const BackArrow(),
+                    SizedBox(
+                    width: context.height * 0.017,
+                  ),
                   Center(
                     child: Text(
-                      AppLocalizations.of(context)!.translate("radio")!,
-                      style:
-                          styleW600(context)!.copyWith(fontSize: FontSize.f18),
+                      AppLocalizations.of(context)!.translate("live_Radio_Worldwide")!,
+                      style: styleW700(context)!.copyWith(
+                        fontSize: 26,
+                        foreground: Paint()..shader = const LinearGradient(
+                          colors: [Colors.blueAccent, Colors.purpleAccent],
+                        ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(
-                    width: context.height * 0.017,
                   ),
                 ],
               ),
+
+              const SizedBox(height: 5),
+
               Center(
                 child: Text(
-                  AppLocalizations.of(context)!
+                  
+                               AppLocalizations.of(context)!
                       .translate('listen_to_live_radio_stations')!,
-                  style: styleW500(context, fontSize: 16),
+                  style: styleW500(context, fontSize: 16, color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
               ),
+
+              const SizedBox(height: 20),
+
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   AppLocalizations.of(context)!.translate('categories')!,
-
-                  // 'Categories',
                   style: styleW600(context, fontSize: 22),
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
                 ),
               ),
+
+              const SizedBox(height: 10),
+
               const Expanded(
-                child: GridViewWidget(
-                ),
+                child: GridViewWidget(),
               ),
+
+   
             ],
           ),
         ),
@@ -85,6 +161,7 @@ class _RadioScreenState extends State<RadioScreen> {
     );
   }
 }
+
 
 class GridViewWidget extends StatefulWidget {
   const GridViewWidget({
@@ -116,7 +193,8 @@ class _GridViewWidgetState extends State<GridViewWidget> {
           return GridView.builder(
             itemCount: radio.length,
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(AppPadding.p12,AppPadding.p12,AppPadding.p12,120),
+            padding: const EdgeInsets.fromLTRB(
+                AppPadding.p12, AppPadding.p12, AppPadding.p12, 120,),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 10,
@@ -130,7 +208,7 @@ class _GridViewWidgetState extends State<GridViewWidget> {
                 onTap: () {
                   pushNavigate(
                     context,
-                    RadioChannels( radioData: radio[index]),
+                    RadioChannels(radioData: radio[index]),
                   );
                 },
                 child: Column(
@@ -170,3 +248,4 @@ class _GridViewWidgetState extends State<GridViewWidget> {
     );
   }
 }
+

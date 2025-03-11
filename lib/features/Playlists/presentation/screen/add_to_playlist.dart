@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/components/reused_background.dart';
 import 'package:alamoody/core/helper/app_size.dart';
-import 'package:alamoody/core/helper/images.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/constants.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:alamoody/core/utils/media_query_values.dart';
+import 'package:alamoody/features/Playlists/presentation/cubits/create_edit_playlist/playlists_state.dart';
 import 'package:alamoody/features/auth/presentation/widgets/gradient_auth_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +24,9 @@ import '../../../../core/utils/no_data.dart';
 import '../../../audio_playlists/presentation/screen/loading.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../cubits/add_song_to_playlists/add_song_to_playlists_cubit.dart';
-import '../cubits/create_playlists/create_playlists_cubit.dart';
+import '../cubits/create_edit_playlist/create_playlist_cubit.dart';
 import '../cubits/my_playlists/my_playlists_cubit.dart';
+import '../widget/show_edit_create_playlist_model_bottom_sheet.dart';
 
 class AddToPlaylist extends StatefulWidget {
   Songs? song;
@@ -45,13 +46,6 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
   getMyPlaylists() {
     BlocProvider.of<MyPlaylistsCubit>(context).getMyPlaylists(
       accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken,
-    );
-  }
-
-  createPlaylists({required String playlistName}) {
-    BlocProvider.of<CreatePlaylistsCubit>(context).createPlaylists(
-      playlistName: playlistName,
-      accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken!,
     );
   }
 
@@ -93,9 +87,9 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<CreatePlaylistsCubit, CreatePlaylistsState>(
+        BlocListener<CreatePlaylistCubit, PlaylistState>(
           listener: (context, state) {
-            if (state is CreatePlaylistsSuccess) {
+            if (state is PlaylistSuccess) {
               Navigator.of(context).pop();
               BlocProvider.of<MyPlaylistsCubit>(context).clearData();
               getMyPlaylists();
@@ -106,7 +100,8 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
           listener: (context, state) {
             if (state is AddSongToPlaylistsSuccess) {
               Constants.showToast(
-                message: "Song added to playlist.",
+                message: AppLocalizations.of(context)!
+                    .translate("song_added_to_playlist")!,
               );
               Navigator.pop(context);
               Navigator.of(context).pop();
@@ -122,7 +117,6 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
         // drawer: const DrawerScreen(),
 
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: ListView(
             children: [
               const SizedBox(
@@ -158,76 +152,7 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
                         HexColor("#39BCE9"),
                       ],
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.grey.shade900,
-                              title: Text(
-                                AppLocalizations.of(context)!
-                                    .translate("give_your_collection_name")!,
-                                // 'give_your_collection_name',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              content: TextField(
-                                controller: con,
-                                cursorColor: Colors.lightGreen,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                ),
-                                maxLines: 3,
-                                autofocus: true,
-                                decoration: const InputDecoration(
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.lightGreen,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .translate("cancel")!,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    createPlaylists(playlistName: con.text);
-                                  },
-                                  child: BlocBuilder<CreatePlaylistsCubit,
-                                      CreatePlaylistsState>(
-                                    builder: (context, state) {
-                                      return state is CreatePlaylistsLoading
-                                          ? const LoadingIndicator()
-                                          : Text(
-                                              AppLocalizations.of(context)!
-                                                  .translate(
-                                                "create_a_new_Playlist",
-                                              )!,
-                                              style: TextStyle(
-                                                color: Colors.lightGreen[700],
-                                                fontSize: 15,
-                                              ),
-                                            );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        showEditCreatePlaylistBottomSheet(context,);
                       },
                     ),
                   ),
@@ -261,9 +186,10 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
                           .songsMyPlaylists
                           .isNotEmpty
                       ? Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.fromLTRB(10.0,10,10,120),
                           child: ListView.builder(
                             shrinkWrap: true,
+                            reverse: true,
                             physics: const NeverScrollableScrollPhysics(),
                             controller: scrollController,
                             padding: const EdgeInsets.only(bottom: 50),
@@ -327,7 +253,7 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
                                     style: styleW700(context, fontSize: 16),
                                   ),
                                   subtitle: Text(
-                                    "Created By you ",
+                                    playList.description!,
                                     //  +
                                     //     "".displayTimeAgoFromTimestamp(Myplaylists['created']),
                                     style: styleW400(context, fontSize: 12),
@@ -351,11 +277,11 @@ class _AddToMyPlaylistState extends State<AddToPlaylist> {
                           ),
                         )
                       : const Padding(
-                        padding: EdgeInsets.only(top: 139),
-                        child: Center(
+                          padding: EdgeInsets.only(top: 139),
+                          child: Center(
                             child: NoData(),
                           ),
-                      );
+                        );
                 },
               ),
             ],

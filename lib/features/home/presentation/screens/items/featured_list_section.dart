@@ -1,4 +1,3 @@
-
 import 'package:alamoody/core/helper/font_style.dart';
 import 'package:flutter/material.dart';
 
@@ -36,47 +35,48 @@ class FeaturedListSection extends StatelessWidget {
           onPressed: () {
             pushNavigate(
               context,
-              const PlayListsScreen(
-              ),
+              const PlayListsScreen(),
             );
           },
         ),
-      if (songsPlayLists.isEmpty) Container(
-        alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height/10,
-       child: Text(
-                          AppLocalizations.of(context)!.translate('no_data_found')!,
-                          style: styleW700(context, fontSize: 14,  
-           
-           ),
-                        ),
-     ) else SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 100,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(
-              width: AppPadding.p20,
+        if (songsPlayLists.isEmpty)
+          Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height / 10,
+            child: Text(
+              AppLocalizations.of(context)!.translate('no_data_found')!,
+              style: styleW700(
+                context,
+                fontSize: 14,
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: AppPadding.p10),
-            itemCount: songsPlayLists.length,
-            itemBuilder: (context, index) {
-              // log(songsPlayLists[index].title!);
-              return 
-              
-        MainCubit.isDark?      FeaturedListSlider(
-                index: index,
-                songsPlayLists: songsPlayLists[index],
-              ):    LightFeaturedListSlider(
-                index: index,
-                songsPlayLists: songsPlayLists[index],
-              );
-          
-            },
+          )
+        else
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 100,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(
+                width: AppPadding.p20,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p10),
+              itemCount: songsPlayLists.length,
+              itemBuilder: (context, index) {
+                // log(songsPlayLists[index].title!);
+                return MainCubit.isDark
+                    ? FeaturedListSlider(
+                        index: index,
+                        songsPlayLists: songsPlayLists[index],
+                      )
+                    : LightFeaturedListSlider(
+                        index: index,
+                        songsPlayLists: songsPlayLists[index],
+                      );
+              },
+            ),
           ),
-        ),
       ],
     );
   }
 }
-

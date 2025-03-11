@@ -1,5 +1,6 @@
 import 'package:alamoody/core/utils/hex_color.dart';
 import 'package:alamoody/core/utils/media_query_values.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 
@@ -194,20 +195,39 @@ class RadioDarkBody extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
+                  // Container(
+                  //   height: logicalSize,
+                  //   width: logicalSize,
+                  //   alignment: Alignment.center,
+                  //   decoration: BoxDecoration(
+                  //     shape: BoxShape.circle,
+                  //     image: DecorationImage(
+                  //       fit: BoxFit.cover,
+                  //       image: NetworkImage(
+                  //         radioData[index].artworkUrl!,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
                   Container(
-                    height: logicalSize,
-                    width: logicalSize,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          radioData[index].artworkUrl!,
-                        ),
-                      ),
-                    ),
-                  ),
+  height: logicalSize,
+  width: logicalSize,
+  alignment: Alignment.center,
+  decoration: const BoxDecoration(
+    shape: BoxShape.circle,
+  ),
+  child: ClipOval(
+    child: CachedNetworkImage(
+      imageUrl: radioData[index].artworkUrl!,
+      fit: BoxFit.cover,
+      width: logicalSize,
+      height: logicalSize,
+      placeholder: (context, url) => const CircularProgressIndicator(),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+    ),
+  ),
+),
                   const SizedBox(
                     height: 3,
                   ),

@@ -4,7 +4,6 @@ import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/components/reused_background.dart';
 import 'package:alamoody/core/components/screen_state/loading_screen.dart';
 import 'package:alamoody/core/helper/font_style.dart';
-import 'package:alamoody/core/helper/images.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:alamoody/core/utils/loading_indicator.dart';
@@ -77,7 +76,6 @@ class _GenresScreenState extends State<GenresScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -103,7 +101,7 @@ class _GenresScreenState extends State<GenresScreen> {
                 child: BlocBuilder<GenresCubit, GenresState>(
                   builder: (context, state) {
                     if (state is GenresIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
+                      return const Center(child: LoadingScreen());
                     }
                     if (state is GenresIsLoading) {
                       BlocProvider.of<GenresCubit>(context).loadMore = true;
@@ -149,8 +147,9 @@ class _GenresScreenState extends State<GenresScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
+                                        context,
+                                        listen: false,
+                                      );
                                       final items =
                                           BlocProvider.of<GenresCubit>(
                                         context,

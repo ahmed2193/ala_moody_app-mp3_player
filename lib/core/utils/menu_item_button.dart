@@ -8,10 +8,11 @@ import '../../features/favorites/presentation/cubits/add_and_remove_from_favorit
 import 'hex_color.dart';
 
 class MenuItemButtonWidget extends StatelessWidget {
-  const MenuItemButtonWidget(
-      {super.key,
-      required this.song,
-      this.deleteIcon = const SizedBox(),});
+  const MenuItemButtonWidget({
+    super.key,
+    required this.song,
+    this.deleteIcon = const SizedBox(),
+  });
   final Songs song;
   final Widget deleteIcon;
 
@@ -69,32 +70,28 @@ class MenuItemButtonWidget extends StatelessWidget {
                   },
                   child: Icon(
                     isFav ? Icons.favorite : Icons.favorite_border_sharp,
-                    color: isFav ? HexColor('#F915DE') : Theme.of(context).listTileTheme.textColor,
+                    color: isFav
+                        ? HexColor('#F915DE')
+                        : Theme.of(context).listTileTheme.textColor,
                   ),
                 ),
                 IconButton(
                   onPressed: () {
                     showModalBottomSheet(
-                      useRootNavigator: true,
-                      isScrollControlled: true,
-                      elevation: 3,
-                      backgroundColor: Colors.black,
                       context: context,
-                      builder: (context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.8,
-                          child: BottomSheetWidget(
-                            // con: con,
-                            song: song,
-                          ),
-                        );
-                      },
+                      isScrollControlled: true,
+                     useSafeArea: true,
+                                  useRootNavigator: true,
+                      builder: (_) => BottomSheetWidget(
+                        // con: con,
+                        song: song,
+                      ),
                     );
                   },
                   icon: RotatedBox(
                     quarterTurns: 3,
                     child: Icon(
-                    Icons.more_vert,
+                      Icons.more_vert,
                       color: Theme.of(context).listTileTheme.textColor,
                     ),
                   ),

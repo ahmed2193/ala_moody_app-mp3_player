@@ -180,6 +180,8 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         responseJson[AppStrings.data][AppStrings.songs][AppStrings.data];
     baseResponse.data =
         iterable.map((model) => SongModel.fromJson(model)).toList();
+            baseResponse.extraData =
+     ArtistsModel.fromJson(responseJson[AppStrings.data]);
     baseResponse.currentPage =
         responseJson[AppStrings.data][AppStrings.songs][AppStrings.from];
     baseResponse.lastPage =

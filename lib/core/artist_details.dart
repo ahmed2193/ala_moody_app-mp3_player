@@ -4,6 +4,7 @@ import 'dart:developer';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:alamoody/core/helper/print.dart';
+import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/media_query_values.dart';
 import 'package:alamoody/core/utils/menu_item_button.dart';
 import 'package:alamoody/core/utils/no_data.dart';
@@ -15,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/utils/error_widget.dart' as error_widget;
 import '../../../../core/components/reused_background.dart';
-import '../../../../core/helper/images.dart';
 import '../config/locale/app_localizations.dart';
 import '../config/themes/colors.dart';
 import '../features/audio_playlists/presentation/cubit/audio_playlists_cubit.dart';
@@ -30,10 +30,10 @@ import 'utils/loading_indicator.dart';
 import 'utils/sliver_appbar.dart';
 
 class ArtistDetails extends StatefulWidget {
-  final Artists artist;
+  final String artistId;
   const ArtistDetails({
     Key? key,
-    required this.artist,
+    required this.artistId,
   }) : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class _ArtistDetailsState extends State<ArtistDetails> {
 
   Future<void> _getArtists() =>
       BlocProvider.of<ArtistDetailsCubit>(context).artistDetails(
-        id: widget.artist.id!,
+        id: int.parse(widget.artistId),
         accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken!,
       );
   void _setupScrollControllerSongs(context) {
@@ -75,7 +75,6 @@ class _ArtistDetailsState extends State<ArtistDetails> {
       child: Scaffold(
         // extendBody: true,
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: BlocBuilder<ArtistDetailsCubit, ArtistDetailsState>(
             builder: (context, state) {
               if (state is ArtistDetailsLoading && state.isFirstFetch) {
@@ -84,9 +83,18 @@ class _ArtistDetailsState extends State<ArtistDetails> {
               if (state is ArtistDetailsLoading) {
                 BlocProvider.of<ArtistDetailsCubit>(context).loadMore = true;
               } else if (state is ArtistDetailsError) {
-                return error_widget.ErrorWidget(
-                  onRetryPressed: () => _getArtists(),
-                  msg: state.message,
+                return  Stack(
+                  children: [
+                    error_widget.ErrorWidget(
+                      onRetryPressed: () => _getArtists(),
+                      msg: state.message,
+                    ),
+                    const Positioned(
+                      top: 10,
+                      left: 10,
+                      child: BackArrow(),
+                    ),
+                  ],
                 );
               }
 
@@ -98,7 +106,8 @@ class _ArtistDetailsState extends State<ArtistDetails> {
                       slivers: [
                         SliverPersistentHeader(
                           delegate: MyDelegate(
-                            user: widget.artist,
+                            user: BlocProvider.of<ArtistDetailsCubit>(context)
+                                .artistData!,
                             songs: songs,
                           ),
                           pinned: true,
@@ -139,7 +148,11 @@ class _ArtistDetailsState extends State<ArtistDetails> {
                                     ),
                                   ),
                                 ),
-                                FollowButton(artist: widget.artist),
+                                FollowButton(
+                                  artist: BlocProvider.of<ArtistDetailsCubit>(
+                                          context,)
+                                      .artistData!,
+                                ),
                               ],
                             ),
                           ),
@@ -295,8 +308,17 @@ class _ArtistDetailsState extends State<ArtistDetails> {
                         ),
                       ],
                     )
-                  : const Center(
-                      child: NoData(),
+                  : const Stack(
+                      children: [
+                        Center(
+                          child: NoData(),
+                        ),
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: BackArrow(),
+                        ),
+                      ],
                     );
             },
           ),
@@ -314,7 +336,7 @@ class FollowButton extends StatelessWidget {
   final Artists artist;
   @override
   Widget build(BuildContext context) {
-    printColored(artist.favorite.toString()*100);
+    printColored(artist.favorite.toString() * 100);
     bool isfollow = artist.favorite ?? false;
     log(artist.favorite.toString());
     return StatefulBuilder(

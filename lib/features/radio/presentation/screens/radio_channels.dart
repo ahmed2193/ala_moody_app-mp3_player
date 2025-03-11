@@ -38,8 +38,6 @@ class _RadioChannelsState extends State<RadioChannels> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
-
         body: SafeArea(
           bottom: false,
           child: Column(
@@ -166,8 +164,7 @@ class _RadioChannelBodyState extends State<RadioChannelBody> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               RadioWave(
-                                radio: radioCategory[index] ,
-                               
+                                radio: radioCategory[index],
                               ),
                               Text(radioCategory[index].title!),
                             ],
@@ -191,6 +188,7 @@ class _RadioChannelBodyState extends State<RadioChannelBody> {
     );
   }
 }
+
 class RadioWave extends StatelessWidget {
   const RadioWave({super.key, required this.radio});
   final RadioCategory radio;
@@ -207,7 +205,7 @@ class RadioWave extends StatelessWidget {
         final playerState = snapshot.data;
         final isPlaying = playerState?.playing ?? false;
         final currentIndex = controller.currentIndex;
-   
+
         if (controller.audios.isEmpty) {
           return const Center(child: SizedBox());
         }
@@ -228,7 +226,8 @@ class RadioWave extends StatelessWidget {
           // Access the metadata of the current audio
           if (controller.isPlaying &&
               currentMediaItem != null &&
-              currentMediaItem.id == radio.id.toString()&&radio.title==currentMediaItem.title) {
+              currentMediaItem.id == radio.id.toString() &&
+              radio.title == currentMediaItem.title) {
             return Image.asset(
               ImagesPath.audioWave,
               scale: 3.5,

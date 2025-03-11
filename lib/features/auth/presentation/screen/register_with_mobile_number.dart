@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/helper/images.dart';
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/themes/colors.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
 import '../../../../core/utils/constants.dart';
@@ -116,9 +115,9 @@ class _RegisterWithMobileNumberScreenState
                               return CountryCodePicker(
                                 searchStyle: styleW400(context),
                                 flagWidth: 20,
-                                boxDecoration: const BoxDecoration(
-                                  color: AppColors.cAppBarDark,
-                                ),
+                                // boxDecoration: const BoxDecoration(
+                                //   color: AppColors.cAppBarDark,
+                                // ),
                                 searchDecoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!
                                       .translate('COUNTRY_CODE_LBL'),

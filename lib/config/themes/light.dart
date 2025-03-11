@@ -6,7 +6,6 @@ import 'colors.dart';
 
 ThemeData lightTheme() => ThemeData(
       useMaterial3: true,
-
       primaryIconTheme: const IconThemeData(
         color: AppColors.cOffWhite,
       ),
@@ -17,9 +16,15 @@ ThemeData lightTheme() => ThemeData(
       iconTheme: const IconThemeData(color: AppColors.cIconLight),
       dividerTheme: const DividerThemeData(color: AppColors.cDividerLight),
       primarySwatch: AppColors.cPrimary,
-       dialogTheme: const DialogTheme(
-        backgroundColor: Colors.black, // Set the background color here
-      ),
+           dialogBackgroundColor: Colors.white,
+
+          dialogTheme: DialogTheme(
+    backgroundColor: Colors.white, // Ensure full customization
+    surfaceTintColor: Colors.white, // Prevents unwanted overlay
+    elevation: 10.0, // Gives a subtle shadow effect
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),),
          tabBarTheme: const TabBarTheme(
           
      tabAlignment:TabAlignment.start ,

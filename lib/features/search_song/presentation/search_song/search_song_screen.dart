@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/entities/songs.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/back_arrow.dart';
 import '../../../audio_playlists/presentation/cubit/audio_playlists_cubit.dart';
 import '../../../home/presentation/widgets/search_bar_text_form.dart';
@@ -53,7 +52,6 @@ class _SearchSongScreenState extends State<SearchSongScreen> {
       //   ),
       // ),
       body: ReusedBackground(
-        lightBG: ImagesPath.homeBGLightBG,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -75,7 +73,7 @@ class _SearchSongScreenState extends State<SearchSongScreen> {
                     onClosePressed: () {
                       FocusManager.instance.primaryFocus?.unfocus();
                       _searchCubit.setSongs(widget.songs);
-                       _searchController.clear();
+                      _searchController.clear();
                     },
                   ),
                 ),
@@ -96,7 +94,7 @@ class _SearchSongScreenState extends State<SearchSongScreen> {
                     ),
                     physics: const AlwaysScrollableScrollPhysics(),
                     separatorBuilder: (context, index) =>
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 0),
                     itemCount: filteredSongs.length,
                     itemBuilder: (context, i) {
                       return GestureDetector(
@@ -106,7 +104,7 @@ class _SearchSongScreenState extends State<SearchSongScreen> {
                           ).playSongs(context, i, filteredSongs);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

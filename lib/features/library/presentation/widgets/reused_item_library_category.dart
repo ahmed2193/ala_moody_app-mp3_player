@@ -24,7 +24,7 @@ class ItemOfLibraryCategory extends StatelessWidget {
     final devicePexelRatio = MediaQuery.of(context).devicePixelRatio;
 
     final double logicalSize = 280 / devicePexelRatio;
-   final borderRadius = screenWidth * 0.03; // 3% of screen width
+    final borderRadius = screenWidth * 0.03; // 3% of screen width
     return Padding(
       padding: const EdgeInsets.all(AppPadding.p10),
       child: Column(
@@ -33,7 +33,7 @@ class ItemOfLibraryCategory extends StatelessWidget {
           // Image and shadow
           Expanded(
             child: Container(
-              width: screenWidth/4,
+              width: screenWidth / 4,
               height: logicalSize, // Ensure the container is square
               decoration: BoxDecoration(
                 boxShadow: [
@@ -64,7 +64,9 @@ class ItemOfLibraryCategory extends StatelessWidget {
           SizedBox(
             width: imageSize - 10,
             child: Text(
-              library.artists![0].name!,
+              library.artists != null && library.artists!.isNotEmpty
+                  ? library.artists![0].name!
+                  : 'Unknown',
               overflow: TextOverflow.clip,
               maxLines: 1,
               style: styleW400(

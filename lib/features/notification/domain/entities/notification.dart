@@ -5,7 +5,6 @@ import 'notification_deatils.dart';
 class Notification extends Equatable {
   final int? id;
   final int? userId;
-  final int? objectId;
   final int? notificationableId;
   final String? notificationableType;
   final int? hostableId;
@@ -19,7 +18,6 @@ class Notification extends Equatable {
   const Notification({
     this.id,
     this.userId,
-    this.objectId,
     this.title,
     this.description,
     this.notificationableId,
@@ -35,7 +33,6 @@ class Notification extends Equatable {
   List<Object?> get props => [
         id,
         userId,
-        objectId,
         notificationableId,
         notificationableType,
         hostableId,

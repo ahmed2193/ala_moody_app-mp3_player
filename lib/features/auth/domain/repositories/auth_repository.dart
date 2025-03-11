@@ -9,12 +9,14 @@ abstract class AuthRepository {
   Future<Either<Failure, BaseResponse>> login({
     required String email,
     required String password,
+    required String fcmToken,
   });
   Future<Either<Failure, BaseResponse>> loginWithSocialMedia({
     required String email,
     required int isGoogle,
     required String displayName,
     required String socialId,
+    required String fcmToken,
   });
 
   Future<Either<Failure, BaseResponse>> register({
@@ -27,6 +29,7 @@ abstract class AuthRepository {
     required String phone,
     required String mobileFlag,
     required String userName,
+    required String fcmToken,
   });
   Future<Either<Failure, BaseResponse>> updateDeviceToken({
     required UpdateTokenParams params,

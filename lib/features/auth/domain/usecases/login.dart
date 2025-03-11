@@ -14,21 +14,25 @@ class Login implements UseCase<BaseResponse, LoginParams> {
       authRepository.login(
         email: params.email,
         password: params.password,
+        fcmToken: params.fcmToken,
       );
 }
 
 class LoginParams extends Equatable {
   final String email;
   final String password;
+  final String fcmToken;
 
   const LoginParams({
     required this.email,
     required this.password,
+    required this.fcmToken,
   });
 
   @override
   List<Object> get props => [
         email,
         password,
+        fcmToken,
       ];
 }

@@ -4,7 +4,6 @@ import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/components/reused_background.dart';
 import 'package:alamoody/core/components/screen_state/loading_screen.dart';
 import 'package:alamoody/core/helper/font_style.dart';
-import 'package:alamoody/core/helper/images.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:alamoody/core/utils/loading_indicator.dart';
@@ -84,7 +83,6 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -100,7 +98,8 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                   Center(
                     child: Text(
                       AppLocalizations.of(context)!
-                          .translate(widget.headerName)!??'',
+                              .translate(widget.headerName)! ??
+                          '',
                       style:
                           styleW600(context)!.copyWith(fontSize: FontSize.f18),
                     ),
@@ -111,7 +110,7 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                 child: BlocBuilder<OccasionsCubit, OccasionsState>(
                   builder: (context, state) {
                     if (state is OccasionsIsLoading && state.isFirstFetch) {
-                      return const Expanded(child: LoadingScreen());
+                      return const Center(child: LoadingScreen());
                     }
                     if (state is OccasionsIsLoading) {
                       BlocProvider.of<OccasionsCubit>(context).loadMore = true;
@@ -121,7 +120,7 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                         msg: state.message!,
                       );
                     }
-
+    
                     return BlocProvider.of<OccasionsCubit>(context)
                             .occasions
                             .isNotEmpty
@@ -132,7 +131,7 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                               width: AppPadding.p20,
                             ),
                             physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 50),
+                            padding: const EdgeInsets.only(bottom: 140),
                             itemCount: BlocProvider.of<OccasionsCubit>(context)
                                     .occasions
                                     .length +
@@ -158,13 +157,14 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
+                                        context,
+                                        listen: false,
+                                      );
                                       final items =
                                           BlocProvider.of<OccasionsCubit>(
                                         context,
                                       ).occasions;
- con.playSong(
+                                      con.playSong(
                                         con.convertToAudio(items),
                                         items.indexOf(items[index]),
                                       );
@@ -191,7 +191,7 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                                     scrollController.position.maxScrollExtent,
                                   );
                                 });
-
+    
                                 return const LoadingIndicator();
                               }
                               return const SizedBox();
@@ -203,9 +203,7 @@ class _OccasionsScreenState extends State<OccasionsScreen> {
                   },
                 ),
               ),
-              SizedBox(
-                height: context.height * 0.129,
-              ),
+       
             ],
           ),
         ),

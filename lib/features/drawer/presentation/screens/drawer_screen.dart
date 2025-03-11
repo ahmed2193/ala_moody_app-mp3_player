@@ -29,9 +29,7 @@ class DrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white,
       child: ReusedBackground(
-        darKBG: ImagesPath.drawerDarkBG,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +85,10 @@ class DrawerScreen extends StatelessWidget {
                             title: 'language',
                             onTap: () {
                               showModalBottomSheet(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
+                                        useSafeArea: true,
+                                      useRootNavigator: true,
+                                      
+                               
                                 elevation: 1,
                                 context: context,
                                 backgroundColor: Colors.black,

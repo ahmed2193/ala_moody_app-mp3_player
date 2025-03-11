@@ -6,6 +6,7 @@ import 'package:alamoody/core/utils/back_arrow.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:alamoody/core/utils/media_query_values.dart';
+import 'package:alamoody/core/utils/navigator_reuse.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/colors.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
@@ -30,6 +30,7 @@ import '../../../../core/utils/hex_color.dart';
 import '../../../../core/utils/loading_indicator.dart';
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../../../auth/presentation/widgets/gradient_auth_button.dart';
+import '../../../main_layout/presentation/pages/main_layout_screen.dart';
 import '../cubits/profile/profile_cubit.dart';
 import '../cubits/update_profile/update_profile_cubit.dart';
 
@@ -168,8 +169,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                           child: Text(
                             AppLocalizations.of(context)!
                                 .translate("update_profile")!,
-                            style:
-                                styleW700(context)!.copyWith(fontSize: 20),
+                            style: styleW700(context)!.copyWith(fontSize: 20),
                           ),
                         ),
                         const SizedBox(),
@@ -188,16 +188,14 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                                 CircleAvatar(
                                   radius: 55,
                                   backgroundColor: Colors.white,
-                                  backgroundImage:
-                                      FileImage(_profilePhoto!),
+                                  backgroundImage: FileImage(_profilePhoto!),
                                 )
                               else
                                 CircleAvatar(
                                   radius: 58,
                                   backgroundColor: Colors.white,
                                   child: ClipOval(
-                                    child: state.userProfile.user!.image ==
-                                            null
+                                    child: state.userProfile.user!.image == null
                                         ? Image.asset(
                                             ImagesPath.defaultUserIcon,
                                             width: MediaQuery.of(context)
@@ -211,9 +209,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                                             fit: BoxFit.cover,
                                           )
                                         : CachedNetworkImage(
-                                            imageUrl: state
-                                                .userProfile
-                                                .user!
+                                            imageUrl: state.userProfile.user!
                                                 .image!, // Default placeholder URL
                                             placeholder: (context, url) =>
                                                 const CircularProgressIndicator(),
@@ -257,12 +253,12 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                             ],
                           ),
                         ),
-          
+
                         ///ll
-          
+
                         AuthTextFormField(
-                          hintText: AppLocalizations.of(context)!
-                              .translate('name'),
+                          hintText:
+                              AppLocalizations.of(context)!.translate('name'),
                           inputData: TextInputType.text,
                           textEditingController: _nameController,
                           validationFunction: validateName,
@@ -271,7 +267,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                               FocusScope.of(context).nextFocus(),
                           svgPath: ImagesPath.userIconSvg,
                         ),
-          
+
                         AuthTextFormField(
                           hintText: AppLocalizations.of(context)!
                               .translate('user_name'),
@@ -295,8 +291,8 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                           svgPath: ImagesPath.phoneIconSvg,
                         ),
                         AuthTextFormField(
-                          hintText: AppLocalizations.of(context)!
-                              .translate('email'),
+                          hintText:
+                              AppLocalizations.of(context)!.translate('email'),
                           inputData: TextInputType.emailAddress,
                           textEditingController: _emailController,
                           validationFunction: validateEmail,
@@ -306,8 +302,8 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                           svgPath: ImagesPath.emailIconSvg,
                         ),
                         AuthTextFormField(
-                          hintText: AppLocalizations.of(context)!
-                              .translate('bio'),
+                          hintText:
+                              AppLocalizations.of(context)!.translate('bio'),
                           inputData: TextInputType.text,
                           textEditingController: _bioController,
                           validationFunction: validateName,
@@ -325,16 +321,16 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                           textInputAction: TextInputAction.next,
                           suffixIcon: Icons.edit,
                           onTap: () {
-                            FocusScope.of(context)
-                                .requestFocus(FocusNode());
+                            FocusScope.of(context).requestFocus(FocusNode());
                             DateTime initialDateValue =
                                 _birthDateController.text.isNotEmpty
                                     ? DateFormat("yyyy-MM-dd")
                                         .parse(_birthDateController.text)
                                     : DateTime(DateTime.now().year - 15);
-          
+
                             if (initialDateValue.isAfter(
-                                DateTime(DateTime.now().year - 1),)) {
+                              DateTime(DateTime.now().year - 1),
+                            )) {
                               initialDateValue =
                                   DateTime(DateTime.now().year - 15);
                             }
@@ -361,7 +357,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                           onFieldSubmitted: (_) =>
                               FocusScope.of(context).nextFocus(),
                         ),
-          
+
                         StatefulBuilder(
                           builder: (context, setState) =>
                               DefaultDropdownButtonFormField(
@@ -387,7 +383,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                                     item,
                                   ),
                                 ),
-          
+
                                 //  Text(
                                 //   item,
                                 //   style: styleW500(context, color: Colors.white),
@@ -399,13 +395,11 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                         const SizedBox(
                           height: 30,
                         ),
-                        if (!context
-                                .watch<UpdateProfileCubit>()
-                                .isloading ||
+                        if (!context.watch<UpdateProfileCubit>().isloading ||
                             _profilePhoto == null)
                           GradientCenterTextButton(
-                            buttonText: AppLocalizations.of(context)!
-                                .translate('save'),
+                            buttonText:
+                                AppLocalizations.of(context)!.translate('save'),
                             listOfGradient: [
                               HexColor("#DF23E1"),
                               HexColor("#3820B2"),
@@ -463,8 +457,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                                 //     .scaffoldBackgroundColor
                                 //     .withOpacity(0.9),
                                 alignment: Alignment.center,
-                                 color:Colors.white
-                          .withOpacity(0.6),
+                                color: Colors.white.withOpacity(0.6),
                                 height: MediaQuery.of(context).size.height,
                                 width: MediaQuery.of(context).size.width,
                                 child: const CircularProgressIndicator(),
@@ -472,7 +465,6 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
                             : const SizedBox();
                       },
                     ),
-               
                   ],
                 ),
               ),
@@ -489,7 +481,6 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: ReusedBackground(
-        lightBG: ImagesPath.homeBGLightBG,
         body: BlocConsumer<UpdateProfileCubit, UpdateProfileState>(
           listener: (context, state) {
             if (state is UpdateProfileSuccess) {
@@ -500,10 +491,7 @@ class _EditProfileInfoScreenState extends State<EditProfileInfoScreen>
               // BlocProvider.of<LoginCubit>(context).authenticatedUser =
               //     state.user;
               Navigator.pop(context);
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                Routes.mainRoute,
-                (Route<dynamic> route) => false,
-              );
+        pushNavigateAndRemoveUntil(context, const MainLayoutScreen());
             } else if (state is UpdateProfileFailed) {
               Constants.showError(
                 context,

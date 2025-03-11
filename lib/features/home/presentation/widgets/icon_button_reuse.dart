@@ -18,7 +18,7 @@ class ReusedIconButton extends StatelessWidget {
       onPressed: onPressed ?? () {},
       icon: SvgPicture.asset(
         image!,
-        color: Theme.of(context).listTileTheme.textColor,
+        color: Theme.of(context).primaryIconTheme.color,
         width: width ?? 26,
       ),
     );

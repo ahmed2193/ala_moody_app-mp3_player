@@ -104,28 +104,7 @@ class DioConsumer extends ApiConsumer {
     }
   }
 
-  @override
-  Future<dynamic> delete(
-    String path, {
-    Map<String, dynamic>? body,
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    try {
-      final response = await client.delete(
-        path,
-        data: body,
-        queryParameters: queryParameters,
-        options: Options(headers: headers),
-      );
-      printColored('response' * 100);
-      printColored(response.statusCode);
-      printColored(response);
-      return response;
-    } on DioException catch (error) {
-      _handleDioError(error);
-    }
-  }
+
 
   void _handleDioError(DioException error) {
     printColored('error' * 10);

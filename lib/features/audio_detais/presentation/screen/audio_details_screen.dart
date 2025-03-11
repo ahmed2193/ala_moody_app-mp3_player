@@ -21,7 +21,7 @@ class AudioPlayerDetailsScreen extends StatelessWidget {
     return SafeArea(
       child: ReusedBackground(
         // darKBG: ImagesPath.homeBGDarkBG,
-        // lightBG: ImagesPath.homeBGLightBG,
+        //
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(10),

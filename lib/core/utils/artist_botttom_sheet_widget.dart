@@ -17,7 +17,6 @@ import '../../features/home/presentation/cubits/follow_and_unfollow/follow_and_u
 import '../components/reused_background.dart';
 import '../entities/songs.dart';
 import '../helper/font_style.dart';
-import '../helper/images.dart';
 import 'constants.dart';
 
 class ArtistBottomSheetWidget extends StatefulWidget {
@@ -48,9 +47,8 @@ class _ArtistBottomSheetWidgetState extends State<ArtistBottomSheetWidget> {
     final devicePexelRatio = MediaQuery.of(context).devicePixelRatio;
 
     return ReusedBackground(
-      lightBG: ImagesPath.homeBGLightBG,
       body: SizedBox(
-        height: MediaQuery.of(context).size.height*1.2,
+        height: MediaQuery.of(context).size.height * 1.2,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +56,8 @@ class _ArtistBottomSheetWidgetState extends State<ArtistBottomSheetWidget> {
             Container(
               color: AppColors.cIconLight..withOpacity(0.1),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Row(
@@ -88,8 +87,10 @@ class _ArtistBottomSheetWidgetState extends State<ArtistBottomSheetWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.artist.name!,
-                              style: styleW700(context, fontSize: 20),),
+                          Text(
+                            widget.artist.name!,
+                            style: styleW700(context, fontSize: 20),
+                          ),
                           const SizedBox(
                             height: 35,
                           ),
@@ -195,8 +196,9 @@ class _ArtistBottomSheetWidgetState extends State<ArtistBottomSheetWidget> {
               },
             ),
             ListTile(
-              onTap: () {                Navigator.of(context).pop();
-},
+              onTap: () {
+                Navigator.of(context).pop();
+              },
               minLeadingWidth: 20,
               contentPadding: const EdgeInsets.symmetric(horizontal: 25),
               leading: Icon(
@@ -231,10 +233,8 @@ class _ArtistBottomSheetWidgetState extends State<ArtistBottomSheetWidget> {
                   // Call the playSongs function with the random index
                   BlocProvider.of<AudioPlayListsCubit>(context)
                       .playSongs(context, randomIndex, widget.songs);
-
-                  print('Playing song at index: $randomIndex');
                 } else {
-                  print('No songs available to play.');
+                  debugPrint('No songs available to play.');
                 }
               },
               minLeadingWidth: 20,

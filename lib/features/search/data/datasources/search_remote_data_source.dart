@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import '../../../../core/api/api_consumer.dart';
 import '../../../../core/api/base_response.dart';
@@ -10,8 +9,9 @@ import '../models/search_model.dart';
 
 abstract class SearchRemoteDataSource {
   Future<BaseResponse> getCategory({
-    required String accessToken,
     required int pageNo,
+    required String accessToken,
+    required String searchTxt,
   });
   Future<BaseResponse> search({
     required String accessToken,
@@ -25,6 +25,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   @override
   Future<BaseResponse> getCategory({
     required String accessToken,
+    required String searchTxt,
     required int pageNo,
   }) async {
     final response = await apiConsumer.get(
@@ -35,6 +36,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         AppStrings.pageSize: Constants.fetchLimit,
         AppStrings.pageNumber: pageNo,
                 // AppStrings.search: 'te',
+        AppStrings.search: searchTxt,
 
       },
     );
@@ -64,7 +66,6 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     final BaseResponse baseResponse =
         BaseResponse(statusCode: response.statusCode);
     final responseJson = Constants.decodeJson(response);
-    log('====================${responseJson[AppStrings.data]}=====================');
     baseResponse.data = SearchModel.fromJson(responseJson[AppStrings.data]);
 
     return baseResponse;

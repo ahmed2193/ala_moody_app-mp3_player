@@ -17,21 +17,25 @@ class GetCategory implements UseCase<BaseResponse, GetCategoryParams> {
       searchRepository.getCategory(
         accessToken: params.accessToken,
         pageNo: params.pageNo,
+        searchTxt: params.searchTxt,
       );
 }
 
 class GetCategoryParams extends Equatable {
   final String accessToken;
+  final String searchTxt;
   final int pageNo;
 
   const GetCategoryParams({
     required this.pageNo,
     required this.accessToken,
+    required this.searchTxt,
   });
 
   @override
   List<Object?> get props => [
         accessToken,
         pageNo,
+        searchTxt,
       ];
 }

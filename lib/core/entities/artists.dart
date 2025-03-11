@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Artists extends Equatable {
   final int? id;
-  final String? impression;
+  final dynamic impression;
 
   final String? name;
 

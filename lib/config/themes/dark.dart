@@ -9,6 +9,23 @@ ThemeData darkTheme() => ThemeData(
       primaryIconTheme: const IconThemeData(
         color: AppColors.cIconDark,
       ),
+      drawerTheme:const DrawerThemeData(backgroundColor: Colors.black) ,
+        bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Colors.black, // Removes default white background
+    modalBackgroundColor: Colors.black, // Allow gradient
+    shape: RoundedRectangleBorder(
+    ),
+  ),
+
+    dialogTheme: DialogTheme(
+    backgroundColor: Colors.black, // Ensure full customization
+    surfaceTintColor: Colors.black, // Prevents unwanted overlay
+    elevation: 10.0, // Gives a subtle shadow effect
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+  ),
+  
       iconTheme: const IconThemeData(color: AppColors.cIconDark),
       dividerTheme: const DividerThemeData(color: AppColors.cDividerDark),
       tabBarTheme: const TabBarTheme(

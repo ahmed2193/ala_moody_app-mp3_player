@@ -2,7 +2,6 @@ import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:alamoody/core/components/reused_background.dart';
 import 'package:alamoody/core/helper/app_size.dart';
 import 'package:alamoody/core/helper/font_style.dart';
-import 'package:alamoody/core/helper/images.dart';
 import 'package:alamoody/core/utils/back_arrow.dart';
 import 'package:alamoody/core/utils/constants.dart';
 import 'package:alamoody/core/utils/hex_color.dart';
@@ -19,8 +18,6 @@ class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({
     super.key,
   });
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +42,9 @@ class ContactUsScreen extends StatelessWidget {
         builder: (context, state) {
           return SafeArea(
             child: ReusedBackground(
-              lightBG: ImagesPath.homeBGLightBG,
               body: SingleChildScrollView(
                 child: Stack(
                   children: [
-                    
                     Row(
                       children: [
                         IconButton(
@@ -73,8 +68,6 @@ class ContactUsScreen extends StatelessWidget {
                     SizedBox(
                       height: context.height * 0.045,
                     ),
-                    
-
                     Padding(
                       padding: const EdgeInsets.only(top: 80),
                       child: Form(
@@ -85,8 +78,9 @@ class ContactUsScreen extends StatelessWidget {
                             SupportTextFormField(
                               hintText: AppLocalizations.of(context)!
                                   .translate('enter_title')!,
-                              controller: BlocProvider.of<ContactUsCubit>(context)
-                                  .titleController,
+                              controller:
+                                  BlocProvider.of<ContactUsCubit>(context)
+                                      .titleController,
                               icon: Icons.person,
                               title: AppLocalizations.of(context)!
                                   .translate('title')!,
@@ -109,8 +103,9 @@ class ContactUsScreen extends StatelessWidget {
                               },
                               hintText: AppLocalizations.of(context)!
                                   .translate('enter_your_message')!,
-                              controller: BlocProvider.of<ContactUsCubit>(context)
-                                  .messageController,
+                              controller:
+                                  BlocProvider.of<ContactUsCubit>(context)
+                                      .messageController,
                               icon: Icons.message_outlined,
                               title: AppLocalizations.of(context)!
                                   .translate('message')!,
@@ -160,9 +155,7 @@ class ContactUsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    
                   ],
-
                 ),
               ),
             ),

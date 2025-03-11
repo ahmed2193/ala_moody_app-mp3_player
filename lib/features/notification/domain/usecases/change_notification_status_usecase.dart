@@ -20,11 +20,16 @@ class ChangeNotificationStatusUseCase
 
 class ChangeNotificationStatusParams extends Equatable {
   final String notificationId;
+  final String accessToken;
 
   const ChangeNotificationStatusParams({
     required this.notificationId,
+    required this.accessToken,
   });
 
   @override
-  List<Object> get props => [notificationId];
+  List<Object> get props => [
+    notificationId,
+    accessToken,
+    ];
 }

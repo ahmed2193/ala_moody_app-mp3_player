@@ -39,7 +39,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
     return Scaffold(
       body: ReusedBackground(
         // darKBG: ImagesPath.homeBGDarkBG,
-        // lightBG: ImagesPath.homeBGLightBG,
+        //
         body: SafeArea(
           bottom: false,
           child: Column(
@@ -55,7 +55,8 @@ class _LyricsScreenState extends State<LyricsScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                         imageUrl: widget.songs.artworkUrl!,
                         width: context.width * 0.111,
                         height: context.height * 0.058,
@@ -125,14 +126,10 @@ class _LyricsScreenState extends State<LyricsScreen> {
                               // setState(() {
                               //   isPremium = !isPremium;
                               // });
- context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                              context.read<TabCubit>().changeTab(4);
                             },
                             width: MediaQuery.of(context).size.width / 1.3,
-                            buttonText: 
-                            
-                            AppLocalizations.of(context)!
+                            buttonText: AppLocalizations.of(context)!
                                 .translate('unlock_full_lyrics'),
                             listOfGradient: [
                               HexColor("#DA00FF"),

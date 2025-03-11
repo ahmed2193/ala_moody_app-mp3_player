@@ -56,12 +56,14 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
                     child: Container(
                       foregroundDecoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          tileMode: TileMode.mirror,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                           colors: [
-                            Colors.transparent,
-                            Colors.transparent,
+                            Color.fromRGBO(
+                                249, 21, 222, 0.3,), // Dark mode gradient
+                            Color.fromRGBO(
+                                249, 21, 222, 0.3,), // Dark mode gradient
+                            Color.fromRGBO(25, 67, 244, 0.5),
                           ],
                         ),
                       ),
@@ -169,7 +171,6 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
                             ),
                           ),
                         ),
-
                         Row(
                           children: [
                             ShareSongWidget(
@@ -218,18 +219,6 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
                             ),
                           ],
                         ),
-                        // Opacity(
-                        //   opacity: max(1 - shrinkPercentage * 6, 0),
-                        //   child: IconButton(
-                        //     onPressed: () {
-                        //       print('ontap');
-                        //     },
-                        //     icon: const Icon(
-                        //       Icons.more_vert,
-                        //       color: Colors.white,
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
@@ -295,44 +284,7 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
             ),
-            // Positioned(
-            //   bottom: 10,
-            //   right: 10,
-            //   child: con.player.builderCurrent(
-            //     builder: (context, playing) {
-            //       final Function eq = const ListEquality().equals;
-            //       final bool isSame = eq(
-            //           con.player.playlist!.audios, con.convertToAudio(songs));
-            //       return PlayerBuilder.isPlaying(
-            //         player: con.player,
-            //         builder: (context, isPlaying) {
-            //           return SizedBox();
-            //           // FloatingActionButton(
-            //           //   backgroundColor: Colors.green,
-            //           //   onPressed: () {
-            //           //     if (isSame) {
-            //           //       con.player.playOrPause();
-            //           //     } else {
-            //           //       con.playSong(con.convertToAudio(songs), 0);
-            //           //     }
-            //           //   },
-            //           //   child: isSame
-            //           //       ? Icon(
-            //           //           isPlaying ? Icons.pause : Icons.play_arrow,
-            //           //           color: Colors.black,
-            //           //           size: 35,
-            //           //         )
-            //           //       : const Icon(
-            //           //           Icons.play_arrow,
-            //           //           color: Colors.white,
-            //           //           size: 35,
-            //           //         ),
-            //           // );
-            //         },
-            //       );
-            //     },
-            //   ),
-            // )
+           
           ],
         ),
       ],
@@ -388,7 +340,7 @@ class _ShareSongWidgetState extends State<ShareSongWidget> {
           Uri.encodeComponent(json.encode(songsShareDataMap));
 
       final DynamicLinkParameters parameters = DynamicLinkParameters(
-        uriPrefix: 'https://alamoody.page.link',
+        uriPrefix: 'https://alamoodyMusic.page.link',
         link: Uri.parse(dynamicLink).replace(
           queryParameters: {'parameters': songsShareDataEncoded},
         ),
@@ -417,7 +369,6 @@ class _ShareSongWidgetState extends State<ShareSongWidget> {
         _isCreatingLink = false;
       });
     } catch (e) {
-      print('Error creating dynamic link: $e');
       setState(() {
         _isCreatingLink = false;
       });
@@ -430,7 +381,7 @@ class _ShareSongWidgetState extends State<ShareSongWidget> {
       onPressed: () {
         _createDynamicLink().then((_) async {
           if (filePath == null || _linkMessage == null) {
-            print('File path or link message is missing');
+            debugPrint('File path or link message is missing');
             return;
           }
 

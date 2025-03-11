@@ -74,8 +74,7 @@ class LightFeaturedListSlider extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: styleW600(
                             context,
-                            fontSize: 14,
-                            color: Colors.white,
+                            fontSize: 12,
                           ),
                         ),
                       ),

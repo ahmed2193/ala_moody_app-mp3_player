@@ -23,15 +23,19 @@ import '../../entities/songs.dart';
 import '../../models/song_share_model.dart';
 
 class MainController extends ChangeNotifier {
-  static final MainController _instance = MainController._internal();
+   static MainController? _instance;
 
   factory MainController() {
-    return _instance;
+    _instance ??= MainController._internal();
+    return _instance!;
   }
 
   MainController._internal() {
     _initPlayer();
   }
+
+   bool preventDispose = false; // ✅ التحكم في التخلص من الكائن
+ 
 
   final AudioPlayer player = AudioService().player; // Use singleton instance
 
@@ -49,12 +53,9 @@ class MainController extends ChangeNotifier {
           'https://cdn.pixabay.com/download/audio/2022/01/20/audio_f1b4f4c8b1.mp3?filename=welcome-to-the-games-15238.mp3',
       artworkUrl:
           'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-      favorite: false,
-      listened: 1,
-      lyrics: '',
-    )
+    ),
   ];
-
+bool isSongPlaying = false;
   final List<StreamSubscription> _subscriptions = [];
 
   int? get currentIndex => player.currentIndex;
@@ -201,8 +202,6 @@ class MainController extends ChangeNotifier {
     recentSongs.sort((a, b) => b["created"].compareTo(a["created"]));
 
     if (recentSongs.isNotEmpty) {
-      print("recentSongs $recentSongs");
-
       audios.removeAt(0);
     }
 
@@ -227,11 +226,14 @@ class MainController extends ChangeNotifier {
 
     // ✅ Check if the current playlist is the same as the new one
     if (currentAudioSource is ConcatenatingAudioSource) {
-      bool isSamePlaylist = currentAudioSource.length == newlist.length &&
-          currentAudioSource.sequence.every((existingAudio) => newlist.any(
+      final bool isSamePlaylist = currentAudioSource.length == newlist.length &&
+          currentAudioSource.sequence.every(
+            (existingAudio) => newlist.any(
               (newAudio) =>
                   (existingAudio as UriAudioSource).uri.toString() ==
-                  (newAudio as UriAudioSource).uri.toString()));
+                  (newAudio as UriAudioSource).uri.toString(),
+            ),
+          );
 
       if (isSamePlaylist) {
         // ✅ Check if the selected track is already in the playlist
@@ -259,52 +261,56 @@ class MainController extends ChangeNotifier {
       }
 
       log('Setting new audio source');
+await Future.delayed(const Duration(milliseconds: 300));
+      await player
+          .setAudioSource(
+        ConcatenatingAudioSource(children: newlist),
+        initialIndex: initial,
+      )
+          .catchError((error, stackTrace) {
+        AudioErrorHandler.handleError(error, stackTrace, player);
+        throw error;
+      });
 
-     await player.setAudioSource(
-      ConcatenatingAudioSource(children: newlist),
-      initialIndex: initial,
-    ).catchError((error, stackTrace) {
-      AudioErrorHandler.handleError(error, stackTrace, player);
-      throw error;
-    });
+      // Add validation for audio source
+      if (player.audioSource?.sequence.isEmpty ?? true) {
+        log('Invalid audio source list');
+        await player.stop();
+        return;
+      }
 
-    // Add validation for audio source
-    if (player.audioSource?.sequence.isEmpty ?? true) {
-      log('Invalid audio source list');
-      await player.stop();
-      return;
-    }
-
-      log('Audio is ready to play' * 10);
+      log('Audio is ready to play' );
     } on PlatformException catch (e) {
-       AudioErrorHandler.handleError(e, StackTrace.current, player);
-    await _handlePlaybackFailure();
+      AudioErrorHandler.handleError(e, StackTrace.current, player);
+      await _handlePlaybackFailure();
     } on Exception catch (e) {
-      AudioErrorHandler.handleError(e, StackTrace.current , player);
-    await _handlePlaybackFailure();
+      AudioErrorHandler.handleError(e, StackTrace.current, player);
+      await _handlePlaybackFailure();
       log('Unexpected error: $e' * 10);
     }
   }
-Future<void> _handlePlaybackFailure() async {
-  try {
-    // Wait for player to settle
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    if (player.hasNext && player.sequence!.length > 1) {
-      log('Attempting to skip to next track');
-      await player.seekToNext();
-      await player.play();
-    } else {
-      log('Resetting audio player');
+
+  Future<void> _handlePlaybackFailure() async {
+    try {
+      // Wait for player to settle
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (player.hasNext && player.sequence!.length > 1) {
+        log('Attempting to skip to next track');
+        await player.seekToNext();
+        await player.play();
+      } else {
+        log('Resetting audio player');
+        await player.stop();
+        audios.clear();
+        notifyListeners();
+      }
+    } catch (e) {
+      log('Recovery failure: $e');
       await player.stop();
-      audios.clear();
-      notifyListeners();
     }
-  } catch (e) {
-    log('Recovery failure: $e');
-    await player.stop();
   }
-}
+
   Future<void> openRadioPlayer({
     required List<AudioSource> newlist,
     int initial = 0,
@@ -318,61 +324,65 @@ Future<void> _handlePlaybackFailure() async {
       if (player.duration == null) {
         log('The audio file has errors');
       } else {
-        print('The audio file is ready to play');
+        log('The audio file is ready to play');
       }
     } catch (e) {
       log('Error opening the radio player: $e');
     }
   }
 
-Future<void> playSong(List<AudioSource> newPlaylist, int initial) async {
-  if (newPlaylist.isEmpty || initial < 0 || initial >= newPlaylist.length) {
-    log('Invalid playlist or initial index');
-    await player.stop();
-    return;
-  }
-
-  try {
-    final audioSource = newPlaylist[initial];
-    if (audioSource is! UriAudioSource) {
-      throw ArgumentError('Invalid audio source type');
-    }
-
-    await _performSafeAudioOperation(() async {
+  Future<void> playSong(List<AudioSource> newPlaylist, int initial) async {
+    if (newPlaylist.isEmpty || initial < 0 || initial >= newPlaylist.length) {
+      log('Invalid playlist or initial index');
       await player.stop();
-      audios = newPlaylist;
-      await openPlayer(newlist: newPlaylist, initial: initial);
-      await player.play().catchError((e, s) {
-        AudioErrorHandler.handleError(e, s, player);
-        _handlePlaybackFailure();
+      return;
+    }
+
+    try {
+      final audioSource = newPlaylist[initial];
+      if (audioSource is! UriAudioSource) {
+        throw ArgumentError('Invalid audio source type');
+      }
+
+      await _performSafeAudioOperation(() async {
+        await player.stop();
+        audios = newPlaylist;
+        await openPlayer(newlist: newPlaylist, initial: initial);
+        await player.play().catchError((e, s) {
+          AudioErrorHandler.handleError(e, s, player);
+          _handlePlaybackFailure();
+        });
       });
-    });
-  } catch (e, s) {
-    AudioErrorHandler.handleError(e, s, player);
-    await _handlePlaybackFailure();
-  }
-}
-Future<void> _performSafeAudioOperation(Future<void> Function() operation) async {
-  try {
-    // Ensure player is in valid state
-    if (player.processingState == ProcessingState.loading) {
-      await Future.delayed(const Duration(milliseconds: 300));
+    } catch (e, s) {
+      AudioErrorHandler.handleError(e, s, player);
+      await _handlePlaybackFailure();
     }
-    
-    await operation();
-    
-    // Verify successful operation
-    if (player.processingState == ProcessingState.idle) {
-      throw Exception('Operation resulted in idle state');
-    }
-  } on PlatformException catch (e) {
-    AudioErrorHandler.handleError(e, StackTrace.current, player);
-    await _handlePlaybackFailure();
-  } catch (e, s) {
-    AudioErrorHandler.handleError(e, s, player);
-    await _handlePlaybackFailure();
   }
-}
+
+  Future<void> _performSafeAudioOperation(
+    Future<void> Function() operation,
+  ) async {
+    try {
+      // Ensure player is in valid state
+      if (player.processingState == ProcessingState.loading) {
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+
+      await operation();
+
+      // Verify successful operation
+      if (player.processingState == ProcessingState.idle) {
+        throw Exception('Operation resulted in idle state');
+      }
+    } on PlatformException catch (e) {
+      AudioErrorHandler.handleError(e, StackTrace.current, player);
+      await _handlePlaybackFailure();
+    } catch (e, s) {
+      AudioErrorHandler.handleError(e, s, player);
+      await _handlePlaybackFailure();
+    }
+  }
+
   void playRadio(List<AudioSource> newPlaylist, int initial) async {
     log('Initializing radio stream');
 
@@ -428,7 +438,7 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
           album: item.id.toString(),
           streamUrl: item.path ??
               "http://islamicaudio.net/assets/media/yom-alfrkan866.mp3",
-          artworkUrl: item.image!,
+          artworkUrl: item.image,
         );
       } else if (item is RadioCategory) {
         return _createAudioSource(
@@ -443,10 +453,10 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
         );
       } else if (item is SongsShareData) {
         return _createAudioSource(
-          id: item.id.toString(),
+          id: item.id,
           title: item.title ?? "Unknown Title",
           artist: item.artist ?? "Unknown Artist",
-          album: item.id.toString(),
+          album: item.id,
           streamUrl: item.streamUrl ?? "",
           artworkUrl: item.artworkUrl,
         );
@@ -473,7 +483,7 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
   }
 
   /// Plays the next track in the playlist
- Future<void> onNext() async {
+  Future<void> onNext() async {
     if (player.hasNext) {
       await player.seekToNext();
     } else {
@@ -481,6 +491,7 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
     }
     notifyListeners();
   }
+
   Future<void> onPrevious() async {
     try {
       final hasPrevious = player.hasPrevious;
@@ -643,9 +654,26 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
 
     notifyListeners();
   }
+void updateIsSongPlaying(String songId, String songName) {
+  final currentIndex = player.currentIndex;
+  
+  if (currentIndex != null && player.audioSource != null) {
+    final audioSource = player.audioSource!.sequence[currentIndex] as UriAudioSource;
+    final mediaItem = audioSource.tag as MediaItem;
 
+    isSongPlaying = mediaItem.id == songId && mediaItem.title == songName;
+  } else {
+    isSongPlaying = false;
+  }
+
+  notifyListeners();
+}
   @override
   void dispose() {
+
+     if (preventDispose) {
+      return; 
+    }
     for (final sub in _subscriptions) {
       if (!sub.isPaused) {
         // ✅ Check before canceling
@@ -685,9 +713,12 @@ Future<void> _performSafeAudioOperation(Future<void> Function() operation) async
     String lyrics = "",
     bool isFile = false,
   }) {
-    final String validUrl = streamUrl.isNotEmpty
+    log(streamUrl);
+    final String validUrl = 
+    streamUrl.isNotEmpty
         ? streamUrl
-        : "http://islamicaudio.net/assets/media/yom-alfrkan866.mp3"; // Fallback URL
+        : 
+        "http://islamicaudio.net/assets/media/yom-alfrkan866.mp3"; // Fallback URL
 
     return AudioSource.uri(
       isFile ? Uri.file(validUrl) : Uri.parse(validUrl),
@@ -738,9 +769,14 @@ class AudioService {
     }
   }
 }
+
 class AudioErrorHandler {
-  static void handleError(Object error, StackTrace stackTrace, AudioPlayer player) {
-    log('Audio Error: $error', stackTrace: stackTrace);
+  static void handleError(
+    Object error,
+    StackTrace stackTrace,
+    AudioPlayer player,
+  ) {
+    // log('Audio Error: $error', stackTrace: stackTrace);
     player.stop().catchError((e) => log('Stop error: $e'));
     // Add any additional error reporting here
   }

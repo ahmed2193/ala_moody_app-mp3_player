@@ -59,11 +59,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, BaseResponse>> login({
     required String email,
     required String password,
+    required String fcmToken,
   }) async {
     try {
       final response = await authRemoteDataSource.login(
         email: email,
         password: password,
+        fcmToken: fcmToken,
       );
       return Right(response);
     } on ServerException catch (exception) {
@@ -146,12 +148,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String mobileFlag,
     required String userName,
+    required String fcmToken,
   }) async {
     try {
       final response = await authRemoteDataSource.loginwiWthMobileNumber(
         phone: phone,
         mobileFlag: mobileFlag,
         userName: userName,
+        fcmToken: fcmToken,
       );
       return Right(response);
     } on ServerException catch (exception) {
@@ -191,6 +195,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required int isGoogle,
     required String displayName,
     required String socialId,
+    required String fcmToken,
   }) async {
     try {
       final response = await authRemoteDataSource.loginWithSocialMedia(
@@ -198,6 +203,7 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         isGoogle: isGoogle,
         socialId: socialId,
+        fcmToken: fcmToken,
       );
       return Right(response);
     } on ServerException catch (exception) {

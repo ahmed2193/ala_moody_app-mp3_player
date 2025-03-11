@@ -1,4 +1,4 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
@@ -14,41 +14,40 @@ import '../../../../main/presentation/cubit/main_cubit.dart';
 import '../../widgets/title_go_bar.dart';
 
 class ArtistsSection extends StatelessWidget {
-  ArtistsSection({
+  const ArtistsSection({
     Key? key,
     required this.artists,
   }) : super(key: key);
-  List<Artists> artists;
+
+  final List<Artists> artists;
+
   @override
   Widget build(BuildContext context) {
     return _buildBodyContent(context);
   }
 
-  Widget _buildBodyContent(context) {
-    final double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+  Widget _buildBodyContent(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double imageSize = screenWidth * 0.2; // Dynamic size
+    final double textSize = screenWidth * 0.03; // Adjust text size
 
- 
-    final double logicalSize = 220 / pixelRatio;
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 5,
+      height: screenHeight / 5,
       child: Column(
         children: [
           TitleGoBar(
             text: AppLocalizations.of(context)!.translate('popular_artists'),
             imagePath: ImagesPath.forwardIconSvg,
             onPressed: () {
-              pushNavigate(
-                context,
-                const ArtistsScreen(
-                ),
-              );
+              pushNavigate(context, const ArtistsScreen());
             },
           ),
           if (artists.isEmpty)
             Expanded(
               child: Text(
                 AppLocalizations.of(context)!.translate('no_data_found')!,
-                style: styleW700(context, fontSize: 14),
+                style: styleW700(context, fontSize: textSize),
               ),
             )
           else
@@ -60,13 +59,7 @@ class ArtistsSection extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       pushNavigate(
-                        context,
-                        ArtistDetails(
-                          artist: artists[index],
-
-                          
-                        ),
-                      );
+                          context, ArtistDetails(artistId: artists[index].id.toString()),);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -75,17 +68,11 @@ class ArtistsSection extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Container(
-                              height: logicalSize,
-                              width:logicalSize,
+                              height: imageSize,
+                              width: imageSize,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.contain,
-                                  image: NetworkImage(
-                                    artists[index].artworkUrl!,
-                                  ),
-                                ),
                                 border: MainCubit.isDark
                                     ? GradientBoxBorder(
                                         gradient: LinearGradient(
@@ -99,28 +86,36 @@ class ArtistsSection extends StatelessWidget {
                                       )
                                     : null,
                               ),
-                              // child:Image.asset(ImagesPath.singerImage ,fit: BoxFit.cover,)
-                              //  const CircleAvatar(
-                              //   // radius: 25,
-                              //   backgroundImage: AssetImage(
-                              //     ImagesPath.singerImage,
-                              //   ),
-                              // ),
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: artists[index].artworkUrl!,
+                                  fit: BoxFit.fill,
+                                  width: imageSize,
+                                  height: imageSize,
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
+                              ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 4,
-                          ),
+                          const SizedBox(height: 4),
                           SizedBox(
-                          
-                            width:MediaQuery.of(context).size.width * 0.22,
+                            width: screenWidth * 0.22,
                             child: Center(
-                              child: Text(artists[index].name!,
-                              maxLines: 1,
-                              
-                                  style: styleW700(context,
-                                      fontSize: 12, color:!MainCubit.isDark? HexColor('#1B0E3E'):null,),
-                                  overflow: TextOverflow.visible,),
+                              child: Text(
+                                artists[index].name!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: styleW700(
+                                  context,
+                                  fontSize: textSize,
+                                  color: !MainCubit.isDark
+                                      ? HexColor('#1B0E3E')
+                                      : null,
+                                ),
+                              ),
                             ),
                           ),
                         ],

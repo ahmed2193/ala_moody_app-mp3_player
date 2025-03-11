@@ -48,12 +48,12 @@ class _PlayWidgetState extends State<PlayWidget> {
 
   void _onSwipeLeft() {
     widget.con.player.stop(); // Stop player on left swipe
-    print("Swiped left, player stopped");
+    debugPrint("Swiped left, player stopped");
   }
 
   void _onSwipeRight() {
     widget.con.player.stop(); // Stop player on right swipe
-    print("Swiped right, player stopped");
+    debugPrint("Swiped right, player stopped");
   }
 
   @override
@@ -155,8 +155,10 @@ class _PlayWidgetState extends State<PlayWidget> {
                               width: 50,
                               height: 50,
                               color: Colors.grey,
-                              child: const Icon(Icons.music_note,
-                                  color: Colors.white,),
+                              child: const Icon(
+                                Icons.music_note,
+                                color: Colors.white,
+                              ),
                             ),
                     ),
                     const SizedBox(width: 10),

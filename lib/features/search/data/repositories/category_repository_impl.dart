@@ -15,12 +15,14 @@ class SearchRepositoryImpl implements SearchRepository {
   @override
   Future<Either<Failure, BaseResponse>> getCategory({
     required String accessToken,
+    required String searchTxt,
     required int pageNo,
   }) async {
     try {
       final response = await searchRemoteDataSource.getCategory(
         accessToken: accessToken,
         pageNo: pageNo,
+        searchTxt: searchTxt,
       );
       return Right(response);
     } on ServerException catch (exception) {

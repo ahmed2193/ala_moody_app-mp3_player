@@ -14,13 +14,15 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../config/locale/app_localizations.dart';
-import '../../../../config/routes/app_routes.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/helper/font_style.dart';
 import '../../../../core/helper/images.dart';
+import '../../../../injection_container.dart' as di;
 import '../../../auth/presentation/cubit/login/login_cubit.dart';
 import '../../../auth/presentation/screen/reset_password_screen.dart';
 import '../../../profile/presentation/cubits/profile/profile_cubit.dart';
+import '../../../profile/presentation/cubits/update_profile/update_profile_cubit.dart';
+import '../../../profile/presentation/screens/edit_profile_info_screen.dart';
 import '../../../settings/presentation/screen/settings_screen.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
@@ -35,8 +37,15 @@ class AccountSettingsScreen extends StatelessWidget {
         title: AppLocalizations.of(context)!.translate("update_profile")!,
         iconPath: ImagesPath.profileIcon,
         onTap: () {
-          Navigator.of(context, rootNavigator: true)
-              .pushNamed(Routes.updteProfileRoute);
+          // Navigator.of(context, rootNavigator: true)
+          //     .pushNamed(Routes.updteProfileRoute);
+          pushNavigate(
+              context,
+              BlocProvider(
+                create: (_) => di.sl<UpdateProfileCubit>(),
+                child: const EditProfileInfoScreen(),
+              ),
+              rootNavigator: true,);
         },
       ),
       // AccountData(
@@ -127,7 +136,6 @@ class AccountSettingsScreen extends StatelessWidget {
       ),
     ];
     final user = context.read<ProfileCubit>().userProfileData!.user!;
-    print(user.id);
     return MultiBlocListener(
       listeners: [
         BlocListener<LoginCubit, LoginState>(
@@ -140,7 +148,6 @@ class AccountSettingsScreen extends StatelessWidget {
       ],
       child: Scaffold(
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 15),
             child: Column(
@@ -166,8 +173,13 @@ class AccountSettingsScreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed(Routes.updteProfileRoute);
+                    pushNavigate(
+                        context,
+                        BlocProvider(
+                          create: (_) => di.sl<UpdateProfileCubit>(),
+                          child: const EditProfileInfoScreen(),
+                        ),
+                        rootNavigator: true,);
                   },
                   child: Center(
                     child: CircleAvatar(
@@ -246,8 +258,15 @@ class AccountSettingsScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 30),
                   child: InkWell(
                     onTap: () {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(Routes.updteProfileRoute);
+                      // Navigator.of(context, rootNavigator: true)
+                      //     .pushNamed(Routes.updteProfileRoute);
+                      pushNavigate(
+                          context,
+                          BlocProvider(
+                            create: (_) => di.sl<UpdateProfileCubit>(),
+                            child: const EditProfileInfoScreen(),
+                          ),
+                          rootNavigator: true,);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -273,8 +292,16 @@ class AccountSettingsScreen extends StatelessWidget {
                             size: 18,
                           ),
                           onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed(Routes.updteProfileRoute);
+                            // Navigator.of(context, rootNavigator: true)
+                            //     .pushNamed(Routes.updteProfileRoute);
+
+                            pushNavigate(
+                                context,
+                                BlocProvider(
+                                  create: (_) => di.sl<UpdateProfileCubit>(),
+                                  child: const EditProfileInfoScreen(),
+                                ),
+                                rootNavigator: true,);
                           },
                         ),
                       ],
@@ -382,9 +409,10 @@ class TermAndcondition extends StatelessWidget {
         leading: const BackArrow(),
       ),
       body: const SafeArea(
-          child: CustomWebView(
-        url: 'https://alamoody.webtekdemo.com/page/term-and-condition',
-      ),),
+        child: CustomWebView(
+          url: 'https://alamoody.webtekdemo.com/page/term-and-condition',
+        ),
+      ),
     );
   }
 }
@@ -401,9 +429,10 @@ class ParivacyPolicy extends StatelessWidget {
         leading: const BackArrow(),
       ),
       body: const SafeArea(
-          child: CustomWebView(
-        url: 'https://alamoody.webtekdemo.com/page/privacy-policy',
-      ),),
+        child: CustomWebView(
+          url: 'https://alamoody.webtekdemo.com/page/privacy-policy',
+        ),
+      ),
     );
   }
 }

@@ -16,7 +16,6 @@ import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/loading_indicator.dart';
 import '../../../../core/utils/menu_item_button.dart';
 import '../../../../core/utils/no_data.dart';
@@ -82,7 +81,6 @@ class _MoodSongsScreenState extends State<MoodSongsScreen> {
         // key: scaffoldKey,
         // drawer: const DrawerScreen(),
         body: ReusedBackground(
-          lightBG: ImagesPath.homeBGLightBG,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -163,8 +161,9 @@ class _MoodSongsScreenState extends State<MoodSongsScreen> {
                                   return GestureDetector(
                                     onTap: () {
                                       final con = Provider.of<MainController>(
-                                          context,
-                                          listen: false,);
+                                        context,
+                                        listen: false,
+                                      );
                                       final items =
                                           BlocProvider.of<MoodSongsCubit>(
                                         context,

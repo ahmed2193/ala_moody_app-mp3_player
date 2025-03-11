@@ -26,27 +26,22 @@ class SearchSectionOfLibrary extends StatelessWidget {
         children: [
           // premium icon
           if (isPremium == true)
-              context.read<ProfileCubit>().userProfileData != null &&
-            context
-                    .read<ProfileCubit>()
-                    .userProfileData!
-                    .user!
-                    .subscription!
-                    .serviceId ==
-               
-                    '1'
+            context.read<ProfileCubit>().userProfileData != null &&
+                    context
+                            .read<ProfileCubit>()
+                            .userProfileData!
+                            .user!
+                            .subscription!
+                            .serviceId ==
+                        '1'
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment  
-
-.spaceBetween  ,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(),
                       GestureDetector(
                         onTap: () {
-                     context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                          context.read<TabCubit>().changeTab(4);
                         },
                         child: Image.asset(
                           ImagesPath.premiumImage,
@@ -63,22 +58,25 @@ class SearchSectionOfLibrary extends StatelessWidget {
           // library text and user image and search icon
           Row(
             children: [
-            if (context.read<ProfileCubit>().userProfileData != null &&
-            context
-                    .read<ProfileCubit>()
-                    .userProfileData!
-                    .user!
-                    .subscription!
-                    .serviceId ==
-                '1') CircleContainerWithGradientBorder(
-                isMusic: false,
-                width: 50,
-                image: context
-                    .read<ProfileCubit>()
-                    .userProfileData!
-                    .user!
-                    .artworkUrl,
-              ) else const SizedBox(),
+              if (context.read<ProfileCubit>().userProfileData != null &&
+                  context
+                          .read<ProfileCubit>()
+                          .userProfileData!
+                          .user!
+                          .subscription!
+                          .serviceId ==
+                      '1')
+                CircleContainerWithGradientBorder(
+                  isMusic: false,
+                  width: 50,
+                  image: context
+                      .read<ProfileCubit>()
+                      .userProfileData!
+                      .user!
+                      .artworkUrl,
+                )
+              else
+                const SizedBox(),
               const SizedBox(
                 width: AppPadding.p10,
               ),

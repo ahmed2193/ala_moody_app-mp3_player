@@ -1,25 +1,26 @@
+import 'package:alamoody/core/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/main/presentation/cubit/main_cubit.dart';
-import '../helper/images.dart';
 
 class ReusedBackground extends StatelessWidget {
   const ReusedBackground({
     Key? key,
-    this.darKBG = ImagesPath.homeBGDarkBG,
-    this.lightBG = ImagesPath.bgIntroLight,
     this.body,
   }) : super(key: key);
-  
-  final String? darKBG;
-  final String? lightBG;
+
   final Widget? body;
 
   @override
   Widget build(BuildContext context) {
+    final size =
+        MediaQuery.of(context).size; // Cache MediaQuery for performance
+
     return BlocBuilder<MainCubit, MainState>(
+      buildWhen: (previous, current) =>
+          previous != current, // Prevent unnecessary rebuilds
       builder: (context, state) {
         final bool isDarkMode = MainCubit.isDark;
 
@@ -39,19 +40,14 @@ class ReusedBackground extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: darKBG!.contains('https')
-                        ? NetworkImage(isDarkMode ? darKBG! : lightBG!)
-                        : AssetImage(isDarkMode ? darKBG! : lightBG!)
-                            as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                height: size.height,
+                width: size.width,
+                decoration: 
+                
+        Constants.  customBackgroundDecoration(isDarkMode: isDarkMode),
+             
               ),
-              body ?? const SizedBox.shrink(),
+              if (body != null) body!,
             ],
           ),
         );

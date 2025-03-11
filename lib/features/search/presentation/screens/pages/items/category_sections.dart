@@ -40,9 +40,9 @@ class CategorySectionSearchScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          height: AppPadding.p10,
+          height: AppPadding.p4,
         ),
-        // category gridview
+        // // category gridview
         // will send model after api here
          Expanded(child:    BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
@@ -63,16 +63,16 @@ class CategorySectionSearchScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsetsDirectional.only(
-                  start: AppPadding.p20,
-                  end: AppPadding.p20,
+                  start: AppPadding.p18,
+                  end: AppPadding.p18,
                   top: AppPadding.p10,
-                  bottom: AppPadding.p20 * 5,
+                  bottom: AppPadding.p20 * 7,
                 ),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: AppPadding.p20,
-                  mainAxisSpacing: AppPadding.p20,
-                  childAspectRatio: 1.5,
+                  crossAxisSpacing: AppPadding.p18,
+                  mainAxisSpacing: AppPadding.p18,
+                  childAspectRatio: 1.9,
                 ),
                 itemCount: BlocProvider.of<CategoryCubit>(context)
                         .category
@@ -103,8 +103,9 @@ class CategorySectionSearchScreen extends StatelessWidget {
                   return const SizedBox();
                 },
               )
-            : const Center(
-                child: Text('no data'),
+            :  Center(
+                child: Text(AppLocalizations.of(context)!
+                                  .translate("no_data")!,),
               );
       },
          ),

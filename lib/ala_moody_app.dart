@@ -1,10 +1,13 @@
 import 'package:alamoody/core/utils/controllers/main_controller.dart';
 import 'package:alamoody/features/Playlists/presentation/cubits/remove_song_from_playlists/remove_song_from_playlists_cubit.dart';
+import 'package:alamoody/features/auth/presentation/screen/login_screen.dart';
 import 'package:alamoody/features/contact_us/presentation/cubit/contact_us_cubit.dart';
 import 'package:alamoody/features/download_songs/presentation/cubit/download_cubit.dart';
 import 'package:alamoody/features/genres/presentation/cubits/genres_cubit.dart';
 import 'package:alamoody/features/home/presentation/cubits/set_ringtones/set_ringtones_cubit.dart';
+import 'package:alamoody/features/main/presentation/screens/welcome_screen/welcome_screen.dart';
 import 'package:alamoody/features/main_layout/cubit/tab_cubit.dart';
+import 'package:alamoody/features/main_layout/presentation/pages/main_layout_screen.dart';
 import 'package:alamoody/features/membership/presentation/cubit/plan_cubit.dart';
 import 'package:alamoody/features/occasions/presentation/cubits/occasions_cubit.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +15,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'config/locale/app_localizations_setup.dart';
-import 'config/routes/app_routes.dart';
 import 'config/themes/dark.dart';
 import 'config/themes/light.dart';
 import 'features/Playlists/presentation/cubits/add_song_to_playlists/add_song_to_playlists_cubit.dart';
-import 'features/Playlists/presentation/cubits/create_playlists/create_playlists_cubit.dart';
+import 'features/Playlists/presentation/cubits/create_edit_playlist/create_playlist_cubit.dart';
+import 'features/Playlists/presentation/cubits/create_edit_playlist/edit_playlist_cubit.dart';
 import 'features/Playlists/presentation/cubits/my_playlists/my_playlists_cubit.dart';
+import 'features/Playlists/presentation/cubits/remove_playlist/remove_playlist_cubit.dart';
 import 'features/audio_playlists/presentation/cubit/audio_playlists_cubit.dart';
 import 'features/auth/presentation/cubit/login/login_cubit.dart';
 import 'features/auth/presentation/cubit/register/register_cubit.dart';
@@ -65,6 +69,8 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
   void initState() {
     super.initState();
   }
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +131,7 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
             create: (_) => di.sl<CategoryCubit>(),
           ),
           BlocProvider(
-            create: (_) => di.sl<DownloadCubit>(),
+            create: (_) => di.sl<DownloadCubit>()..getSavedDownloads(),
           ),
           BlocProvider(
             create: (_) => di.sl<YourMoodCubit>(),
@@ -167,7 +173,7 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
             create: (context) => di.sl<MyPlaylistsCubit>(),
           ),
           BlocProvider(
-            create: (context) => di.sl<CreatePlaylistsCubit>(),
+            create: (context) => di.sl<CreatePlaylistCubit>(),
           ),
           BlocProvider(
             create: (context) => di.sl<AddSongToPlaylistsCubit>(),
@@ -205,10 +211,18 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
           BlocProvider(
             create: (context) => di.sl<CreateUserIsLiveCubit>()
               ..createUserIsLive(
-                accessToken:
-                    context.read<LoginCubit>().authenticatedUser!.accessToken!,
+                accessToken: context
+                    .read<LoginCubit>()
+                    .authenticatedUser!
+                    .accessToken!,
                 isLive: '0',
               ),
+          ),
+          BlocProvider(
+            create: (context) => di.sl<EditPlaylistCubit>(),
+          ),
+          BlocProvider(
+            create: (context) => di.sl<RemovePlaylistCubit>(),
           ),
           BlocProvider(create: (context) => TabCubit()),
         ],
@@ -219,7 +233,8 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                   previousState != currentState,
               builder: (_, localeState) {
                 return MaterialApp(
-
+                  navigatorKey:
+                      navigatorKey, // ✅ Assign the global navigator key
                   title: 'Ala Moody',
                   debugShowCheckedModeBanner: false,
                   supportedLocales: AppLocalizationsSetup.supportedLocales,
@@ -228,8 +243,8 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                   localeResolutionCallback:
                       AppLocalizationsSetup.localeResolutionCallback,
                   locale: localeState.locale,
-                  onGenerateRoute: AppRoutes.onGenerateRoute,
-                  initialRoute: Routes.mainRoute,
+                  // onGenerateRoute: AppRoutes.onGenerateRoute,
+                  // initialRoute: Routes.mainRoute,
                   theme: lightTheme(),
                   darkTheme: darkTheme(),
                   themeMode: MainCubit.isDark == true
@@ -245,7 +260,19 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                       ),
                     );
                   },
-                  // home:LiveRadioPlayer()
+                  home: BlocBuilder<LoginCubit, LoginState>(
+                    builder: (context, state) {
+                      if (state is Authenticated) {
+                        return const MainLayoutScreen();
+      
+                        // App();
+                      } else if (state is UnAuthenticated) {
+                        return const LoginScreen();
+                      } else {
+                        return const WelcomeScreen();
+                      }
+                    },
+                  ),
                   //
                   // EasySplashScreen(
                   //   logo: Image.asset(
@@ -259,9 +286,9 @@ class _AlaMoodyAppState extends State<AlaMoodyApp> {
                   //         ? ImagesPath.darkBG
                   //         : ImagesPath.lightBG,
                   //   ),
-
+      
                   //   // navigator:  LiveTest(),
-
+      
                   //   //PlayerScreen(),
                   //   //Test() //PlayerScreen(), //WelcomeScreen(),//FavoritesScreen//DownloadsScreen
                   // ),

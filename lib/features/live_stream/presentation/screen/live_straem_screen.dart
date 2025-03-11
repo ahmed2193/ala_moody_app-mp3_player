@@ -31,9 +31,9 @@ class LiveStreamScreen extends StatefulWidget {
 }
 
 class _LiveStreamScreenState extends State<LiveStreamScreen> {
-    final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-   Future<void> _getLiveUsers() =>
+  Future<void> _getLiveUsers() =>
       BlocProvider.of<LiveUsersCubit>(context).getLiveUsers(
         context: context,
         accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken!,
@@ -43,15 +43,13 @@ class _LiveStreamScreenState extends State<LiveStreamScreen> {
   //   _getLiveUsers();
   //   super.initState();
   // }
-   Future<void> _refresh() {
-
-    return  _getLiveUsers();
+  Future<void> _refresh() {
+    return _getLiveUsers();
   }
+
   @override
   Widget build(BuildContext context) {
-
-    return 
-RefreshIndicator(
+    return RefreshIndicator(
       color: Theme.of(context).primaryColor,
       key: _refreshIndicatorKey,
       onRefresh: _refresh,
@@ -79,16 +77,17 @@ RefreshIndicator(
   ReusedBackground _bodyContent(
     BuildContext context,
   ) {
-    final bool isPremium =   context.read<ProfileCubit>().userProfileData != null &&
-            context
-                    .read<ProfileCubit>()
-                    .userProfileData!
-                    .user!
-                    .subscription!
-                    .serviceId ==
-                '1'
-        ? true
-        : false;
+    final bool isPremium =
+        context.read<ProfileCubit>().userProfileData != null &&
+                context
+                        .read<ProfileCubit>()
+                        .userProfileData!
+                        .user!
+                        .subscription!
+                        .serviceId ==
+                    '1'
+            ? true
+            : false;
     void jumpToLivePage(BuildContext context, {required bool isHost}) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
@@ -106,7 +105,6 @@ RefreshIndicator(
     }
 
     return ReusedBackground(
-      lightBG: ImagesPath.homeBGLightBG,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -176,9 +174,7 @@ RefreshIndicator(
               GradientCenterTextButton(
                 onTap: () {
                   isPremium
-                      ?  context
-                                                .read<TabCubit>()
-                                                .changeTab(4)
+                      ? context.read<TabCubit>().changeTab(4)
                       : jumpToLivePage(context, isHost: true);
                 },
                 buttonText: AppLocalizations.of(context)!
@@ -241,7 +237,6 @@ RefreshIndicator(
                 ),
               ),
               const NoData(
-                height: 200,
               ),
 //const TopOfTheClapsWidget()
             ],
@@ -381,17 +376,17 @@ class _PeopleLiveStreamListState extends State<PeopleLiveStreamList> {
         accessToken: context.read<LoginCubit>().authenticatedUser!.accessToken!,
       );
 
-
   @override
   Widget build(BuildContext context) {
     const state = LiveUsersState;
-    state is CreateUserIsLiveSuccess ?
-    
- {   Future.delayed(const Duration(seconds: 1), () {
-          log('Delayed action executed after pop');
-         _getLiveUsers();
-        }),  
-   } : null;
+    state is CreateUserIsLiveSuccess
+        ? {
+            Future.delayed(const Duration(seconds: 1), () {
+              log('Delayed action executed after pop');
+              _getLiveUsers();
+            }),
+          }
+        : null;
     return BlocBuilder<LiveUsersCubit, LiveUsersState>(
       builder: (context, state) {
         if (state is LiveUsersLoading) {
@@ -474,8 +469,6 @@ class _PeopleLiveStreamListState extends State<PeopleLiveStreamList> {
                     },
                   ),
           );
-
-
         } else if (state is LiveUsersError) {
           return Column(
             children: [
@@ -517,7 +510,6 @@ class LiveStreamBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -526,7 +518,7 @@ class LiveStreamBar extends StatelessWidget {
           AppLocalizations.of(context)!.translate('live_stream')!,
           style: styleW700(context, fontSize: 18),
         ),
-        if (  context.read<ProfileCubit>().userProfileData != null &&
+        if (context.read<ProfileCubit>().userProfileData != null &&
             context
                     .read<ProfileCubit>()
                     .userProfileData!
@@ -541,9 +533,7 @@ class LiveStreamBar extends StatelessWidget {
               const SizedBox(),
               GestureDetector(
                 onTap: () {
-              context
-                                                .read<TabCubit>()
-                                                .changeTab(4);
+                  context.read<TabCubit>().changeTab(4);
                 },
                 child: Image.asset(ImagesPath.premiumImage),
               ),

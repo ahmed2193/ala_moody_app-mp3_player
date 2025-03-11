@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:alamoody/config/locale/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -88,8 +89,9 @@ class TabPageOfLibrary extends StatelessWidget {
                   return const SizedBox();
                 },
               )
-            : const Center(
-                child: Text('no data'),
+            :  Center(
+                child: Text(AppLocalizations.of(context)!
+                                  .translate("no_data")!,),
               );
       },
     );

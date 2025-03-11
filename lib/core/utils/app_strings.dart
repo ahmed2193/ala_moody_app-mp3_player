@@ -86,7 +86,7 @@ class AppStrings {
   static const String mediaType = 'mediaType';
   static const String playlistId = 'playlist_id';
   static const String phone = 'phone';
-  static const String changeStatus = "notification_detail";
+  static const String changeStatus = "user/notification";
 
   static const String mobileFlag = 'mobile_flag';
   static const String displayName = 'displayName';
@@ -98,4 +98,9 @@ class AppStrings {
   static const String coupon = 'coupon';
   static const String serviceId = 'service_id';
   static const String phoneNumber = 'phone';
+  static const String playlistDes = 'description';
+  static const String playlistImage = 'artwork';
+  static const String fcmToken = 'fcm_token';
+  static const String shareSong = 'shareSong';
+  static const String followUser = 'followUser';
 }

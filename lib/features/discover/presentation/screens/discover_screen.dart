@@ -16,7 +16,6 @@ import '../../../../config/locale/app_localizations.dart';
 import '../../../../core/components/reused_background.dart';
 import '../../../../core/components/screen_state/loading_screen.dart';
 import '../../../../core/helper/font_style.dart';
-import '../../../../core/helper/images.dart';
 import '../../../../core/utils/controllers/main_controller.dart';
 import '../../../../core/utils/loading_indicator.dart';
 import '../../../../core/utils/no_data.dart';
@@ -71,9 +70,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Widget _buildBodyContent() {
     return Scaffold(
-      
       body: ReusedBackground(
-        lightBG: ImagesPath.homeBGLightBG,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -89,8 +86,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 Center(
                   child: Text(
                     AppLocalizations.of(context)!.translate('discover')!,
-                    style:
-                        styleW600(context)!.copyWith(fontSize: FontSize.f18),
+                    style: styleW600(context)!.copyWith(fontSize: FontSize.f18),
                   ),
                 ),
               ],
@@ -99,7 +95,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               child: BlocBuilder<DiscoverCubit, DiscoverState>(
                 builder: (context, state) {
                   if (state is DiscoverIsLoading && state.isFirstFetch) {
-                    return const Expanded(child: LoadingScreen());
+                    return const Center(child: LoadingScreen());
                   }
                   if (state is DiscoverIsLoading) {
                     BlocProvider.of<DiscoverCubit>(context).loadMore = true;
@@ -109,14 +105,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       msg: state.message!,
                     );
                   }
-    
+
                   return BlocProvider.of<DiscoverCubit>(context)
                           .discoverData
                           .isNotEmpty
                       ? ListView.separated(
                           controller: scrollController,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(
+                          separatorBuilder: (context, index) => const SizedBox(
                             width: AppPadding.p20,
                           ),
                           physics: const BouncingScrollPhysics(),
@@ -124,8 +119,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           itemCount: BlocProvider.of<DiscoverCubit>(context)
                                   .discoverData
                                   .length +
-                              (BlocProvider.of<DiscoverCubit>(context)
-                                      .loadMore
+                              (BlocProvider.of<DiscoverCubit>(context).loadMore
                                   ? 1
                                   : 0),
                           itemBuilder: (context, index) {
@@ -133,28 +127,28 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 BlocProvider.of<DiscoverCubit>(context)
                                     .discoverData
                                     .length) {
-                              return
-                            
-                                  Padding(
+                              return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () {
                                     final con = Provider.of<MainController>(
-                                        context,
-                                        listen: false,);
+                                      context,
+                                      listen: false,
+                                    );
                                     con.playSong(
                                       con.convertToAudio(
-                                          BlocProvider.of<DiscoverCubit>(
-                                        context,
-                                      ).discoverData,),
+                                        BlocProvider.of<DiscoverCubit>(
+                                          context,
+                                        ).discoverData,
+                                      ),
                                       BlocProvider.of<DiscoverCubit>(
                                         context,
                                       ).discoverData.indexOf(
-                                              BlocProvider.of<DiscoverCubit>(
-                                            context,
-                                          ).discoverData[index],),
+                                            BlocProvider.of<DiscoverCubit>(
+                                              context,
+                                            ).discoverData[index],
+                                          ),
                                     );
-    
                                   },
                                   child: SongItem(
                                     menuItem: MenuItemButtonWidget(
@@ -178,7 +172,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   scrollController.position.maxScrollExtent,
                                 );
                               });
-    
+
                               return const LoadingIndicator();
                             }
                             return const SizedBox();
@@ -196,4 +190,3 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 }
-        

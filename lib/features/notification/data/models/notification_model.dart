@@ -5,7 +5,6 @@ class NotificationModel extends Notification {
   const NotificationModel({
     required super.id,
     required super.userId,
-    required super.objectId,
     required super.notificationableId,
     required super.notificationableType,
     required super.hostableId,
@@ -20,14 +19,13 @@ class NotificationModel extends Notification {
       NotificationModel(
         id: json['id'],
         userId: json['user_id'],
-        objectId: json['object_id'],
         notificationableId: json['notificationable_id'],
         notificationableType: json['notificationable_type'],
         hostableId: json['hostable_id'],
         action: json['action'],
         description: json['description'],
         title: json['title'],
-        updatedAt: json['updated_at'],
+        updatedAt: json['created_at'],
         read: json['read'],
         details: 
         

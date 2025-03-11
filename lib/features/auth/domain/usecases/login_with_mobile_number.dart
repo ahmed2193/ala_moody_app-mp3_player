@@ -17,6 +17,7 @@ class LoginWithMobileNumber
         phone: params.phone,
         mobileFlag: params.mobileFlag,
         userName: params.userName,
+        fcmToken: params.fcmToken,
       );
 }
 
@@ -24,10 +25,12 @@ class LoginWithMobileNumberParams extends Equatable {
   final String phone;
   final String mobileFlag;
   final String userName;
+  final String fcmToken;
   const LoginWithMobileNumberParams({
     required this.phone,
     required this.mobileFlag,
     required this.userName,
+    required this.fcmToken,
   });
 
   @override
@@ -35,5 +38,6 @@ class LoginWithMobileNumberParams extends Equatable {
         phone,
         mobileFlag,
         userName,
+        fcmToken,
       ];
 }

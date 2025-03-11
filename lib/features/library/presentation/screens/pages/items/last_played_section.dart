@@ -142,11 +142,11 @@ class LastPlayedSection extends StatelessWidget {
                         }
                         return const SizedBox();
                       },
-                    ) else Padding(
-                      padding: const EdgeInsets.only(top: 60),
+                    ) else const Padding(
+                      padding: EdgeInsets.only(top: 60),
                       child: Center(
                         child: NoData(
-                                        height: MediaQuery.of(context).size.height / 5,
+                                        // height: MediaQuery.of(context).size.height / 5,
                                       ),
                       ),
                     ),
