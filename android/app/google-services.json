@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "410962489546",
+    "project_id": "ala-moody",
+    "storage_bucket": "ala-moody.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410962489546:android:342d7a9fb712415daf8433",
+        "android_client_info": {
+          "package_name": "com.Ala_Moody.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV1ETmlWNiCyGu_N1b-ZDXJ8rExpbJbTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
